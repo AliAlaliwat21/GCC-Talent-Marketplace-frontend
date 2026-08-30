@@ -2,51 +2,59 @@ const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`
 
 const signUp = async (formData) => {
     try {
-        const res = await fetch(`${BASE_URL}/auth/sign-up`, {
+
+        const userData = {
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+            role: formData.role
+        }
+        const res = await fetch(`${BASE_URL}/api/v1/auth/register`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData)
+            credentials: 'include',
+            body: JSON.stringify(userData)
         })
         const data = await res.json()
 
-        if (data.err) {
-            console.log(data.err)
-            throw new Error(data.err)
-        }
+        if (!res.ok) {
+        throw new Error(data.err || data.message)
+}
 
-        if (data.token) {
-            localStorage.setItem('token', data.token)
-            return JSON.parse(atob(data.token.split('.')[1])).payload
+        if (data.accessToken) {
+            localStorage.setItem('token', data.accessToken)
+
+            return JSON.parse(atob(data.accessToken.split('.')[1])).payload
         }
 
     } catch (err) {
-        throw new Error(err)
+        throw new Error(err.message)
     }
 
 }
 
 const signIn = async (formData) => {
     try {
-        const res = await fetch(`${BASE_URL}/auth/sign-in`, {
+        const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
             body: JSON.stringify(formData)
         })
         const data = await res.json()
 
-        if (data.err) {
-            console.log(data.err)
-            throw new Error(data.err)
+       if (!res.ok) {
+            throw new Error(data.err || data.message)
         }
 
-        if (data.token) {
-            localStorage.setItem('token', data.token)
+        if (data.accessToken) {
+            localStorage.setItem('token', data.accessToken)
             // returning the user object
-            return JSON.parse(atob(data.token.split('.')[1])).payload
+            return JSON.parse(atob(data.accessToken.split('.')[1])).payload
         }
 
     } catch (err) {
-        throw new Error(err)
+        throw new Error(err.message)
     }
 
 }
