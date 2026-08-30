@@ -1,12 +1,14 @@
+import { Link } from "react-router" 
+
 const Dashboard = (props) => {
     return (
-        <section className="dashboard">
-            <header>
-                <h1>Welcome, {props.user.username}!</h1>
-                <p>You are signed in as a {props.user.role}</p>
+    <section className="dashboard">
+        <header>
+            <h1>Welcome, {props.user.username}!</h1>
+            <p>You are signed in as a {props.user.role}</p>
             </header>
             
-            {props.user.role === "client" && (<div className="card"> 
+            {props.user.role === "client" && (<div className="card">
                 <h2>Client Dashboard</h2>
                 <p>Post jobs, review proposals and manage contracts</p>
                 </div>
@@ -15,7 +17,8 @@ const Dashboard = (props) => {
                 <div className="card">
                     <h2>Freelancer Dashboard</h2>
                     <p>Find jobs, submit proposals and manage your work</p>
-                    </div>
+                    <Link to="/freelancer/profile">Create or Edit Profile</Link> 
+                    </div> 
                 )}
                 {props.user.role === "admin" && (
                     <div className="card">
