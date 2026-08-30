@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { index as skillsIndex } from "../services/skills"
+import { upsertMe } from "../services/freelancerProfiles"
 
 const FreelancerProfile = () => {
     const initialState = {
@@ -66,6 +67,29 @@ const FreelancerProfile = () => {
             level: ""
         })
     }
+
+    const handleSubmit = async (event) => {
+        event.preventDefault()
+        setMessage("")
+
+        if (formData.languages.length === 0) {
+            setMessage("Please add at least one language")
+            return
+        }
+
+        try {
+            const profileData = {
+                ...formData,
+                hourlyRate: Number(formData.hourlyRate)
+            }
+
+            await upsertMe(profileData)
+
+            setMessage("Profile saved successfully")
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
     
     return (
     <section className="card">
@@ -76,7 +100,7 @@ const FreelancerProfile = () => {
 
             <p>{message}</p>
             
-            <form>
+            <form onSubmit={handleSubmit}>
                 <label htmlFor="headline">Headline</label>
                 <input
                 id="headline"
@@ -178,6 +202,8 @@ const FreelancerProfile = () => {
                     value={formData.city}
                     onChange={handleChange}
                     required/>
+
+                    <button type="submit">Save Profile</button>
                     </form>
                     </section>
                     )
