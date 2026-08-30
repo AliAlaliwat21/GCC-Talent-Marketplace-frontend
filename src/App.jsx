@@ -56,7 +56,7 @@ const App = () => {
           
           <Route
           path="/freelancer/profile"
-          element={<FreelancerProfile />}
+          element={<FreelancerProfile user={user} />}
           />
         
       </Routes>

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { index as skillsIndex } from "../services/skills"
-import { upsertMe } from "../services/freelancerProfiles"
+import { show, upsertMe } from "../services/freelancerProfiles"
 
-const FreelancerProfile = () => {
+const FreelancerProfile = (props) => {
     const initialState = {
         headline: "",
         bio: "",
@@ -39,6 +39,33 @@ const FreelancerProfile = () => {
         
         fetchSkills()
     }, [])
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const data = await show(props.user._id)
+
+                setFormData({
+                    headline: data.profile.headline,
+                    bio: data.profile.bio,
+                    hourlyRate: data.profile.hourlyRate,
+                    availability: data.profile.availability,
+                    country: data.user.country || "",
+                    city: data.user.city || "",
+                    skills: data.profile.skills.map((skill) => skill._id),
+                    languages: data.profile.languages
+                })
+            } catch (error) {
+                if (error.message !== "Freelancer profile not found") {
+                    setMessage(error.message)
+                }
+            }
+        }
+
+        if (props.user) {
+            fetchProfile()
+        }
+    }, [props.user])
     
     const handleSkillsChange = (event) => {
         const selectedSkills = Array.from(
@@ -150,11 +177,9 @@ const FreelancerProfile = () => {
                     onChange={handleSkillsChange}
                     required>
                         {availableSkills.map((skill) => (
-                            <option key={skill._id} value={skill._id}>
-                                {skill.name}
-                            </option>
-                        ))}
-                        </select>
+                            <option key={skill._id} value={skill._id}> {skill.name}</option>
+                            ))}
+                            </select>
 
                     <label htmlFor="languageName">Language</label>
                     <input
