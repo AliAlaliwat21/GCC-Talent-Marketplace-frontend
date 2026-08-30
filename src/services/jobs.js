@@ -17,6 +17,23 @@ const index = async ()=>{
     }
 }
 
+const show = async (jobId)=>{
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}`)
+
+        const data = await res.json()
+
+        if (!res.ok){
+            throw new Error(data.message)
+        }
+
+        return data
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
 export {
-    index
+    index,
+    show
 }

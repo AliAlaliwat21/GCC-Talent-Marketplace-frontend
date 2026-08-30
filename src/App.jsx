@@ -7,6 +7,7 @@ import SignInForm from "./pages/SignInForm"
 import Landing from "./pages/Landing"
 import Dashboard from "./pages/Dashboard"
 import Jobs from "./pages/Jobs"
+import JobDetails from "./pages/JobDetails"
 
 const getUserFromToken = () => {
   const token = localStorage.getItem('token')
@@ -33,8 +34,11 @@ const App = () => {
         <Route path='/sign-in' element={<SignInForm setUser={setUser} />} />
 
         <Route path='/jobs' element={<Jobs/>} />
+
+        <Route path='/jobs/:jobId' element={<JobDetails/>} />
+        
       </Routes>
-      
+
       </main>
     </div>
   )
