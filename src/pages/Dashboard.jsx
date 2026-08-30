@@ -1,66 +1,29 @@
 const Dashboard = (props) => {
-
     return (
-        <section>
+        <section className="dashboard">
             <header>
-                <h1>Welcome {props.user.username}!</h1>
-                <p>Role: {props.user.role}</p>
+                <h1>Welcome, {props.user.username}!</h1>
+                <p>You are signed in as a {props.user.role}</p>
             </header>
-
-            {props.user.role === 'client' && (
-                <section>
-                    <h2>Client Dashboard</h2>
-
-                    <div className="card">
-                        <h3>Post a Job</h3>
-                        <p>Create a new job and find freelancers.</p>
-                    </div>
-
-                    <div className="card">
-                        <h3>My Jobs</h3>
-                        <p>View and manage the jobs you have posted.</p>
-                    </div>
-
-                    <div className="card">
-                        <h3>Contracts</h3>
-                        <p>Manage your active contracts and milestones.</p>
-                    </div>
-
-                    <div className="card">
-                        <h3>Wallet</h3>
-                        <p>View your balance and transactions.</p>
-                    </div>
-                </section>
+            
+            {props.user.role === "client" && (<div className="card"> 
+                <h2>Client Dashboard</h2>
+                <p>Post jobs, review proposals and manage contracts</p>
+                </div>
             )}
-
-            {props.user.role === 'freelancer' && (
-                <section>
+            {props.user.role === "freelancer" && (
+                <div className="card">
                     <h2>Freelancer Dashboard</h2>
-
-                    <div className="card">
-                        <h3>Browse Jobs</h3>
-                        <p>Find jobs that match your skills.</p>
+                    <p>Find jobs, submit proposals and manage your work</p>
                     </div>
-
+                )}
+                {props.user.role === "admin" && (
                     <div className="card">
-                        <h3>My Proposals</h3>
-                        <p>View and manage your submitted proposals.</p>
-                    </div>
-
-                    <div className="card">
-                        <h3>Contracts</h3>
-                        <p>Manage your active work and milestones.</p>
-                    </div>
-
-                    <div className="card">
-                        <h3>Wallet</h3>
-                        <p>View your earnings and transactions.</p>
-                    </div>
-                </section>
-            )}
-
-        </section>
-    )
-}
-
-export default Dashboard
+                        <h2>Admin Dashboard</h2>
+                        <p>Manage users, categories and platform activity</p>
+                        </div>
+                    )}
+                    </section>
+                    )
+                }
+                export default Dashboard
