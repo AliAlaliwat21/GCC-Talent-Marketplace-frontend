@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { index as skillsIndex } from "../services/skills"
 
 const FreelancerProfile = () => {
     const initialState = {
@@ -13,9 +14,33 @@ const FreelancerProfile = () => {
     }
     
     const [formData, setFormData] = useState(initialState)
+    const [availableSkills, setAvailableSkills] = useState([])
+    const [message, setMessage] = useState("")
     
     const handleChange = (event) => {
         setFormData({...formData, [event.target.name]: event.target.value})
+    }
+    
+    useEffect(() => {
+        const fetchSkills = async () => {
+            try {
+                const data = await skillsIndex()
+                
+                setAvailableSkills(data)
+            } catch (error) {
+                setMessage(error.message)
+            }
+        }
+        
+        fetchSkills()
+    }, [])
+    
+    const handleSkillsChange = (event) => {
+        const selectedSkills = Array.from(
+            event.target.selectedOptions,
+            (option) => option.value
+        )
+        setFormData({...formData, skills: selectedSkills})
     }
     
     return (
@@ -24,6 +49,8 @@ const FreelancerProfile = () => {
             <h1>Freelancer Profile</h1>
             <p>Tell clients about your skills and experience</p>
             </header>
+
+            <p>{message}</p>
             
             <form>
                 <label htmlFor="headline">Headline</label>
@@ -66,6 +93,21 @@ const FreelancerProfile = () => {
                     <option value="unavailable">Unavailable</option>
                     </select>
                     
+                    <label htmlFor="skills">Skills</label>
+                    <select
+                    id="skills"
+                    name="skills"
+                    multiple
+                    value={formData.skills}
+                    onChange={handleSkillsChange}
+                    required>
+                        {availableSkills.map((skill) => (
+                            <option key={skill._id} value={skill._id}>
+                                {skill.name}
+                            </option>
+                        ))}
+                        </select>
+                    
                     <label htmlFor="country">Country</label>
                     <input
                     id="country"
@@ -87,5 +129,4 @@ const FreelancerProfile = () => {
                     </section>
                     )
                 }
-                
                 export default FreelancerProfile
