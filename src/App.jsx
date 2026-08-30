@@ -6,6 +6,7 @@ import { useState } from "react"
 import SignInForm from "./pages/SignInForm"
 import Landing from "./pages/Landing"
 import Dashboard from "./pages/Dashboard"
+import Jobs from "./pages/Jobs"
 
 const getUserFromToken = () => {
   const token = localStorage.getItem('token')
@@ -23,11 +24,17 @@ const App = () => {
     <div>
       <Nav user={user} setUser={setUser} />
       <main className="app-main">
+
       <Routes>
         <Route path='/' element={user ? <Dashboard user={user} /> : <Landing />} />
+
         <Route path='/sign-up' element={<SignUpForm setUser={setUser} />} />
+
         <Route path='/sign-in' element={<SignInForm setUser={setUser} />} />
+
+        <Route path='/jobs' element={<Jobs/>} />
       </Routes>
+      
       </main>
     </div>
   )
