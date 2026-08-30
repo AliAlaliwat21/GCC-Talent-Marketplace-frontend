@@ -8,8 +8,10 @@ const SignUpForm = (props) => {
 
     const initialState = {
         username: '',
+        email: '',
         password: '',
         confirmPassword: '',
+        role: ''
     }
 
     const [formData, setFormData] = useState(initialState)
@@ -31,7 +33,14 @@ const SignUpForm = (props) => {
     }
 
     const isFormValid = () => {
-        if(formData.username && formData.password && formData.password === formData.confirmPassword) {
+        if(
+            formData.username &&
+            formData.email && 
+            formData.password &&
+            formData.role && 
+            formData.password === 
+            formData.confirmPassword
+        ) {
             return true
         } else return false
     }
@@ -43,15 +52,43 @@ const SignUpForm = (props) => {
                 <p>{message}</p>
             </header>
             <form onSubmit={handleSubmit}>
+
                 Username:
-                <input type="text" name="username" onChange={handleChange} value={formData.username} required />
+                <input
+                    type='text'
+                    name='username'
+                    onChange={handleChange}
+                    value={formData.username}
+                    required
+                />
+                
+                Email:
+                <input type="email" name="email" onChange={handleChange} value={formData.email} required />
+
                 Password:
                 <input type="password" name="password" onChange={handleChange} value={formData.password} required />
+
                 Confirm Password:
                 <input type="password" name="confirmPassword" onChange={handleChange} value={formData.confirmPassword} required />
                 <div className="actions">
+
                     <button type="submit" disabled={!isFormValid()}>Sign Up</button>
                     <button>Cancel</button>
+
+                    Role:
+                    <select
+                        name='role'
+                        value={formData.role}
+                        onChange={handleChange}
+                        required
+                    >
+                        <option value=''>Select a Role</option>
+
+                        <option value='client'>Client</option>
+
+                        <option value='freelancer'>Freelancer</option>
+
+                    </select>
                 </div>
             </form>
         </section>

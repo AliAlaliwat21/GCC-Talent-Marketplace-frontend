@@ -7,7 +7,7 @@ const SignInForm = (props) => {
     const navigate = useNavigate()
 
     const initialState = {
-        username: '',
+        email: '',
         password: '',
     }
     const [formData, setFormData] = useState(initialState)
@@ -38,8 +38,9 @@ const SignInForm = (props) => {
             </header>
 
             <form onSubmit={handleSubmit}>
-                Username:
-                <input type="text" name="username" value={formData.username} required onChange={handleChange} />
+                Email:
+                <input type="email" name="email" value={formData.email} required onChange={handleChange} />
+                
                 Password:
                 <input type="password" name="password" value={formData.password} required onChange={handleChange} />
                 <div className="actions">
