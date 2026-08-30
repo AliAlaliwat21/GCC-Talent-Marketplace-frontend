@@ -1,5 +1,6 @@
 import {useEffect, useState} from "react"
 import { index } from "../services/jobs"
+import { Link } from "react-router"
 
 const Jobs = ()=>{
 
@@ -39,6 +40,10 @@ const Jobs = ()=>{
                 <p> {job.experienceLevel}</p>
 
                 <p> Status: {job.status}</p>
+
+                <Link to={`/jobs/${job._id}`}  >
+                    View Job
+                </Link>
 
                 </div>
             ))}
