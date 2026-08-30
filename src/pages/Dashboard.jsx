@@ -1,36 +1,29 @@
-import { useEffect, useState } from "react"
-import { index } from '../services/user'
-
 const Dashboard = (props) => {
-
-    const [allUsers, setAllUsers] = useState([])
-
-    useEffect(() => {
-        const fetchUsers = async () => {
-            const usersData =  await index()
-            setAllUsers(usersData)
-        }
-        fetchUsers()
-        
-    }, [])
-
     return (
-        <section>
+        <section className="dashboard">
             <header>
-                <h1>Welcome {props.user.username}!</h1>
-                <h2>View All the Users</h2>
+                <h1>Welcome, {props.user.username}!</h1>
+                <p>You are signed in as a {props.user.role}</p>
             </header>
-            {allUsers.map((user) => (
-                <div className="card">
-                    <header>
-                        <h1>
-                        {user.username}
-                        </h1>
-                    </header>
+            
+            {props.user.role === "client" && (<div className="card"> 
+                <h2>Client Dashboard</h2>
+                <p>Post jobs, review proposals and manage contracts</p>
                 </div>
-            ))}
-        </section>
-    )
-}
-
-export default Dashboard
+            )}
+            {props.user.role === "freelancer" && (
+                <div className="card">
+                    <h2>Freelancer Dashboard</h2>
+                    <p>Find jobs, submit proposals and manage your work</p>
+                    </div>
+                )}
+                {props.user.role === "admin" && (
+                    <div className="card">
+                        <h2>Admin Dashboard</h2>
+                        <p>Manage users, categories and platform activity</p>
+                        </div>
+                    )}
+                    </section>
+                    )
+                }
+                export default Dashboard
