@@ -8,6 +8,7 @@ import Landing from "./pages/Landing"
 import Dashboard from "./pages/Dashboard"
 import Jobs from "./pages/Jobs"
 import JobDetails from "./pages/JobDetails"
+import MyJobs from "./pages/MyJobs"
 
 const getUserFromToken = () => {
   const token = localStorage.getItem('token')
@@ -36,6 +37,21 @@ const App = () => {
         <Route path='/jobs' element={<Jobs/>} />
 
         <Route path='/jobs/:jobId' element={<JobDetails/>} />
+
+          <Route
+            path='/jobs'
+            element={<Jobs />}
+          />
+
+          <Route
+            path='/jobs/:jobId'
+            element={<JobDetails />}
+          />
+
+            <Route
+            path='/client/jobs'
+            element={<MyJobs />}
+          />
         
       </Routes>
 
