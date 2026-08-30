@@ -88,17 +88,6 @@
     font-weight: bold;
 }
 
-.final-cta {
-    padding: 48px 24px;
-    text-align: center;
-    background-color: var(--color-surface);
-    border-radius: 20px;
-}
-
-.final-cta h2 {
-    margin-bottom: 24px;
-}
-
 @media (max-width: 600px) {
     .hero {
         min-height: 400px;

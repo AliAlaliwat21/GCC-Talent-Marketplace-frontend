@@ -46,12 +46,7 @@ const Landing = () => {
                                             </article>
                                             </div>
                                             </section>
-                                            
-                                            <section className="final-cta">
-                                                <h2>Ready to get started?</h2>
-                                                <Link className="primary-link" to="/sign-up"> Join GCC Talent </Link>
-                                                </section>
-                                                </div>
-                                                )
-                                            }
-                                            export default Landing
+                                            </div>
+                                            )
+                                        }
+                                        export default Landing
