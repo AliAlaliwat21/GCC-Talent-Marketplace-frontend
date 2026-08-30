@@ -16,6 +16,10 @@ const FreelancerProfile = () => {
     const [formData, setFormData] = useState(initialState)
     const [availableSkills, setAvailableSkills] = useState([])
     const [message, setMessage] = useState("")
+    const [language, setLanguage] = useState({
+        name: "",
+        level: ""
+    })
     
     const handleChange = (event) => {
         setFormData({...formData, [event.target.name]: event.target.value})
@@ -41,6 +45,26 @@ const FreelancerProfile = () => {
             (option) => option.value
         )
         setFormData({...formData, skills: selectedSkills})
+    }
+
+    const handleLanguageChange = (event) => {
+        setLanguage({...language, [event.target.name]: event.target.value})
+    }
+
+    const addLanguage = () => {
+        if (!language.name || !language.level) {
+            return
+        }
+
+        setFormData({
+            ...formData,
+            languages: [...formData.languages, language]
+        })
+
+        setLanguage({
+            name: "",
+            level: ""
+        })
     }
     
     return (
@@ -107,6 +131,35 @@ const FreelancerProfile = () => {
                             </option>
                         ))}
                         </select>
+
+                    <label htmlFor="languageName">Language</label>
+                    <input
+                    id="languageName"
+                    name="name"
+                    type="text"
+                    value={language.name}
+                    onChange={handleLanguageChange}/>
+
+                    <label htmlFor="languageLevel">Language Level</label>
+                    <select
+                    id="languageLevel"
+                    name="level"
+                    value={language.level}
+                    onChange={handleLanguageChange}>
+                        <option value="">Select level</option>
+                        <option value="beginner">Beginner</option>
+                        <option value="intermediate">Intermediate</option>
+                        <option value="advanced">Advanced</option>
+                        <option value="native">Native</option>
+                        </select>
+
+                    <button type="button" onClick={addLanguage}>Add Language</button>
+
+                    {formData.languages.map((item, index) => (
+                        <p key={`${item.name}-${index}`}>
+                            {item.name} - {item.level}
+                        </p>
+                    ))}
                     
                     <label htmlFor="country">Country</label>
                     <input
