@@ -15,6 +15,7 @@ import MyProposals from "./pages/MyProposals"
 import JobProposals from "./pages/JobProposals"
 import ClientProfile from "./pages/ClientProfile"
 
+
 const getUserFromToken = () => {
   const token = localStorage.getItem('token')
 
@@ -23,56 +24,86 @@ const getUserFromToken = () => {
   return JSON.parse(atob(token.split('.')[1])).payload
 }
 
+
 const App = () => {
 
   const [user, setUser] = useState(getUserFromToken())
-  
+
   return (
-  <div>
-    <Nav user={user} setUser={setUser} />
-    <main className="app-main">
+    <div>
 
-      <Routes>
-        <Route path='/' element={user ? <Dashboard user={user} /> : <Landing />} />
+      <Nav
+        user={user}
+        setUser={setUser}
+      />
 
-        <Route path='/sign-up' element={<SignUpForm setUser={setUser} />} />
+      <main className="app-main">
 
-        <Route path='/sign-in' element={<SignInForm setUser={setUser} />} />
-
-        <Route path='/jobs' element={<Jobs/>} />
+        <Routes>
 
           <Route
-            path='/jobs/:jobId'
+            path="/"
+            element={
+              user
+                ? <Dashboard user={user} />
+                : <Landing />
+            }
+          />
+
+          <Route
+            path="/sign-up"
+            element={<SignUpForm setUser={setUser} />}
+          />
+
+          <Route
+            path="/sign-in"
+            element={<SignInForm setUser={setUser} />}
+          />
+
+          <Route
+            path="/jobs"
+            element={<Jobs />}
+          />
+
+          <Route
+            path="/jobs/:jobId"
             element={<JobDetails user={user} />}
           />
 
-            <Route
-            path='/client/jobs'
+          <Route
+            path="/client/jobs"
             element={<MyJobs />}
           />
 
           <Route
-          path="/freelancer/profile"
-          element={<FreelancerProfile user={user} />}
+            path="/client/jobs/:jobId/proposals"
+            element={<JobProposals />}
           />
 
           <Route
-          path="/freelancers/:userId"
-          element={<PublicFreelancerProfile />}
+            path="/freelancer/profile"
+            element={<FreelancerProfile user={user} />}
           />
 
-        <Route path='/proposals/mine' element={<MyProposals/>} />
+          <Route
+            path="/freelancers/:userId"
+            element={<PublicFreelancerProfile />}
+          />
 
-        <Route path='/clients/jobs/:jobId/proposals' element={<JobProposals/>} />
-      </Routes>
+          <Route
+            path="/proposals/mine"
+            element={<MyProposals />}
+          />
+
+          <Route
+            path="/client/profile"
+            element={<ClientProfile />}
+          />
+
         </Routes>
 
-        <Route
-       path="/client/profile"
-       element={<ClientProfile />}
-/>
-
       </main>
+
     </div>
   )
 }
