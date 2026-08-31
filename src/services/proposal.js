@@ -43,7 +43,108 @@ const mine = async ()=>{
     }
 }
 
+const getJobProposals = async(jobId)=>{
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}/proposals`,{
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        const data = await res.json()
+
+        if (!res.ok){
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+const shortlist = async(proposalId)=>{
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/shortlist`,{
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        const data = await res.json()
+
+        if (!res.ok){
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+    } catch (error) {
+        
+    }
+}
+
+
+const decline = async (proposalId) => {
+    try {
+        const res = await fetch(
+            `${BASE_URL}/api/v1/proposals/${proposalId}/decline`,
+            {
+                method: 'POST',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                }
+            }
+        )
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+const accept = async (proposalId) => {
+    try {
+        const res = await fetch(
+            `${BASE_URL}/api/v1/proposals/${proposalId}/accept`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                body: JSON.stringify({
+                    milestones: milestone
+                })
+                }
+            }
+        )
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
 export {
     create,
-    mine
+    mine,
+    getJobProposals,
+    shortlist,
+    decline,
+    accept
 }
