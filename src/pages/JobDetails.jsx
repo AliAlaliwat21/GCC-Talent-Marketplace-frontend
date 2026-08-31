@@ -57,10 +57,14 @@ const JobDetails = (props)=>{
                 <p>
                     Duration: {job.duration}
                 </p>
-
+                
                 <p>
                     Status: {job.status}
                 </p>
+                
+                <p>
+                    Proposals: {job.proposalsCount}
+                    </p>
             </div>
 
             <div className="card">
@@ -77,6 +81,10 @@ const JobDetails = (props)=>{
                 <p>
                     Rating: {job.client?.ratingAvg}
                 </p>
+                
+                <p>
+                    Verified: {job.client?.isVerified ? "Yes" : "No"}
+                    </p>
 
                 <p>
                     Location: {job.client?.city}
@@ -89,7 +97,7 @@ const JobDetails = (props)=>{
 
             <section>
                 <h2>Similar Jobs</h2>
-
+                
                 {similarJobs.map((similarJob) => (
                     <div className="card" key={similarJob._id}>
                         <h3>{similarJob.title}</h3>
