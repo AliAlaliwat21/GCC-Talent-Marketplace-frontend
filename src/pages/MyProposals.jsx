@@ -1,25 +1,112 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
-import { mine } from "../services/proposal"
+import { mine, withdraw, update } from "../services/proposal"
 
 const MyProposals = ()=>{
 
     const [proposals, setProposals] = useState([])
     const [message, setMessage] = useState('')
 
-    useEffect(()=>{
-        const fetchProposals = async ()=>{
-            try {
+    const [editingId, setEditingId] = useState(null)
 
-                const data = await mine()
-                setProposals(data.proposals)
+    const [editData, setEditData] = useState({
+        coverLetter: '',
+        amount: '',
+        deliveryDays: ''
+    })
 
-            } catch (error) {
-                setMessage(error.message)
-            }
+    const fetchProposals = async () => {
+        try {
+            const data = await mine()
+
+            setProposals(data.proposals)
+
+        } catch (error) {
+            setMessage(error.message)
         }
+    }
+
+    useEffect(() => {
         fetchProposals()
     }, [])
+
+     const handleEditClick = (proposal) => {
+
+        setEditingId(proposal._id)
+
+        setEditData({
+            coverLetter: proposal.coverLetter,
+            amount: proposal.amount,
+            deliveryDays: proposal.deliveryDays
+        })
+    }
+
+
+    const handleChange = (event) => {
+
+        setEditData({
+            ...editData,
+            [event.target.name]: event.target.value
+        })
+    }
+
+
+    const handleUpdate = async (event, proposalId) => {
+
+        event.preventDefault()
+
+        try {
+
+            const dataToSend = {
+                coverLetter: editData.coverLetter,
+                amount: Number(editData.amount),
+                deliveryDays: Number(editData.deliveryDays)
+            }
+
+            await update(proposalId, dataToSend)
+
+            setMessage('Proposal updated successfully.')
+
+            setEditingId(null)
+
+            fetchProposals()
+
+        } catch (error) {
+
+            setMessage(error.message)
+
+        }
+    }
+
+
+    const handleWithdraw = async (proposalId) => {
+
+        try {
+
+            await withdraw(proposalId)
+
+            setMessage('Proposal withdrawn successfully.')
+
+            fetchProposals()
+
+        } catch (error) {
+
+            setMessage(error.message)
+
+        }
+    }
+
+
+    const handleCancelEdit = () => {
+
+        setEditingId(null)
+
+        setEditData({
+            coverLetter: '',
+            amount: '',
+            deliveryDays: ''
+        })
+    }
 
     return (
         <section>
