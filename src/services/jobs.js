@@ -1,6 +1,5 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/v1/jobs`
 
-
 const index = async () => {
     const res = await fetch(BASE_URL)
 
@@ -12,7 +11,6 @@ const index = async () => {
 
     return data
 }
-
 
 const show = async (jobId) => {
     const token = localStorage.getItem('token')
@@ -96,7 +94,7 @@ const reopenJob = async (jobId) => {
 }
 
 
-const deleteDraft = async (jobId) => {
+const deleteDraft = async function (jobId) {
     const token = localStorage.getItem('token')
 
     const res = await fetch(`${BASE_URL}/${jobId}`, {
@@ -106,13 +104,13 @@ const deleteDraft = async (jobId) => {
         }
     })
 
-    const data = await res.json()
-
     if (!res.ok) {
+        const data = await res.json()
+
         throw new Error(data.message || 'Failed to delete draft')
     }
 
-    return data
+    return true
 }
 
 const create = async(formData)=>{
