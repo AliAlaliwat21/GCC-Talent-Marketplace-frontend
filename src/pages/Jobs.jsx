@@ -9,6 +9,7 @@ const Jobs = function () {
     const [jobs, setJobs] = useState([])
     const [categories, setCategories] = useState([])
     const [skills, setSkills] = useState([])
+    const [pagination, setPagination] = useState({})
     const [message, setMessage] = useState('')
     const [filters, setFilters] = useState({
         search: "",
@@ -19,7 +20,9 @@ const Jobs = function () {
         budgetType: "",
         experienceLevel: "",
         daysAgo: "",
-        sort: "newest"
+        sort: "newest",
+        page: 1,
+        limit: 10
     })
 
     const fetchJobs = async function (selectedFilters) {
@@ -29,6 +32,7 @@ const Jobs = function () {
             const data = await index(selectedFilters)
 
             setJobs(data.jobs)
+            setPagination(data.pagination || {})
         } catch (err) {
             setMessage(err.message)
         }
@@ -66,16 +70,17 @@ const Jobs = function () {
             }
         )
 
-        setFilters({
-            ...filters,
-            skills: selectedSkills
+        setFilters({...filters, skills: selectedSkills
         })
     }
 
     const handleSubmit = function (event) {
         event.preventDefault()
 
-        fetchJobs(filters)
+        const searchFilters = {...filters, page: 1}
+
+        setFilters(searchFilters)
+        fetchJobs(searchFilters)
     }
 
     const handleReset = function () {
@@ -88,12 +93,24 @@ const Jobs = function () {
             budgetType: "",
             experienceLevel: "",
             daysAgo: "",
-            sort: "newest"
+            sort: "newest",
+            page: 1,
+            limit: 10
         }
 
         setFilters(emptyFilters)
         fetchJobs(emptyFilters)
     }
+
+    const handlePageChange = function (page) {
+        const pageFilters = {...filters, page: page}
+
+        setFilters(pageFilters)
+        fetchJobs(pageFilters)
+    }
+
+    const currentPage = pagination.page || 1
+    const totalPages = pagination.totalPages || pagination.pages || 1
 
     return (
         <section>
@@ -125,11 +142,11 @@ const Jobs = function () {
                     {categories.map(function (category) {
                         return (
                             <option
-                                value={category._id}
-                                key={category._id}
+                            value={category._id}
+                            key={category._id}
                             >
                                 {category.name}
-                            </option>
+                                </option>
                         )
                     })}
                 </select>
@@ -145,11 +162,11 @@ const Jobs = function () {
                     {skills.map(function (skill) {
                         return (
                             <option
-                                value={skill._id}
-                                key={skill._id}
+                            value={skill._id}
+                            key={skill._id}
                             >
                                 {skill.name}
-                            </option>
+                                </option>
                         )
                     })}
                 </select>
@@ -250,6 +267,31 @@ const Jobs = function () {
                     )
                 })
             )}
+
+            <div>
+                <button
+                    type="button"
+                    disabled={currentPage <= 1}
+                    onClick={function () {
+                        handlePageChange(currentPage - 1)
+                    }}
+                >
+                    Previous
+                </button>
+
+                <p>Page {currentPage} of {totalPages}</p>
+
+                <button
+                    type="button"
+                    disabled={currentPage >= totalPages}
+                    onClick={function () {
+                        handlePageChange(currentPage + 1)
+                    }}
+                >
+                    Next
+                </button>
+            </div>
+
         </section>
     )
 }
