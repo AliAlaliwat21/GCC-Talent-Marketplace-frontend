@@ -11,6 +11,11 @@ const Dashboard = (props) => {
             {props.user.role === "client" && (<div className="card">
                 <h2>Client Dashboard</h2>
                 <p>Post jobs, review proposals and manage contracts</p>
+                                    <Link to="/client/profile">Create or Edit Profile</Link>
+                    <br/>
+                    <Link to="/client/jobs">My Jobs</Link>
+                    <br/>
+                    <Link to="/client/jobs/new">Post New Job</Link>
                 </div>
             )}
             {props.user.role === "freelancer" && (
