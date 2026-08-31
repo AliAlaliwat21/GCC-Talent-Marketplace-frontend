@@ -12,6 +12,7 @@ import MyJobs from "./pages/MyJobs"
 import FreelancerProfile from "./pages/FreelancerProfile"
 import PublicFreelancerProfile from "./pages/PublicFreelancerProfile"
 import MyProposals from "./pages/MyProposals"
+import JobProposals from "./pages/JobProposals"
 import ClientProfile from "./pages/ClientProfile"
 
 const getUserFromToken = () => {
@@ -61,6 +62,9 @@ const App = () => {
           />
 
         <Route path='/proposals/mine' element={<MyProposals/>} />
+
+        <Route path='/clients/jobs/:jobId/proposals' element={<JobProposals/>} />
+      </Routes>
         </Routes>
 
         <Route
