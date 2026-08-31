@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 import { index as skillsIndex } from "../services/skills"
 import { show, upsertMe } from "../services/freelancerProfiles"
 
-const FreelancerProfile = (props) => {
+const FreelancerProfile = function (props) {
     const initialState = {
         headline: "",
         bio: "",
@@ -21,13 +21,11 @@ const FreelancerProfile = (props) => {
         name: "",
         level: ""
     })
-    
-    const handleChange = (event) => {
+    const handleChange = function (event) {
         setFormData({...formData, [event.target.name]: event.target.value})
     }
-    
-    useEffect(() => {
-        const fetchSkills = async () => {
+    useEffect(function () {
+        const fetchSkills = async function () {
             try {
                 const data = await skillsIndex()
                 
@@ -36,15 +34,14 @@ const FreelancerProfile = (props) => {
                 setMessage(error.message)
             }
         }
-        
         fetchSkills()
     }, [])
-
-    useEffect(() => {
-        const fetchProfile = async () => {
+    
+    useEffect(function () {
+        const fetchProfile = async function () {
             try {
                 const data = await show(props.user._id)
-
+                
                 setFormData({
                     headline: data.profile.headline,
                     bio: data.profile.bio,
@@ -52,7 +49,9 @@ const FreelancerProfile = (props) => {
                     availability: data.profile.availability,
                     country: data.user.country || "",
                     city: data.user.city || "",
-                    skills: data.profile.skills.map((skill) => skill._id),
+                    skills: data.profile.skills.map(function (skill) {
+                        return skill._id
+                    }),
                     languages: data.profile.languages
                 })
             } catch (error) {
@@ -61,58 +60,47 @@ const FreelancerProfile = (props) => {
                 }
             }
         }
-
+        
         if (props.user) {
             fetchProfile()
         }
     }, [props.user])
     
-    const handleSkillsChange = (event) => {
+    const handleSkillsChange = function (event) {
         const selectedSkills = Array.from(
             event.target.selectedOptions,
-            (option) => option.value
+            function (option) {
+                return option.value
+            }
         )
         setFormData({...formData, skills: selectedSkills})
     }
-
-    const handleLanguageChange = (event) => {
+    
+    const handleLanguageChange = function (event) {
         setLanguage({...language, [event.target.name]: event.target.value})
     }
-
-    const addLanguage = () => {
+    
+    const addLanguage = function () {
         if (!language.name || !language.level) {
             return
         }
-
-        setFormData({
-            ...formData,
-            languages: [...formData.languages, language]
-        })
-
-        setLanguage({
-            name: "",
-            level: ""
-        })
+        
+        setFormData({...formData, languages: [...formData.languages, language]})
+        setLanguage({name: "", level: ""})
     }
-
-    const handleSubmit = async (event) => {
+    const handleSubmit = async function (event) {
         event.preventDefault()
         setMessage("")
-
+        
         if (formData.languages.length === 0) {
             setMessage("Please add at least one language")
             return
         }
-
         try {
-            const profileData = {
-                ...formData,
-                hourlyRate: Number(formData.hourlyRate)
-            }
-
+            const profileData = {...formData, hourlyRate: Number(formData.hourlyRate)}
             await upsertMe(profileData)
-
             setMessage("Profile saved successfully")
+        
         } catch (error) {
             setMessage(error.message)
         }
@@ -124,7 +112,6 @@ const FreelancerProfile = (props) => {
             <h1>Freelancer Profile</h1>
             <p>Tell clients about your skills and experience</p>
             </header>
-
             <p>{message}</p>
             
             <form onSubmit={handleSubmit}>
@@ -176,9 +163,9 @@ const FreelancerProfile = (props) => {
                     value={formData.skills}
                     onChange={handleSkillsChange}
                     required>
-                        {availableSkills.map((skill) => (
-                            <option key={skill._id} value={skill._id}> {skill.name}</option>
-                            ))}
+                        {availableSkills.map(function (skill) {
+                            return <option key={skill._id} value={skill._id}> {skill.name}</option>
+                            })}
                             </select>
 
                     <label htmlFor="languageName">Language</label>
@@ -204,11 +191,13 @@ const FreelancerProfile = (props) => {
 
                     <button type="button" onClick={addLanguage}>Add Language</button>
 
-                    {formData.languages.map((item, index) => (
+                    {formData.languages.map(function (item, index) {
+                        return (
                         <p key={`${item.name}-${index}`}>
                             {item.name} - {item.level}
                         </p>
-                    ))}
+                        )
+                    })}
                     
                     <label htmlFor="country">Country</label>
                     <input
