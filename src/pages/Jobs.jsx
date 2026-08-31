@@ -47,9 +47,9 @@ const Jobs = function () {
         try {
             const categoriesData = await categoriesIndex()
             const skillsData = await skillsIndex()
-
-            setCategories(categoriesData.categories)
-            setSkills(skillsData.skills)
+            
+            setCategories(categoriesData)
+            setSkills(skillsData)
         } catch (err) {
             setMessage(err.message)
         }
