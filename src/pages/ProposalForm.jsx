@@ -70,7 +70,7 @@ const ProposalForm = (props)=>{
                 <input type="number" name="deliveryDays" onChange={handleChange} value={proposalData.deliveryDays} required />
 
 
-                    <button type="submit" disabled={!isFormValid()}>Submit Porposal</button>
+                    <button type="submit" disabled={!isFormValid()}>Submit Proposal</button>
 
                     <button type='button' onClick={handleCancel} >Cancel</button>
 

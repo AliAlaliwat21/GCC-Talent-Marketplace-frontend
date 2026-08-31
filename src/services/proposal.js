@@ -4,7 +4,9 @@ const create = async (jobId, proposalData)=>{
     try {
         const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}/proposals`, {
             method: 'POST',
-            headers: { 'ContentType': 'application/json', Authorization: `Bearer ${localStorage.getItem('token')}` },
+            headers: { 
+                'Content-Type': 'application/json', 
+                Authorization: `Bearer ${localStorage.getItem('token')}` },
             body: JSON.stringify(proposalData)
         })
 
