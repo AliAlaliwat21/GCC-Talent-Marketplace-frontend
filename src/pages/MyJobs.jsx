@@ -6,6 +6,7 @@ const MyJobs = function () {
 
     const [jobs, setJobs] = useState([])
     const [selectedStatus, setSelectedStatus] = useState('all')
+    const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
     
     useEffect(function () {
@@ -16,6 +17,8 @@ const MyJobs = function () {
             
             } catch (error) {
                 setMessage(error.message)
+            } finally {
+                setLoading(false)
             }
         }
         fetchMyJobs()
@@ -111,7 +114,9 @@ const MyJobs = function () {
                                         }}>Closed</button>
                                         </div>
                                         
-                                        {filteredJobs.length === 0 ? (
+                                        {loading ? (
+                                            <p>Loading...</p>
+                                        ) : filteredJobs.length === 0 ? (
                                             <p>No jobs found</p>
                                         ) : (
                                             
