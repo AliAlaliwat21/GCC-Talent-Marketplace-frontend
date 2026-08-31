@@ -1,7 +1,23 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/v1/jobs`
 
-const index = async () => {
-    const res = await fetch(BASE_URL)
+const index = async function (filters = {}) {
+    const params = new URLSearchParams()
+
+    for (const key in filters) {
+        if (
+            filters[key] !== "" &&
+            filters[key] !== undefined &&
+            filters[key] !== null
+        ) {
+            params.append(key, filters[key])
+        }
+    }
+
+    const query = params.toString()
+
+    const res = await fetch(
+        query ? `${BASE_URL}?${query}` : BASE_URL
+    )
 
     const data = await res.json()
 
