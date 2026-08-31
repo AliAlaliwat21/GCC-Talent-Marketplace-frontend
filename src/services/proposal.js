@@ -140,11 +140,56 @@ const accept = async (proposalId) => {
     }
 }
 
+const update = async (proposalId, proposalData)=>{
+
+    try {
+        const res = fetch(`${BASE_URL}/api/v1/proposals/${proposalId}`,{
+            method: 'PATCH',
+            headers: { 
+                'Content-Type': 'application/json', 
+                Authorization: `Bearer ${localStorage.getItem('token')}` },
+            body: JSON.stringify(proposalData)
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
+const withdraw = async(proposalId)=>{
+    try {
+        const res = fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/withdraw`,{
+            method: 'POST',
+            headers: { 
+                Authorization: `Bearer ${localStorage.getItem('token')}` },
+        })
+
+        const data = await res.json()
+
+        if (!res.ok) {
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+    } catch (error) {
+        
+    }
+}
+
 export {
     create,
     mine,
     getJobProposals,
     shortlist,
     decline,
-    accept
+    accept,
+    update,
+    withdraw
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { showMe, upsertMe } from "../services/clientProfile"
+import { showMe, upsertMe } from "../services/clientProfiles"
 
 
 const ClientProfile = () => {
