@@ -37,16 +37,9 @@ const App = () => {
 
         <Route path='/jobs' element={<Jobs/>} />
 
-        <Route path='/jobs/:jobId' element={<JobDetails/>} />
-
-          <Route
-            path='/jobs'
-            element={<Jobs />}
-          />
-
           <Route
             path='/jobs/:jobId'
-            element={<JobDetails />}
+            element={<JobDetails user={user} />}
           />
 
             <Route

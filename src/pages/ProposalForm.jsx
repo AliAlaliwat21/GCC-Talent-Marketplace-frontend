@@ -1,6 +1,7 @@
 import { useState } from "react"
+import { create } from "../services/proposal"
 
-const ProposalForm = ()=>{
+const ProposalForm = (props)=>{
 
     const initPropState = {
         coverLetter: '',
@@ -9,13 +10,33 @@ const ProposalForm = ()=>{
     }
 
     const [proposalData, setProposalData] = useState(initPropState)
+    const [message, setMessage] = useState('')
 
     const handleChange = (event)=>{
+        setMessage('')
         setProposalData({...proposalData, [event.target.name]: event.target.value})
     }
 
-    const handleSubmit = ()=>{
+    const handleSubmit = async (event)=>{
         event.preventDefault()
+        try {
+            const dataToSend = {
+                coverLetter: proposalData.coverLetter,
+                amount: Number(proposalData.amount),
+                deliveryDays: Number(proposalData.deliveryDays)
+            }
+
+            await create(props.jobId, dataToSend)
+            setMessage('Proposal submitted successfully')
+            setProposalData(initPropState)
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleCancel = ()=>{
+        setProposalData(initPropState)
+        setMessage('')
     }
 
     const isFormValid = () => {
@@ -29,7 +50,8 @@ const ProposalForm = ()=>{
     return (
         <section className="card">
             <header>
-                <h1>Propose</h1>
+                <h1>Submit a Propose</h1>
+                <p>{message}</p>
             </header>
             <form onSubmit={handleSubmit}>
 
@@ -48,11 +70,14 @@ const ProposalForm = ()=>{
                 <input type="number" name="deliveryDays" onChange={handleChange} value={proposalData.deliveryDays} required />
 
 
-                    <button type="button" disabled={!isFormValid()}>Sign Up</button>
-                    <button>Cancel</button>
+                    <button type="submit" disabled={!isFormValid()}>Submit Porposal</button>
+
+                    <button type='button' onClick={handleCancel} >Cancel</button>
 
             </form>
         </section>
     )
 
 }
+
+export default ProposalForm

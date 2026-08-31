@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { show } from "../services/jobs"
+import ProposalForm from "./ProposalForm"
 
-const JobDetails = ()=>{
+const JobDetails = (props)=>{
     const {jobId} = useParams()
 
     const [job, setJob] = useState(null)
@@ -81,6 +82,10 @@ const JobDetails = ()=>{
                     Location: {job.client?.city}
                 </p>
             </div>
+
+            {props.user?.role === 'freelancer' &&(
+                <ProposalForm jobId={jobId} />
+            )}
 
             <section>
                 <h2>Similar Jobs</h2>
