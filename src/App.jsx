@@ -10,6 +10,7 @@ import Jobs from "./pages/Jobs"
 import JobDetails from "./pages/JobDetails"
 import MyJobs from "./pages/MyJobs"
 import FreelancerProfile from "./pages/FreelancerProfile"
+import PublicFreelancerProfile from "./pages/PublicFreelancerProfile"
 import MyProposals from "./pages/MyProposals"
 
 const getUserFromToken = () => {
@@ -25,9 +26,9 @@ const App = () => {
   const [user, setUser] = useState(getUserFromToken())
   
   return (
-    <div>
-      <Nav user={user} setUser={setUser} />
-      <main className="app-main">
+  <div>
+    <Nav user={user} setUser={setUser} />
+    <main className="app-main">
 
       <Routes>
         <Route path='/' element={user ? <Dashboard user={user} /> : <Landing />} />
@@ -47,13 +48,19 @@ const App = () => {
             path='/client/jobs'
             element={<MyJobs />}
           />
-          
+
           <Route
           path="/freelancer/profile"
           element={<FreelancerProfile user={user} />}
           />
+
+          <Route
+          path="/freelancers/:userId"
+          element={<PublicFreelancerProfile />}
+          />
+
         <Route path='/proposals/mine' element={<MyProposals/>} />
-      </Routes>
+        </Routes>
 
       </main>
     </div>
