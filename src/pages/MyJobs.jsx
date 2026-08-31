@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
-import { deleteDraft, myJobs } from '../services/jobs'
+import { closeJob, deleteDraft, myJobs, reopenJob } from '../services/jobs'
 
 const MyJobs = function () {
 
@@ -29,6 +29,42 @@ const MyJobs = function () {
             
             setJobs(jobs.filter(function (job) {
                 return job._id !== jobId
+            }))
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleCloseJob = async function (jobId) {
+        setMessage("")
+        
+        try {
+            await closeJob(jobId)
+            
+            setJobs(jobs.map(function (job) {
+                if (job._id === jobId) {
+                    return {...job, status: "closed"}
+                }
+
+                return job
+            }))
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleReopenJob = async function (jobId) {
+        setMessage("")
+        
+        try {
+            await reopenJob(jobId)
+            
+            setJobs(jobs.map(function (job) {
+                if (job._id === jobId) {
+                    return {...job, status: "open"}
+                }
+
+                return job
             }))
         } catch (error) {
             setMessage(error.message)
@@ -110,11 +146,15 @@ const MyJobs = function () {
                                                                 <Link to={`/client/jobs/${job._id}/edit`}>Edit</Link>
                                                                 <Link to={`/client/jobs/${job._id}/proposals`}>View Proposals</Link>
                                                                 
-                                                                <button>Close Job</button>
+                                                                <button onClick={function () {
+                                                                    handleCloseJob(job._id)
+                                                                    }}>Close Job</button>
                                                                 </>
                                                             )}
                                                             {job.status === "closed" && (
-                                                                <button>Reopen Job</button>
+                                                                <button onClick={function () {
+                                                                    handleReopenJob(job._id)
+                                                                    }}>Reopen Job</button>
                                                                 )}
                                                                 </div>
                                                                 )
