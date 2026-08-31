@@ -27,6 +27,8 @@ const EditJob = function () {
     const [categories, setCategories] = useState([])
     const [availableSkills, setAvailableSkills] = useState([])
     const [newAttachments, setNewAttachments] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [submitting, setSubmitting] = useState(false)
     const [message, setMessage] = useState("")
 
     useEffect(function () {
@@ -66,6 +68,8 @@ const EditJob = function () {
                 })
             } catch (error) {
                 setMessage(error.message)
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -100,6 +104,7 @@ const EditJob = function () {
     const handleSubmit = async function (event) {
         event.preventDefault()
         setMessage("")
+        setSubmitting(true)
 
         try {
             const uploadedAttachments = [...formData.attachments]
@@ -126,7 +131,13 @@ const EditJob = function () {
             navigate(`/jobs/${jobId}`)
         } catch (error) {
             setMessage(error.message)
+        } finally {
+            setSubmitting(false)
         }
+    }
+
+    if (loading) {
+        return <p>Loading...</p>
     }
 
     return (
@@ -260,7 +271,9 @@ const EditJob = function () {
                 accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
                 onChange={handleAttachmentsChange}/>
 
-                <button type="submit">Update Job</button>
+                <button type="submit" disabled={submitting}>
+                    {submitting ? "Updating..." : "Update Job"}
+                    </button>
                 </form>
                 </section>
                 )
