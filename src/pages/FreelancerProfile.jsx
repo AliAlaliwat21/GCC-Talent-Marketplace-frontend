@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { index as skillsIndex } from "../services/skills"
 import { createPortfolioItem, show, upsertMe } from "../services/freelancerProfiles"
+import { uploadFile } from "../services/uploads"
 
 const FreelancerProfile = function (props) {
     const initialState = {
@@ -25,10 +26,10 @@ const FreelancerProfile = function (props) {
     const [portfolioData, setPortfolioData] = useState({
         title: "",
         description: "",
-        imageUrl: "",
         link: ""
     })
     const [portfolioItems, setPortfolioItems] = useState([])
+    const [portfolioImage, setPortfolioImage] = useState(null)
 
     const handleChange = function (event) {
         setFormData({...formData, [event.target.name]: event.target.value})
@@ -109,6 +110,10 @@ const FreelancerProfile = function (props) {
         })
     }
 
+    const handlePortfolioImageChange = function (event) {
+        setPortfolioImage(event.target.files[0])
+    }
+
     const handlePortfolioSubmit = async function (event) {
         event.preventDefault()
         setMessage("")
@@ -127,8 +132,9 @@ const FreelancerProfile = function (props) {
                 portfolioItemData.description = portfolioData.description
             }
 
-            if (portfolioData.imageUrl) {
-                portfolioItemData.imageUrl = portfolioData.imageUrl
+            if (portfolioImage) {
+                const uploadedFile = await uploadFile(portfolioImage)
+                portfolioItemData.imageUrl = uploadedFile.url
             }
 
             if (portfolioData.link) {
@@ -144,9 +150,10 @@ const FreelancerProfile = function (props) {
             setPortfolioData({
                 title: "",
                 description: "",
-                imageUrl: "",
                 link: ""
             })
+            setPortfolioImage(null)
+            event.target.reset()
             setMessage("Portfolio item added successfully")
         } catch (error) {
             setMessage(error.message)
@@ -327,13 +334,12 @@ const FreelancerProfile = function (props) {
                         value={portfolioData.description}
                         onChange={handlePortfolioChange}/>
 
-                        <label htmlFor="portfolioImageUrl">Image URL</label>
+                        <label htmlFor="portfolioImage">Portfolio Image</label>
                         <input
-                        id="portfolioImageUrl"
-                        name="imageUrl"
-                        type="url"
-                        value={portfolioData.imageUrl}
-                        onChange={handlePortfolioChange}/>
+                        id="portfolioImage"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        onChange={handlePortfolioImageChange}/>
 
                         <label htmlFor="portfolioLink">Project Link</label>
                         <input
