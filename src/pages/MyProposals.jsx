@@ -116,11 +116,14 @@ const MyProposals = ()=>{
                 <p>{message}</p>
             </header>
 
+
             {proposals.length === 0 && (
                 <p>You have not submitted any proposals yet.</p>
             )}
 
+
             {proposals.map((proposal) => (
+
                 <div
                     className="card"
                     key={proposal._id}
@@ -130,29 +133,124 @@ const MyProposals = ()=>{
                         {proposal.job?.title}
                     </h2>
 
-                    <p>
-                        Amount: {proposal.amount}
-                    </p>
 
-                    <p>
-                        Delivery Days: {proposal.deliveryDays}
-                    </p>
+                    {editingId === proposal._id ? (
 
-                    <p>
-                        Status: {proposal.status}
-                    </p>
+                        <form
+                            onSubmit={(event) =>
+                                handleUpdate(event, proposal._id)
+                            }
+                        >
 
-                    <p>
-                        Cover Letter: {proposal.coverLetter}
-                    </p>
+                            <h3>Edit Proposal</h3>
 
-                    {proposal.job && (
-                        <Link to={`/jobs/${proposal.job._id}`}>
-                            View Job
-                        </Link>
+
+                            <label>
+                                Cover Letter:
+                            </label>
+
+                            <textarea
+                                name="coverLetter"
+                                value={editData.coverLetter}
+                                onChange={handleChange}
+                                required
+                            />
+
+
+                            <label>
+                                Amount:
+                            </label>
+
+                            <input
+                                type="number"
+                                name="amount"
+                                value={editData.amount}
+                                onChange={handleChange}
+                                min="1"
+                                required
+                            />
+
+
+                            <label>
+                                Delivery Days:
+                            </label>
+
+                            <input
+                                type="number"
+                                name="deliveryDays"
+                                value={editData.deliveryDays}
+                                onChange={handleChange}
+                                min="1"
+                                required
+                            />
+
+
+                            <button type="submit">
+                                Save Changes
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={handleCancelEdit}
+                            >
+                                Cancel
+                            </button>
+
+                        </form>
+
+                    ) : (
+
+                        <>
+                            <p>
+                                Amount: {proposal.amount}
+                            </p>
+
+                            <p>
+                                Delivery Days: {proposal.deliveryDays}
+                            </p>
+
+                            <p>
+                                Status: {proposal.status}
+                            </p>
+
+                            <p>
+                                Cover Letter: {proposal.coverLetter}
+                            </p>
+
+
+                            {proposal.job && (
+                                <Link to={`/jobs/${proposal.job._id}`}>
+                                    View Job
+                                </Link>
+                            )}
+
+
+                            {proposal.status === "pending" && (
+                                <>
+                                    <button
+                                        onClick={() =>
+                                            handleEditClick(proposal)
+                                        }
+                                    >
+                                        Edit
+                                    </button>
+
+                                    <button
+                                        onClick={() =>
+                                            handleWithdraw(proposal._id)
+                                        }
+                                    >
+                                        Withdraw
+                                    </button>
+                                </>
+                            )}
+
+                        </>
+
                     )}
 
                 </div>
+
             ))}
 
         </section>
