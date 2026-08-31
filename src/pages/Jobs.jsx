@@ -10,6 +10,7 @@ const Jobs = function () {
     const [categories, setCategories] = useState([])
     const [skills, setSkills] = useState([])
     const [pagination, setPagination] = useState({})
+    const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState('')
     const [filters, setFilters] = useState({
         search: "",
@@ -26,6 +27,8 @@ const Jobs = function () {
     })
 
     const fetchJobs = async function (selectedFilters) {
+        setLoading(true)
+
         try {
             setMessage("")
 
@@ -35,6 +38,8 @@ const Jobs = function () {
             setPagination(data.pagination || {})
         } catch (err) {
             setMessage(err.message)
+        } finally {
+            setLoading(false)
         }
     }
 
@@ -247,7 +252,9 @@ const Jobs = function () {
                 </button>
 
             </form>
-            {jobs.length === 0 ? (
+            {loading ? (
+                <p>Loading...</p>
+            ) : jobs.length === 0 ? (
                 <p>No jobs found</p>
             ) : (
                 jobs.map(function (job) {
