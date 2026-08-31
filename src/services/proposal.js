@@ -22,6 +22,28 @@ const create = async (jobId, proposalData)=>{
     }
 }
 
+const mine = async ()=>{
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/proposals/mine`,{
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            }
+        })
+
+        const data = await res.json()
+
+        if (!res.ok){
+            throw new Error(data.error || data.message)
+        }
+
+        return data
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
 export {
-    create
+    create,
+    mine
 }
