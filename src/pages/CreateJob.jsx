@@ -26,6 +26,8 @@ const CreateJob = function () {
     const [categories, setCategories] = useState([])
     const [availableSkills, setAvailableSkills] = useState([])
     const [attachments, setAttachments] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [submitting, setSubmitting] = useState(false)
     const [message, setMessage] = useState("")
 
     useEffect(function () {
@@ -38,6 +40,8 @@ const CreateJob = function () {
                 setAvailableSkills(skillData)
             } catch (error) {
                 setMessage(error.message)
+            } finally {
+                setLoading(false)
             }
         }
 
@@ -66,6 +70,7 @@ const CreateJob = function () {
     const handleSubmit = async function (event) {
         event.preventDefault()
         setMessage("")
+        setSubmitting(true)
 
         try {
             const uploadedAttachments = []
@@ -91,7 +96,13 @@ const CreateJob = function () {
             navigate(`/jobs/${createdJob._id}`)
         } catch (error) {
             setMessage(error.message)
+        } finally {
+            setSubmitting(false)
         }
+    }
+
+    if (loading) {
+        return <p>Loading...</p>
     }
 
     return (
@@ -235,7 +246,9 @@ const CreateJob = function () {
                     <option value="open">Publish Job</option>
                     </select>
 
-                <button type="submit">Save Job</button>
+                <button type="submit" disabled={submitting}>
+                    {submitting ? "Saving..." : "Save Job"}
+                    </button>
                 </form>
                 </section>
                 )
