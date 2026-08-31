@@ -17,8 +17,10 @@ const Dashboard = (props) => {
                 <div className="card">
                     <h2>Freelancer Dashboard</h2>
                     <p>Find jobs, submit proposals and manage your work</p>
-                    <Link to="/freelancer/profile">Create or Edit Profile</Link> 
-                    </div> 
+                    <Link to="/freelancer/profile">Create or Edit Profile</Link>
+                    <br/>
+                    <Link to={`/freelancers/${props.user._id}`}>View Public Profile</Link>
+                    </div>
                 )}
                 {props.user.role === "admin" && (
                     <div className="card">
