@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react"
 import { index as skillsIndex } from "../services/skills"
-import { show, upsertMe } from "../services/freelancerProfiles"
+import { createPortfolioItem, show, upsertMe } from "../services/freelancerProfiles"
 
-const FreelancerProfile = (props) => {
+const FreelancerProfile = function (props) {
     const initialState = {
         headline: "",
         bio: "",
@@ -21,13 +21,21 @@ const FreelancerProfile = (props) => {
         name: "",
         level: ""
     })
-    
-    const handleChange = (event) => {
+    const [profileId, setProfileId] = useState("")
+    const [portfolioData, setPortfolioData] = useState({
+        title: "",
+        description: "",
+        imageUrl: "",
+        link: ""
+    })
+    const [portfolioItems, setPortfolioItems] = useState([])
+
+    const handleChange = function (event) {
         setFormData({...formData, [event.target.name]: event.target.value})
     }
-    
-    useEffect(() => {
-        const fetchSkills = async () => {
+
+    useEffect(function () {
+        const fetchSkills = async function () {
             try {
                 const data = await skillsIndex()
                 
@@ -36,15 +44,17 @@ const FreelancerProfile = (props) => {
                 setMessage(error.message)
             }
         }
-        
         fetchSkills()
     }, [])
-
-    useEffect(() => {
-        const fetchProfile = async () => {
+    
+    useEffect(function () {
+        const fetchProfile = async function () {
             try {
                 const data = await show(props.user._id)
 
+                setProfileId(data.profile._id)
+                setPortfolioItems(data.profile.portfolio || [])
+                
                 setFormData({
                     headline: data.profile.headline,
                     bio: data.profile.bio,
@@ -52,7 +62,9 @@ const FreelancerProfile = (props) => {
                     availability: data.profile.availability,
                     country: data.user.country || "",
                     city: data.user.city || "",
-                    skills: data.profile.skills.map((skill) => skill._id),
+                    skills: data.profile.skills.map(function (skill) {
+                        return skill._id
+                    }),
                     languages: data.profile.languages
                 })
             } catch (error) {
@@ -61,58 +73,103 @@ const FreelancerProfile = (props) => {
                 }
             }
         }
-
+        
         if (props.user) {
             fetchProfile()
         }
     }, [props.user])
     
-    const handleSkillsChange = (event) => {
+    const handleSkillsChange = function (event) {
         const selectedSkills = Array.from(
             event.target.selectedOptions,
-            (option) => option.value
+            function (option) {
+                return option.value
+            }
         )
         setFormData({...formData, skills: selectedSkills})
     }
-
-    const handleLanguageChange = (event) => {
+    
+    const handleLanguageChange = function (event) {
         setLanguage({...language, [event.target.name]: event.target.value})
     }
-
-    const addLanguage = () => {
+    
+    const addLanguage = function () {
         if (!language.name || !language.level) {
             return
         }
+        
+        setFormData({...formData, languages: [...formData.languages, language]})
+        setLanguage({name: "", level: ""})
+    }
 
-        setFormData({
-            ...formData,
-            languages: [...formData.languages, language]
-        })
-
-        setLanguage({
-            name: "",
-            level: ""
+    const handlePortfolioChange = function (event) {
+        setPortfolioData({
+            ...portfolioData,
+            [event.target.name]: event.target.value
         })
     }
 
-    const handleSubmit = async (event) => {
+    const handlePortfolioSubmit = async function (event) {
         event.preventDefault()
         setMessage("")
 
+        if (!profileId) {
+            setMessage("Save your profile before adding a portfolio item")
+            return
+        }
+
+        try {
+            const portfolioItemData = {
+                title: portfolioData.title
+            }
+
+            if (portfolioData.description) {
+                portfolioItemData.description = portfolioData.description
+            }
+
+            if (portfolioData.imageUrl) {
+                portfolioItemData.imageUrl = portfolioData.imageUrl
+            }
+
+            if (portfolioData.link) {
+                portfolioItemData.link = portfolioData.link
+            }
+
+            const savedProfile = await createPortfolioItem(
+                profileId,
+                portfolioItemData
+            )
+
+            setPortfolioItems(savedProfile.portfolio)
+            setPortfolioData({
+                title: "",
+                description: "",
+                imageUrl: "",
+                link: ""
+            })
+            setMessage("Portfolio item added successfully")
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleSubmit = async function (event) {
+        event.preventDefault()
+        setMessage("")
+        
         if (formData.languages.length === 0) {
             setMessage("Please add at least one language")
             return
         }
 
         try {
-            const profileData = {
-                ...formData,
-                hourlyRate: Number(formData.hourlyRate)
-            }
+            const profileData = {...formData, hourlyRate: Number(formData.hourlyRate)}
+            const savedProfile = await upsertMe(profileData)
 
-            await upsertMe(profileData)
-
+            setProfileId(savedProfile._id)
+            setPortfolioItems(savedProfile.portfolio || [])
             setMessage("Profile saved successfully")
+        
         } catch (error) {
             setMessage(error.message)
         }
@@ -124,7 +181,6 @@ const FreelancerProfile = (props) => {
             <h1>Freelancer Profile</h1>
             <p>Tell clients about your skills and experience</p>
             </header>
-
             <p>{message}</p>
             
             <form onSubmit={handleSubmit}>
@@ -176,9 +232,9 @@ const FreelancerProfile = (props) => {
                     value={formData.skills}
                     onChange={handleSkillsChange}
                     required>
-                        {availableSkills.map((skill) => (
-                            <option key={skill._id} value={skill._id}> {skill.name}</option>
-                            ))}
+                        {availableSkills.map(function (skill) {
+                            return <option key={skill._id} value={skill._id}> {skill.name}</option>
+                            })}
                             </select>
 
                     <label htmlFor="languageName">Language</label>
@@ -204,11 +260,13 @@ const FreelancerProfile = (props) => {
 
                     <button type="button" onClick={addLanguage}>Add Language</button>
 
-                    {formData.languages.map((item, index) => (
+                    {formData.languages.map(function (item, index) {
+                        return (
                         <p key={`${item.name}-${index}`}>
                             {item.name} - {item.level}
                         </p>
-                    ))}
+                        )
+                    })}
                     
                     <label htmlFor="country">Country</label>
                     <input
@@ -230,6 +288,63 @@ const FreelancerProfile = (props) => {
 
                     <button type="submit">Save Profile</button>
                     </form>
+
+                    <h2>Portfolio</h2>
+
+                    {portfolioItems.map(function (item) {
+                        return (
+                        <article key={item._id}>
+                            <h3>{item.title}</h3>
+                            <p>{item.description}</p>
+
+                            {item.imageUrl && (
+                                <img src={item.imageUrl} alt={item.title}/>
+                            )}
+
+                            {item.link && (
+                                <a href={item.link} target="_blank" rel="noreferrer">
+                                    View Project
+                                </a>
+                            )}
+                        </article>
+                        )
+                    })}
+
+                    <form onSubmit={handlePortfolioSubmit}>
+                        <label htmlFor="portfolioTitle">Portfolio Title</label>
+                        <input
+                        id="portfolioTitle"
+                        name="title"
+                        type="text"
+                        value={portfolioData.title}
+                        onChange={handlePortfolioChange}
+                        required/>
+
+                        <label htmlFor="portfolioDescription">Description</label>
+                        <textarea
+                        id="portfolioDescription"
+                        name="description"
+                        value={portfolioData.description}
+                        onChange={handlePortfolioChange}/>
+
+                        <label htmlFor="portfolioImageUrl">Image URL</label>
+                        <input
+                        id="portfolioImageUrl"
+                        name="imageUrl"
+                        type="url"
+                        value={portfolioData.imageUrl}
+                        onChange={handlePortfolioChange}/>
+
+                        <label htmlFor="portfolioLink">Project Link</label>
+                        <input
+                        id="portfolioLink"
+                        name="link"
+                        type="url"
+                        value={portfolioData.link}
+                        onChange={handlePortfolioChange}/>
+
+                        <button type="submit">Add Portfolio Item</button>
+                        </form>
                     </section>
                     )
                 }

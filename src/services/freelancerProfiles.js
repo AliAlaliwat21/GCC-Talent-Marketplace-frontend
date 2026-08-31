@@ -31,7 +31,27 @@ const upsertMe = async (profileData) => {
     return data
 }
 
+const createPortfolioItem = async function (profileId, portfolioData) {
+    const token = localStorage.getItem("token")
+    
+    const res = await fetch(`${BASE_URL}/${profileId}/portfolio`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(portfolioData)
+    })
+    const data = await res.json()
+    
+    if (!res.ok) {
+        throw new Error(data.message || "Failed to add portfolio item")
+    }
+    return data
+}
+
 export {
     show,
-    upsertMe
+    upsertMe,
+    createPortfolioItem
 }
