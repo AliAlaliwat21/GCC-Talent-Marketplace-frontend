@@ -140,6 +140,27 @@ const create = async(formData)=>{
     return data
 }
 
+const update = async function (jobId, formData) {
+    const token = localStorage.getItem('token')
+
+    const res = await fetch(`${BASE_URL}/${jobId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.message || 'Failed to update job')
+    }
+
+    return data
+}
+
 export {
     index,
     show,
@@ -147,6 +168,6 @@ export {
     closeJob,
     reopenJob,
     deleteDraft,
-    create
-
+    create,
+    update
 }
