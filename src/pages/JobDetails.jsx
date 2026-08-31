@@ -3,7 +3,7 @@ import { useParams } from "react-router"
 import { show } from "../services/jobs"
 import ProposalForm from "./ProposalForm"
 
-const JobDetails = (props)=>{
+const JobDetails = function (props) {
     const {jobId} = useParams()
 
     const [job, setJob] = useState(null)
@@ -11,8 +11,8 @@ const JobDetails = (props)=>{
     const [similarJobs, setSimilarJobs] = useState([])
     const [message, setMessage] = useState('')
 
-    useEffect(()=>{
-        const fetchJob = async ()=>{
+    useEffect(function () {
+        const fetchJob = async function () {
             try {
                 const data = await show(jobId)
 
@@ -98,20 +98,21 @@ const JobDetails = (props)=>{
             <section>
                 <h2>Similar Jobs</h2>
                 
-                {similarJobs.map((similarJob) => (
-                    <div className="card" key={similarJob._id}>
-                        <h3>{similarJob.title}</h3>
-
-                        <p>{similarJob.description}</p>
-
-                        <p>
-                            Budget: {similarJob.budgetMin} - {similarJob.budgetMax}
-                        </p>
-                    </div>
-                ))}
-            </section>
-        </section>
-    )
-}
-
-export default JobDetails
+                {similarJobs.length === 0 ? (
+                    <p>No similar jobs found</p>
+                ) : (
+                    similarJobs.map(function (similarJob) {
+                        return (
+                        <div className="card" key={similarJob._id}>
+                            <h3>{similarJob.title}</h3>
+                            <p>{similarJob.description}</p>
+                            <p>Budget: {similarJob.budgetMin} - {similarJob.budgetMax}</p>
+                            </div>
+                            )
+                        })
+                     )}
+                     </section>
+                     </section>
+                     )
+                    }
+                    export default JobDetails
