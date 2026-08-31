@@ -115,6 +115,28 @@ const deleteDraft = async (jobId) => {
     return data
 }
 
+const create = async(formData)=>{
+
+    const token = localStorage.getItem('token')
+
+    const res = await fetch(BASE_URL, {
+        method: 'POST',
+
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+
+        body: JSON.stringify(formData)
+    })
+
+    if(!res.ok) {
+        throw new Error(
+            data.message || 'Failed to create job'
+        )
+    }
+    return data
+}
 
 export {
     index,
@@ -122,5 +144,7 @@ export {
     myJobs,
     closeJob,
     reopenJob,
-    deleteDraft
+    deleteDraft,
+    create
+
 }
