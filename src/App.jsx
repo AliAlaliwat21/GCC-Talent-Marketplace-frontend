@@ -10,6 +10,7 @@ import Jobs from "./pages/Jobs"
 import JobDetails from "./pages/JobDetails"
 import MyJobs from "./pages/MyJobs"
 import FreelancerProfile from "./pages/FreelancerProfile"
+import PublicFreelancerProfile from "./pages/PublicFreelancerProfile"
 
 const getUserFromToken = () => {
   const token = localStorage.getItem('token')
@@ -51,7 +52,12 @@ const App = () => {
           path="/freelancer/profile"
           element={<FreelancerProfile user={user} />}
           />
-        
+          
+          <Route
+          path="/freelancers/:userId"
+          element={<PublicFreelancerProfile />}
+          />
+
       </Routes>
 
       </main>
