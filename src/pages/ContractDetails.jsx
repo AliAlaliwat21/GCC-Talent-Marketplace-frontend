@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { show, fundMilestone } from "../services/contracts"
+import { show, fundMilestone, deliverMilestone } from "../services/contracts"
 
 const ContractDetails = (props)=>{
 
@@ -10,6 +10,9 @@ const ContractDetails = (props)=>{
     const [moneySummary, setMoneySummary] = useState(null)
     const [timeline, setTimeline] = useState([])
     const [messages, setMessages] = useState([])
+
+    const [selectedDeliveryId, setSelectedDeliveryId] = useState(null)
+    const [deliveryMessage, setDeliveryMessage] = useState('')
 
     const [message, setMessage] = useState('')
 
@@ -31,6 +34,27 @@ const ContractDetails = (props)=>{
             await fundMilestone(contractId, milestoneId)
 
             setMessage('Milestone funded successfully')
+
+            await fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleDeliverMilestone = async(milestoneId)=>{
+        try {
+
+            const deliveryData = {
+                message: deliveryMessage
+            }
+
+            await deliverMilestone(contractId, milestoneId, deliveryData)
+
+            setMessage('Work delivered successfully.')
+
+            setSelectedDeliveryId(null)
+
+            setDeliveryMessage('')
 
             await fetchContract()
         } catch (error) {
@@ -97,6 +121,7 @@ const ContractDetails = (props)=>{
                             Escrow: {milestone.escrowAmount}
                         </p>
 
+                        {/* Client funds */}
                         {props.user?.role === 'client' &&
                         contract.status === 'active' &&
                         milestone.status === 'pending'(
@@ -106,10 +131,104 @@ const ContractDetails = (props)=>{
                             </button>
                         )}
 
-                    </div>
-                    
+                         {/* Freelancer delivers */}
+                        {props.user?.role === 'freelancer' &&
+                        contract.status === 'active' &&
+                        (
+                            milestone.status === 'funded' || milestone.status === 'in_progress'
+                        )&&(
+                            <button
+                            onClick={()=> setSelectedDeliveryId(milestone._id)}>
+                                Deliver Work
+                            </button>
+                        )}
 
-                ))}
+                       
+                        {selectedDeliveryId === milestone._id && (
+
+                        <div>
+
+                            <h4>Submit Work</h4>
+
+                            <label>
+                                Delivery Message:
+                            </label>
+
+                            <textarea
+                                value={deliveryMessage}
+                                onChange={(event) =>
+                                    setDeliveryMessage(event.target.value)
+                                }
+                                required
+                            />
+
+                            <button
+                                disabled={!deliveryMessage.trim()}
+                                onClick={() =>
+                                    handleDeliverMilestone(milestone._id)
+                                }
+                            >
+                                Submit Delivery
+                            </button>
+
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setSelectedDeliveryId(null)
+                                    setDeliveryMessage('')
+                                }}
+                            >
+                                Cancel
+                            </button>
+
+                        </div>
+
+                    )}
+
+                    {/* Delivery History */}
+                    {milestone.deliveries?.length > 0 && (
+
+                        <div>
+
+                            <h4>Deliveries</h4>
+
+                            {milestone.deliveries.map((delivery) => (
+
+                                <div key={delivery._id}>
+
+                                    <p>{delivery.message}</p>
+
+                                    <p>
+                                        Submitted: {
+                                            new Date(
+                                                delivery.submittedAt
+                                            ).toLocaleString()
+                                        }
+                                    </p>
+
+                                    {delivery.response && (
+                                        <p>
+                                            Response: {delivery.response}
+                                        </p>
+                                    )}
+
+                                    {delivery.responseNote && (
+                                        <p>
+                                            Client Note: {delivery.responseNote}
+                                        </p>
+                                    )}
+
+                                </div>
+
+                            ))}
+
+                        </div>
+
+                    )}
+                                    </div>
+                                    
+
+                                ))}
 
                 {moneySummary && (
     <section>
