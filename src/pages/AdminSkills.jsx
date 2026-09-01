@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { index as getSkills, create, update } from "../services/skills"
+import { index as getSkills, create, update, deleteSkill } from "../services/skills"
 import { index as getCategories } from "../services/categories"
 
 const AdminSkills = function () {
@@ -77,6 +77,20 @@ const AdminSkills = function () {
         }
     }
     
+    const handleDelete = async function (skillId) {
+        const confirmed = window.confirm("Are you sure you want to delete this skill?")
+        if (!confirmed) return
+        try {
+            const data = await deleteSkill(skillId)
+            setSkills(skills.filter(function (skill) {
+                return skill._id !== skillId
+            }))
+            setMessage(data.message)
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+    
     return (
     <section>
         <header>
@@ -138,6 +152,11 @@ const AdminSkills = function () {
                             handleEdit(skill)
                         }}>
                             Edit
+                        </button>
+                        <button onClick={function () {
+                            handleDelete(skill._id)
+                        }}>
+                            Delete
                         </button>
                         </div>
                         )
