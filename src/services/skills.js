@@ -29,6 +29,23 @@ const create = async function (skillData) {
     return data
 }
 
+const update = async function (skillId, skillData) {
+    const token = localStorage.getItem("token")
+    const res = await fetch(`${ADMIN_URL}/${skillId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(skillData)
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        throw new Error(data.message)
+    }
+    return data
+}
+
 const deleteSkill = async function (skillId) {
     const token = localStorage.getItem("token")
     const res = await fetch(`${ADMIN_URL}/${skillId}`, {
