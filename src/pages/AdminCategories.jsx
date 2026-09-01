@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { index, create, update } from "../services/categories"
+import { index, create, update, deleteCategory } from "../services/categories"
 
 const AdminCategories = function () {
     const [categories, setCategories] = useState([])
@@ -78,6 +78,20 @@ const AdminCategories = function () {
         }
     }
     
+    const handleDelete = async function (categoryId) {
+        const confirmed = window.confirm("Are you sure you want to delete this category?")
+        if (!confirmed) return
+        try {
+            const data = await deleteCategory(categoryId)
+            setCategories(categories.filter(function (category) {
+                return category._id !== categoryId
+            }))
+            setMessage(data.message)
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+    
     return (
     <section>
         <header>
@@ -138,6 +152,11 @@ const AdminCategories = function () {
                             handleEdit(category)
                         }}>
                             Edit
+                        </button>
+                        <button onClick={function () {
+                            handleDelete(category._id)
+                        }}>
+                            Delete
                         </button>
                         </div>
                         )
