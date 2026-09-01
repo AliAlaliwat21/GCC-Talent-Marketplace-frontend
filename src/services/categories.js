@@ -30,7 +30,25 @@ const create = async function (categoryData) {
     return data
 }
 
+const update = async function (categoryId, categoryData) {
+    const token = localStorage.getItem("token")
+    const res = await fetch(`${ADMIN_URL}/${categoryId}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(categoryData)
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        throw new Error(data.message)
+    }
+    return data
+}
+
 export {
     index,
-    create
+    create,
+    update
 }
