@@ -123,9 +123,6 @@ const App = () => {
 
           <Route path='/contracts/:contractId' element={<ContractDetails user={user} />} />
 
-        </Routes>
-
-      </main>
           <Route
             path="/client/jobs/new"
             element={<CreateJob />}
@@ -140,10 +137,11 @@ const App = () => {
             path="/wallet"
             element={<Wallet user={user} />}
           />
-          
           </Routes>
           </main>
           </div>
+          
+          
           )
         }
         export default App
