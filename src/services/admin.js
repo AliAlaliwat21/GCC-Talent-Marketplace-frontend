@@ -1,4 +1,5 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/v1/admin`
+
 const getStats = async function () {
     const token = localStorage.getItem("token")
     const res = await fetch(`${BASE_URL}/stats`, {
