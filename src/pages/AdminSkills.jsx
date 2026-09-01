@@ -143,11 +143,14 @@ const AdminSkills = function () {
                 <p>No skills found</p>
             ) : (
                 skills.map(function (skill) {
+                    const category = categories.find(function (category) {
+                        return category._id === skill.category
+                    })
                     return (
                     <div className="card" key={skill._id}>
                         <h2>{skill.name}</h2>
                         <p>Slug: {skill.slug}</p>
-                        <p>Category: {skill.category}</p>
+                        <p>Category: {category ? category.name : "Unknown"}</p>
                         <button onClick={function () {
                             handleEdit(skill)
                         }}>
