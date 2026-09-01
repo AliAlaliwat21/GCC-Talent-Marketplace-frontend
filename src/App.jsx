@@ -14,6 +14,8 @@ import PublicFreelancerProfile from "./pages/PublicFreelancerProfile"
 import MyProposals from "./pages/MyProposals"
 import JobProposals from "./pages/JobProposals"
 import ClientProfile from "./pages/ClientProfile"
+import Contracts from "./pages/Contracts"
+import ContractDetails from "./pages/ContractDetails"
 import CreateJob from "./pages/CreateJob"
 import EditJob from "./pages/EditJob"
 import Wallet from "./pages/Wallet"
@@ -117,6 +119,13 @@ const App = () => {
             element={<ClientProfile />}
           />
 
+          <Route path='/contracts' element={<Contracts/>} />
+
+          <Route path='/contracts/:contractId' element={<ContractDetails user={user} />} />
+
+        </Routes>
+
+      </main>
           <Route
             path="/client/jobs/new"
             element={<CreateJob />}
