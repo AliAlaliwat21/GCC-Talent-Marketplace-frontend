@@ -1,4 +1,4 @@
-const BASE_URL = `${import.VITE_BACK_END_SERVER_URL}/api/v1/categories`
+const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/v1/categories`
 
 const index = async ()=>{
     const res = await fetch(BASE_URL)

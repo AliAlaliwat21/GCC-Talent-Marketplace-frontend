@@ -1,8 +1,23 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/v1/jobs`
 
+const index = async function (filters = {}) {
+    const params = new URLSearchParams()
 
-const index = async () => {
-    const res = await fetch(BASE_URL)
+    for (const key in filters) {
+        if (
+            filters[key] !== "" &&
+            filters[key] !== undefined &&
+            filters[key] !== null
+        ) {
+            params.append(key, filters[key])
+        }
+    }
+
+    const query = params.toString()
+
+    const res = await fetch(
+        query ? `${BASE_URL}?${query}` : BASE_URL
+    )
 
     const data = await res.json()
 
@@ -12,7 +27,6 @@ const index = async () => {
 
     return data
 }
-
 
 const show = async (jobId) => {
     const token = localStorage.getItem('token')
@@ -96,7 +110,7 @@ const reopenJob = async (jobId) => {
 }
 
 
-const deleteDraft = async (jobId) => {
+const deleteDraft = async function (jobId) {
     const token = localStorage.getItem('token')
 
     const res = await fetch(`${BASE_URL}/${jobId}`, {
@@ -106,13 +120,13 @@ const deleteDraft = async (jobId) => {
         }
     })
 
-    const data = await res.json()
-
     if (!res.ok) {
+        const data = await res.json()
+
         throw new Error(data.message || 'Failed to delete draft')
     }
 
-    return data
+    return true
 }
 
 const create = async(formData)=>{
@@ -129,12 +143,35 @@ const create = async(formData)=>{
 
         body: JSON.stringify(formData)
     })
+    
+    const data = await res.json()
 
     if(!res.ok) {
         throw new Error(
             data.message || 'Failed to create job'
         )
     }
+    return data
+}
+
+const update = async function (jobId, formData) {
+    const token = localStorage.getItem('token')
+
+    const res = await fetch(`${BASE_URL}/${jobId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(formData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.message || 'Failed to update job')
+    }
+
     return data
 }
 
@@ -145,6 +182,6 @@ export {
     closeJob,
     reopenJob,
     deleteDraft,
-    create
-
+    create,
+    update
 }
