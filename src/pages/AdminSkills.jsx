@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { index as getSkills, create } from "../services/skills"
+import { index as getSkills, create, update } from "../services/skills"
 import { index as getCategories } from "../services/categories"
 
 const AdminSkills = function () {
@@ -7,6 +7,7 @@ const AdminSkills = function () {
     const [categories, setCategories] = useState([])
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
+    const [editingId, setEditingId] = useState(null)
     const [skillData, setSkillData] = useState({
         name: "",
         slug: "",
@@ -36,20 +37,41 @@ const AdminSkills = function () {
         })
     }
     
+    const handleEdit = function (skill) {
+        setEditingId(skill._id)
+        setSkillData({
+            name: skill.name,
+            slug: skill.slug,
+            category: skill.category
+        })
+    }
+    
     const handleSubmit = async function (event) {
         event.preventDefault()
         try {
-            const data = await create(skillData)
-            setSkills([
-                ...skills,
-                data
-            ])
+            if (editingId) {
+                const data = await update(editingId, skillData)
+                setSkills(skills.map(function (skill) {
+                    if (skill._id === editingId) {
+                        return data
+                    }
+                    return skill
+                }))
+                setEditingId(null)
+                setMessage("Skill updated successfully")
+            } else {
+                const data = await create(skillData)
+                setSkills([
+                    ...skills,
+                    data
+                ])
+                setMessage("Skill created successfully")
+            }
             setSkillData({
                 name: "",
                 slug: "",
                 category: ""
             })
-            setMessage("Skill created successfully")
         } catch (error) {
             setMessage(error.message)
         }
@@ -96,7 +118,9 @@ const AdminSkills = function () {
                         )
                     })}
                 </select>
-                <button type="submit">Create Skill</button>
+                <button type="submit">
+                    {editingId ? "Update Skill" : "Create Skill"}
+                </button>
             </form>
             
             {loading ? (
@@ -110,6 +134,11 @@ const AdminSkills = function () {
                         <h2>{skill.name}</h2>
                         <p>Slug: {skill.slug}</p>
                         <p>Category: {skill.category}</p>
+                        <button onClick={function () {
+                            handleEdit(skill)
+                        }}>
+                            Edit
+                        </button>
                         </div>
                         )
                     })
