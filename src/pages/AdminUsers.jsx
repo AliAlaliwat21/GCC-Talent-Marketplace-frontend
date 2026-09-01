@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { getUsers, verifyUser, updateUserStatus, deleteUser } from "../services/admin"
+import { Link } from "react-router"
 
 const AdminUsers = function () {
     const [users, setUsers] = useState([])
@@ -152,6 +153,7 @@ const AdminUsers = function () {
                     <p>Role: {user.role}</p>
                     <p>Status: {user.status}</p>
                     <p>Verified: {user.isVerified ? "Yes" : "No"}</p>
+                    <Link to={`/admin/users/${user._id}`}>View Details</Link>
                     {!user.isVerified && (
                         <button onClick={function () {
                             handleVerify(user._id)
