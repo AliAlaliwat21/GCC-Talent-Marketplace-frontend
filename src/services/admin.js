@@ -92,10 +92,26 @@ const verifyUser = async function (userId) {
     return data
 }
 
+const deleteUser = async function (userId) {
+    const token = localStorage.getItem("token")
+    const res = await fetch(`${BASE_URL}/users/${userId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        throw new Error(data.message)
+    }
+    return data
+}
+
 export {
     getStats,
     getUsers,
     getUser,
     updateUserStatus,
-    verifyUser
+    verifyUser,
+    deleteUser
 }
