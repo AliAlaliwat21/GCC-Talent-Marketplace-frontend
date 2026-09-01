@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getUsers, verifyUser } from "../services/admin"
+import { getUsers, verifyUser, updateUserStatus } from "../services/admin"
 
 const AdminUsers = function () {
     const [users, setUsers] = useState([])
@@ -62,6 +62,17 @@ const AdminUsers = function () {
     try {
         const data = await verifyUser(userId)
         setMessage(data.message)
+        fetchUsers(filters)
+    } catch (error) {
+        setMessage(error.message)
+    }
+}
+    
+    const handleStatusChange = async function (userId, status) {
+    const newStatus = status === "active" ? "suspended" : "active"
+    try {
+        await updateUserStatus(userId, newStatus)
+        setMessage("User status updated successfully")
         fetchUsers(filters)
     } catch (error) {
         setMessage(error.message)
@@ -136,6 +147,11 @@ const AdminUsers = function () {
                             Verify
                         </button>
                     )}
+                    <button onClick={function () {
+                        handleStatusChange(user._id, user.status)
+                    }}>
+                        {user.status === "active" ? "Suspend" : "Unsuspend"}
+                    </button>
                     </div>
                     )
                 })}
