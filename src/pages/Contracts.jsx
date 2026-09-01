@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { index, show } from "../services/contracts"
+import { index } from "../services/contracts"
 import { Link } from "react-router"
 const Contracts = ()=>{
 
@@ -14,7 +14,7 @@ const Contracts = ()=>{
                 setContracts(data.contracts)
 
             } catch (error) {
-                setMessage(error)
+                setMessage(error.message)
             }
         }
         fetchContracts()

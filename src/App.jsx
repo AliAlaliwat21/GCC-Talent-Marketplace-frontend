@@ -15,6 +15,7 @@ import MyProposals from "./pages/MyProposals"
 import JobProposals from "./pages/JobProposals"
 import ClientProfile from "./pages/ClientProfile"
 import Contracts from "./pages/Contracts"
+import ContractDetails from "./pages/ContractDetails"
 
 const getUserFromToken = () => {
   const token = localStorage.getItem('token')
@@ -101,6 +102,8 @@ const App = () => {
           />
 
           <Route path='/contracts' element={<Contracts/>} />
+
+          <Route path='/contracts/:contractId' element={<ContractDetails user={user} />} />
 
         </Routes>
 
