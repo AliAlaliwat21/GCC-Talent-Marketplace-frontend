@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react"
-import { index, create } from "../services/categories"
+import { index, create, update } from "../services/categories"
 
 const AdminCategories = function () {
     const [categories, setCategories] = useState([])
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
+    const [editingId, setEditingId] = useState(null)
     const [categoryData, setCategoryData] = useState({
         name: "",
         slug: "",
@@ -35,21 +36,43 @@ const AdminCategories = function () {
         })
     }
     
+    const handleEdit = function (category) {
+        setEditingId(category._id)
+        setCategoryData({
+            name: category.name,
+            slug: category.slug,
+            icon: category.icon,
+            isFeatured: category.isFeatured
+        })
+    }
+    
     const handleSubmit = async function (event) {
         event.preventDefault()
         try {
-            const data = await create(categoryData)
-            setCategories([
-                ...categories,
-                data
-            ])
+            if (editingId) {
+                const data = await update(editingId, categoryData)
+                setCategories(categories.map(function (category) {
+                    if (category._id === editingId) {
+                        return data
+                    }
+                    return category
+                }))
+                setEditingId(null)
+                setMessage("Category updated successfully")
+            } else {
+                const data = await create(categoryData)
+                setCategories([
+                    ...categories,
+                    data
+                ])
+                setMessage("Category created successfully")
+            }
             setCategoryData({
                 name: "",
                 slug: "",
                 icon: "",
                 isFeatured: false
             })
-            setMessage("Category created successfully")
         } catch (error) {
             setMessage(error.message)
         }
@@ -94,7 +117,9 @@ const AdminCategories = function () {
                     checked={categoryData.isFeatured}
                     onChange={handleChange}
                 />
-                <button type="submit">Create Category</button>
+                <button type="submit">
+                    {editingId ? "Update Category" : "Create Category"}
+                </button>
             </form>
             
             {loading ? (
@@ -109,6 +134,11 @@ const AdminCategories = function () {
                         <p>Slug: {category.slug}</p>
                         <p>Icon: {category.icon}</p>
                         <p>Featured: {category.isFeatured ? "Yes" : "No"}</p>
+                        <button onClick={function () {
+                            handleEdit(category)
+                        }}>
+                            Edit
+                        </button>
                         </div>
                         )
                     })
