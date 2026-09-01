@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getUsers, verifyUser, updateUserStatus } from "../services/admin"
+import { getUsers, verifyUser, updateUserStatus, deleteUser } from "../services/admin"
 
 const AdminUsers = function () {
     const [users, setUsers] = useState([])
@@ -79,6 +79,18 @@ const AdminUsers = function () {
     }
 }
     
+    const handleDelete = async function (userId) {
+    const confirmed = window.confirm("Are you sure you want to delete this user?")
+    if (!confirmed) return
+    try {
+        const data = await deleteUser(userId)
+        setMessage(data.message)
+        fetchUsers(filters)
+    } catch (error) {
+        setMessage(error.message)
+    }
+}
+    
     return (
     <section>
         <header>
@@ -151,6 +163,11 @@ const AdminUsers = function () {
                         handleStatusChange(user._id, user.status)
                     }}>
                         {user.status === "active" ? "Suspend" : "Unsuspend"}
+                    </button>
+                    <button onClick={function () {
+                        handleDelete(user._id)
+                    }}>
+                        Delete
                     </button>
                     </div>
                     )
