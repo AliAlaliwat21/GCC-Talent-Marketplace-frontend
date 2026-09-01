@@ -20,6 +20,11 @@ import ContractDetails from "./pages/ContractDetails"
 import CreateJob from "./pages/CreateJob"
 import EditJob from "./pages/EditJob"
 import Wallet from "./pages/Wallet"
+import AdminUsers from "./pages/AdminUsers"
+import AdminUserDetails from "./pages/AdminUserDetails"
+import AdminDashboard from "./pages/AdminDashboard"
+import AdminCategories from "./pages/AdminCategories"
+import AdminSkills from "./pages/AdminSkills"
 const getUserFromToken = () => {
   
   const token = localStorage.getItem('token')
@@ -102,6 +107,26 @@ const App = () => {
           <Route
             path="/wallet"
             element={<Wallet user={user} />}
+          />
+          <Route
+            path="/admin"
+            element={<AdminDashboard />}
+          />
+          <Route
+            path="/admin/users"
+            element={<AdminUsers />}
+          />
+          <Route
+            path="/admin/users/:userId"
+            element={<AdminUserDetails />}
+          />
+          <Route
+            path="/admin/categories"
+            element={<AdminCategories />}
+          />
+          <Route
+            path="/admin/skills"
+            element={<AdminSkills />}
           />
         </Routes>
       </main>

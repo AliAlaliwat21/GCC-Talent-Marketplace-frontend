@@ -35,6 +35,7 @@ const Dashboard = (props) => {
                     <div className="card">
                         <h2>Admin Dashboard</h2>
                         <p>Manage users, categories and platform activity</p>
+                        <Link to="/admin">Open Admin Dashboard</Link>
                         </div>
                     )}
                     </section>
