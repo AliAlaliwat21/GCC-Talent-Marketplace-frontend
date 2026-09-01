@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { getUsers } from "../services/admin"
+import { getUsers, verifyUser } from "../services/admin"
 
 const AdminUsers = function () {
     const [users, setUsers] = useState([])
@@ -57,6 +57,16 @@ const AdminUsers = function () {
         setFilters(newFilters)
         fetchUsers(newFilters)
     }
+    
+    const handleVerify = async function (userId) {
+    try {
+        const data = await verifyUser(userId)
+        setMessage(data.message)
+        fetchUsers(filters)
+    } catch (error) {
+        setMessage(error.message)
+    }
+}
     
     return (
     <section>
@@ -119,6 +129,13 @@ const AdminUsers = function () {
                     <p>Role: {user.role}</p>
                     <p>Status: {user.status}</p>
                     <p>Verified: {user.isVerified ? "Yes" : "No"}</p>
+                    {!user.isVerified && (
+                        <button onClick={function () {
+                            handleVerify(user._id)
+                        }}>
+                            Verify
+                        </button>
+                    )}
                     </div>
                     )
                 })}
