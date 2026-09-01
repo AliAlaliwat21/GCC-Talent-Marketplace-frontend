@@ -11,11 +11,13 @@ const Dashboard = (props) => {
             {props.user.role === "client" && (<div className="card">
                 <h2>Client Dashboard</h2>
                 <p>Post jobs, review proposals and manage contracts</p>
-                                    <Link to="/client/profile">Create or Edit Profile</Link>
-                    <br/>
-                    <Link to="/client/jobs">My Jobs</Link>
-                    <br/>
-                    <Link to="/client/jobs/new">Post New Job</Link>
+                <Link to="/client/profile">Create or Edit Profile</Link>
+                <br/>
+                <Link to="/client/jobs">My Jobs</Link>
+                <br/>
+                <Link to="/client/jobs/new">Post New Job</Link>
+                <br/>
+                <Link to="/wallet">My Wallet</Link>
                 </div>
             )}
             {props.user.role === "freelancer" && (
@@ -25,6 +27,8 @@ const Dashboard = (props) => {
                     <Link to="/freelancer/profile">Create or Edit Profile</Link>
                     <br/>
                     <Link to={`/freelancers/${props.user._id}`}>View Public Profile</Link>
+                    <br/>
+                    <Link to="/wallet">My Wallet</Link>
                     </div>
                 )}
                 {props.user.role === "admin" && (
