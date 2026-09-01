@@ -77,9 +77,25 @@ const updateUserStatus = async function (userId, status) {
     return data
 }
 
+const verifyUser = async function (userId) {
+    const token = localStorage.getItem("token")
+    const res = await fetch(`${BASE_URL}/users/${userId}/verify`, {
+        method: "PATCH",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        throw new Error(data.message)
+    }
+    return data
+}
+
 export {
     getStats,
     getUsers,
     getUser,
-    updateUserStatus
+    updateUserStatus,
+    verifyUser
 }
