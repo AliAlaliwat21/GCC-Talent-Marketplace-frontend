@@ -47,8 +47,24 @@ const update = async function (categoryId, categoryData) {
     return data
 }
 
+const deleteCategory = async function (categoryId) {
+    const token = localStorage.getItem("token")
+    const res = await fetch(`${ADMIN_URL}/${categoryId}`, {
+        method: "DELETE",
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+    const data = await res.json()
+    if (!res.ok) {
+        throw new Error(data.message)
+    }
+    return data
+}
+
 export {
     index,
     create,
-    update
+    update,
+    deleteCategory
 }
