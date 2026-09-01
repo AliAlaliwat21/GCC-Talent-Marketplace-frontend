@@ -16,14 +16,20 @@ import JobProposals from "./pages/JobProposals"
 import ClientProfile from "./pages/ClientProfile"
 import Contracts from "./pages/Contracts"
 import ContractDetails from "./pages/ContractDetails"
+import CreateJob from "./pages/CreateJob"
+import EditJob from "./pages/EditJob"
+import Wallet from "./pages/Wallet"
 
 const getUserFromToken = () => {
+
   const token = localStorage.getItem('token')
 
   if (!token) return null
 
   return JSON.parse(atob(token.split('.')[1])).payload
+
 }
+
 
 
 const App = () => {
@@ -31,11 +37,15 @@ const App = () => {
   const [user, setUser] = useState(getUserFromToken())
 
   return (
+
     <div>
 
       <Nav
+
         user={user}
+
         setUser={setUser}
+
       />
 
       <main className="app-main">
@@ -43,17 +53,25 @@ const App = () => {
         <Routes>
 
           <Route
+
             path="/"
+
             element={
+
               user
+
                 ? <Dashboard user={user} />
+
                 : <Landing />
+
             }
+
           />
 
           <Route
             path="/sign-up"
             element={<SignUpForm setUser={setUser} />}
+
           />
 
           <Route
@@ -108,9 +126,24 @@ const App = () => {
         </Routes>
 
       </main>
+          <Route
+            path="/client/jobs/new"
+            element={<CreateJob />}
+          />
 
-    </div>
-  )
-}
+          <Route
+            path="/client/jobs/:jobId/edit"
+            element={<EditJob />}
+          />
 
-export default App
+          <Route
+            path="/wallet"
+            element={<Wallet user={user} />}
+          />
+          
+          </Routes>
+          </main>
+          </div>
+          )
+        }
+        export default App
