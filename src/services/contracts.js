@@ -41,7 +41,28 @@ const show = async (contractId)=>{
     }
 }
 
+const fundMilestone = async (contractId, milestoneId) =>{
+    try {
+        const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}/milestone/${milestoneId}/fund`, {
+            method: 'POST',
+            header: 
+            {
+                Authorization: `Bearer ${localStorage.getItem('token')}`
+            },
+        })
+
+        const data = await res.json()
+        if (!res.ok){
+            throw new Error (data.error || data.message)
+        }
+        return data
+    } catch (error) {
+        throw new Error(error.message)
+    }
+}
+
 export {
     index,
-    show
+    show,
+    fundMilestone
 }
