@@ -276,13 +276,20 @@ const FreelancerProfile = function (props) {
                     })}
                     
                     <label htmlFor="country">Country</label>
-                    <input
+                    <select
                     id="country"
                     name="country"
-                    type="text"
                     value={formData.country}
                     onChange={handleChange}
-                    required/>
+                    required>
+                        <option value="">Select Country</option>
+                        <option value="Bahrain">Bahrain</option>
+                        <option value="Kuwait">Kuwait</option>
+                        <option value="Oman">Oman</option>
+                        <option value="Qatar">Qatar</option>
+                        <option value="Saudi Arabia">Saudi Arabia</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        </select>
                     
                     <label htmlFor="city">City</label>
                     <input
