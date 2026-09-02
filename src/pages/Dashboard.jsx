@@ -17,6 +17,8 @@ const Dashboard = (props) => {
                 <br/>
                 <Link to="/client/jobs/new">Post New Job</Link>
                 <br/>
+                <Link to="/contracts">My Contracts</Link>
+                <br/>
                 <Link to="/wallet">My Wallet</Link>
                 </div>
             )}
@@ -24,9 +26,15 @@ const Dashboard = (props) => {
                 <div className="card">
                     <h2>Freelancer Dashboard</h2>
                     <p>Find jobs, submit proposals and manage your work</p>
+                    <Link to="/jobs">Find Jobs</Link>
+                    <br/>
                     <Link to="/freelancer/profile">Create or Edit Profile</Link>
                     <br/>
                     <Link to={`/freelancers/${props.user._id}`}>View Public Profile</Link>
+                    <br/>
+                    <Link to="/proposals/mine">My Proposals</Link>
+                    <br/>
+                    <Link to="/contracts">My Contracts</Link>
                     <br/>
                     <Link to="/wallet">My Wallet</Link>
                     </div>

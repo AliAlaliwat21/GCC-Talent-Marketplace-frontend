@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useParams } from "react-router"
+import { Link, useParams } from "react-router"
 import { show } from "../services/jobs"
 import ProposalForm from "./ProposalForm"
 
@@ -91,7 +91,7 @@ const JobDetails = function (props) {
                 </p>
             </div>
 
-            {props.user?.role === 'freelancer' &&(
+            {props.user?.role === 'freelancer' && job.status === 'open' &&(
                 <ProposalForm jobId={jobId} />
             )}
 
@@ -107,6 +107,9 @@ const JobDetails = function (props) {
                             <h3>{similarJob.title}</h3>
                             <p>{similarJob.description}</p>
                             <p>Budget: {similarJob.budgetMin} - {similarJob.budgetMax}</p>
+                            <Link to={`/jobs/${similarJob._id}`}>
+                                View Job
+                            </Link>
                             </div>
                             )
                         })

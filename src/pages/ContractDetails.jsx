@@ -1,353 +1,221 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
+import { addMilestone, approveMilestone, cancelContract, deliverMilestone, fundMilestone, requestRevision, sendMessage, show, updateMilestone } from "../services/contracts"
+import { uploadFile } from "../services/uploads"
+import ReviewForm from "../components/ReviewForm"
 
-import {
-    show,
-    fundMilestone,
-    deliverMilestone,
-    approveMilestone,
-    requestRevision,
-    addMilestone,
-    updateMilestone,
-    cancelContract,
-    sendMessage
-} from "../services/contracts"
+const ContractDetails = (props)=>{
 
-
-const ContractDetails = (props) => {
-
-    const { contractId } = useParams()
+    const {contractId} = useParams()
 
     const [contract, setContract] = useState(null)
-
     const [moneySummary, setMoneySummary] = useState(null)
-
     const [timeline, setTimeline] = useState([])
-
     const [messages, setMessages] = useState([])
 
     const [message, setMessage] = useState('')
-
-
-    const [selectedDeliveryId, setSelectedDeliveryId] = useState(null)
+    const [editingId, setEditingId] = useState(null)
+    const [milestoneData, setMilestoneData] = useState({
+        title: '',
+        description: '',
+        amount: '',
+        dueDate: ''
+    })
+    const [deliveryId, setDeliveryId] = useState(null)
     const [deliveryMessage, setDeliveryMessage] = useState('')
-
-    const [selectedRevisionId, setSelectedRevisionId] = useState(null)
+    const [deliveryFiles, setDeliveryFiles] = useState([])
+    const [revisionId, setRevisionId] = useState(null)
     const [revisionNote, setRevisionNote] = useState('')
-
-    const [showAddMilestone, setShowAddMilestone] = useState(false)
-
-    const [newMilestoneData, setNewMilestoneData] = useState({
-        title: '',
-        description: '',
-        amount: '',
-        dueDate: ''
-    })
-
-    const [editingMilestoneId, setEditingMilestoneId] = useState(null)
-
-    const [editMilestoneData, setEditMilestoneData] = useState({
-        title: '',
-        description: '',
-        amount: '',
-        dueDate: ''
-    })
-
-    const [showCancelConfirm, setShowCancelConfirm] = useState(false)
-
     const [contractMessage, setContractMessage] = useState('')
 
-    const fetchContract = async () => {
+    const fetchContract = async()=>{
         try {
-
             const data = await show(contractId)
-
             setContract(data.contract)
-
             setMoneySummary(data.moneySummary)
-
             setTimeline(data.timeline)
-
             setMessages(data.messages)
-
         } catch (error) {
-
             setMessage(error.message)
-
         }
     }
 
+    useEffect(()=>{
+        const fetchInitialContract = async()=>{
+            try {
+                const data = await show(contractId)
+                setContract(data.contract)
+                setMoneySummary(data.moneySummary)
+                setTimeline(data.timeline)
+                setMessages(data.messages)
+            } catch (error) {
+                setMessage(error.message)
+            }
+        }
 
-    useEffect(() => {
-        fetchContract()
+        fetchInitialContract()
     }, [contractId])
 
-    const handleFundMilestone = async (milestoneId) => {
-        try {
-
-            await fundMilestone(
-                contractId,
-                milestoneId
-            )
-
-            setMessage('Milestone funded successfully.')
-
-            await fetchContract()
-
-        } catch (error) {
-
-            setMessage(error.message)
-
-        }
-    }
-
-
-    const handleDeliverMilestone = async (milestoneId) => {
-        try {
-
-            const deliveryData = {
-                message: deliveryMessage
-            }
-
-            await deliverMilestone(
-                contractId,
-                milestoneId,
-                deliveryData
-            )
-
-            setMessage('Work delivered successfully.')
-
-            setSelectedDeliveryId(null)
-
-            setDeliveryMessage('')
-
-            await fetchContract()
-
-        } catch (error) {
-
-            setMessage(error.message)
-
-        }
-    }
-
-
-    const handleApproveMilestone = async (milestoneId) => {
-        try {
-
-            await approveMilestone(
-                contractId,
-                milestoneId
-            )
-
-            setMessage('Milestone approved successfully.')
-
-            await fetchContract()
-
-        } catch (error) {
-
-            setMessage(error.message)
-
-        }
-    }
-
-    const handleRequestRevision = async (milestoneId) => {
-        try {
-
-            await requestRevision(
-                contractId,
-                milestoneId,
-                revisionNote
-            )
-
-            setMessage('Revision requested successfully.')
-
-            setSelectedRevisionId(null)
-
-            setRevisionNote('')
-
-            await fetchContract()
-
-        } catch (error) {
-
-            setMessage(error.message)
-
-        }
-    }
-
-
-    const handleNewMilestoneChange = (event) => {
-
-        setNewMilestoneData({
-            ...newMilestoneData,
+    const handleMilestoneChange = (event)=>{
+        setMilestoneData({
+            ...milestoneData,
             [event.target.name]: event.target.value
         })
     }
 
-
-    const handleAddMilestone = async (event) => {
-
+    const handleMilestoneSubmit = async(event)=>{
         event.preventDefault()
+        setMessage('')
 
         try {
-
             const dataToSend = {
-                title: newMilestoneData.title,
-                description: newMilestoneData.description,
-                amount: Number(newMilestoneData.amount)
+                ...milestoneData,
+                amount: Number(milestoneData.amount)
             }
 
-            if (newMilestoneData.dueDate) {
-                dataToSend.dueDate =
-                    newMilestoneData.dueDate
+            if (editingId) {
+                await updateMilestone(contractId, editingId, dataToSend)
+                setMessage('Milestone updated successfully')
+            } else {
+                await addMilestone(contractId, dataToSend)
+                setMessage('Milestone added successfully')
             }
 
-            await addMilestone(
-                contractId,
-                dataToSend
-            )
-
-            setMessage('Milestone added successfully.')
-
-            setNewMilestoneData({
+            setEditingId(null)
+            setMilestoneData({
                 title: '',
                 description: '',
                 amount: '',
                 dueDate: ''
             })
-
-            setShowAddMilestone(false)
-
-            await fetchContract()
-
+            fetchContract()
         } catch (error) {
-
             setMessage(error.message)
-
         }
     }
 
-    const handleEditMilestoneClick = (milestone) => {
-
-        setEditingMilestoneId(milestone._id)
-
-        setEditMilestoneData({
+    const handleEditMilestone = (milestone)=>{
+        setEditingId(milestone._id)
+        setMilestoneData({
             title: milestone.title,
             description: milestone.description || '',
             amount: milestone.amount,
-
             dueDate: milestone.dueDate
-                ? milestone.dueDate.split('T')[0]
+                ? milestone.dueDate.slice(0, 10)
                 : ''
         })
     }
 
-
-    const handleEditMilestoneChange = (event) => {
-
-        setEditMilestoneData({
-            ...editMilestoneData,
-            [event.target.name]: event.target.value
-        })
-    }
-
-
-    const handleUpdateMilestone = async (
-        event,
-        milestoneId
-    ) => {
-
-        event.preventDefault()
+    const handleFundMilestone = async(milestoneId)=>{
+        setMessage('')
 
         try {
-
-            const dataToSend = {
-                title: editMilestoneData.title,
-                description: editMilestoneData.description,
-                amount: Number(editMilestoneData.amount)
-            }
-
-            if (editMilestoneData.dueDate) {
-                dataToSend.dueDate =
-                    editMilestoneData.dueDate
-            }
-
-            await updateMilestone(
-                contractId,
-                milestoneId,
-                dataToSend
-            )
-
-            setMessage('Milestone updated successfully.')
-
-            setEditingMilestoneId(null)
-
-            await fetchContract()
-
+            await fundMilestone(contractId, milestoneId)
+            setMessage('Milestone funded successfully')
+            fetchContract()
         } catch (error) {
-
             setMessage(error.message)
-
         }
     }
 
-    const handleCancelContract = async () => {
-        try {
+    const handleDeliverySubmit = async(event, milestoneId)=>{
+        event.preventDefault()
+        setMessage('')
 
+        try {
+            const attachments = []
+
+            for (let i = 0; i < deliveryFiles.length; i++) {
+                const uploadedFile = await uploadFile(deliveryFiles[i])
+
+                attachments.push({
+                    url: uploadedFile.url,
+                    name: uploadedFile.name
+                })
+            }
+
+            await deliverMilestone(contractId, milestoneId, {
+                message: deliveryMessage,
+                attachments: attachments
+            })
+
+            setDeliveryId(null)
+            setDeliveryMessage('')
+            setDeliveryFiles([])
+            setMessage('Work delivered successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleApproveMilestone = async(milestoneId)=>{
+        setMessage('')
+
+        try {
+            await approveMilestone(contractId, milestoneId)
+            setMessage('Delivery approved successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleRevisionSubmit = async(event, milestoneId)=>{
+        event.preventDefault()
+        setMessage('')
+
+        try {
+            await requestRevision(contractId, milestoneId, revisionNote)
+            setRevisionId(null)
+            setRevisionNote('')
+            setMessage('Revision requested successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleCancelContract = async()=>{
+        const confirmed = window.confirm('Are you sure you want to cancel this contract?')
+
+        if (!confirmed) return
+
+        setMessage('')
+
+        try {
             await cancelContract(contractId)
-
-            setMessage('Contract cancelled successfully.')
-
-            setShowCancelConfirm(false)
-
-            await fetchContract()
-
+            setMessage('Contract cancelled successfully')
+            fetchContract()
         } catch (error) {
-
             setMessage(error.message)
-
         }
     }
 
-    const handleSendMessage = async (event) => {
-
+    const handleSendMessage = async(event)=>{
         event.preventDefault()
+        setMessage('')
 
         try {
-
-            await sendMessage(
-                contractId,
-                contractMessage
-            )
-
+            await sendMessage(contractId, contractMessage)
             setContractMessage('')
-
-            await fetchContract()
-
+            fetchContract()
         } catch (error) {
-
             setMessage(error.message)
-
         }
     }
 
-
-    if (!contract) {
-        return (
-            <p>
-                {message || 'Loading...'}
-            </p>
-        )
+    if (!contract){
+        return <p>{message || 'Loading...'}</p>
     }
 
+    const isClient = props.user?._id === contract.client?._id
+    const isFreelancer = props.user?._id === contract.freelancer?._id
 
-    return (
+    return(
         <section>
-
             <header>
-
-                <h1>
-                    {contract.title}
-                </h1>
+                <h1>{contract.title}</h1>
 
                 <p>{message}</p>
 
@@ -358,133 +226,94 @@ const ContractDetails = (props) => {
                 <p>
                     Total: {contract.totalAmount} {contract.currency}
                 </p>
-
             </header>
 
-
-            {props.user?.role === "client" &&
-                contract.status === "active" && (
-
-                <button
-                    type="button"
-                    onClick={() =>
-                        setShowAddMilestone(true)
-                    }
-                >
-                    Add Milestone
+            {contract.status === 'active' && (
+                <button onClick={handleCancelContract}>
+                    Cancel Contract
                 </button>
-
             )}
 
+            <h2>Milestones</h2>
 
-            {showAddMilestone && (
+            {isClient && contract.status === 'active' && (
+                <form onSubmit={handleMilestoneSubmit}>
+                    <h3>{editingId ? 'Edit Milestone' : 'Add Milestone'}</h3>
 
-                <form onSubmit={handleAddMilestone}>
-
-                    <h3>Add Milestone</h3>
-
-                    <label>
-                        Title:
-                    </label>
-
+                    <label htmlFor="milestoneTitle">Title</label>
                     <input
-                        type="text"
+                        id="milestoneTitle"
                         name="title"
-                        value={newMilestoneData.title}
-                        onChange={handleNewMilestoneChange}
+                        value={milestoneData.title}
+                        onChange={handleMilestoneChange}
                         required
                     />
 
-
-                    <label>
-                        Description:
-                    </label>
-
+                    <label htmlFor="milestoneDescription">Description</label>
                     <textarea
+                        id="milestoneDescription"
                         name="description"
-                        value={newMilestoneData.description}
-                        onChange={handleNewMilestoneChange}
+                        value={milestoneData.description}
+                        onChange={handleMilestoneChange}
                     />
 
-
-                    <label>
-                        Amount:
-                    </label>
-
+                    <label htmlFor="milestoneAmount">Amount</label>
                     <input
-                        type="number"
+                        id="milestoneAmount"
                         name="amount"
-                        value={newMilestoneData.amount}
-                        onChange={handleNewMilestoneChange}
+                        type="number"
                         min="1"
+                        value={milestoneData.amount}
+                        onChange={handleMilestoneChange}
                         required
                     />
 
-
-                    <label>
-                        Due Date:
-                    </label>
-
+                    <label htmlFor="milestoneDueDate">Due Date</label>
                     <input
-                        type="date"
+                        id="milestoneDueDate"
                         name="dueDate"
-                        value={newMilestoneData.dueDate}
-                        onChange={handleNewMilestoneChange}
+                        type="date"
+                        value={milestoneData.dueDate}
+                        onChange={handleMilestoneChange}
                     />
-
 
                     <button type="submit">
-                        Add Milestone
+                        {editingId ? 'Update Milestone' : 'Add Milestone'}
                     </button>
 
-
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setShowAddMilestone(false)
-                        }
-                    >
-                        Cancel
-                    </button>
-
+                    {editingId && (
+                        <button
+                            type="button"
+                            onClick={()=>setEditingId(null)}
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </form>
-
             )}
 
-            <section>
-
-                <h2>Milestones</h2>
-
-
-                {contract.milestones.map((milestone) => (
+            {contract.milestones.map((milestone) => (
 
                     <div
                         className="card"
                         key={milestone._id}
                     >
 
-                        <h3>
-                            {milestone.title}
-                        </h3>
-
+                        <h3>{milestone.title}</h3>
 
                         <p>
                             {milestone.description}
                         </p>
 
-
                         <p>
-                            Amount: {milestone.amount} {contract.currency}
+                            Amount: {milestone.amount}
                         </p>
-
 
                         <p>
                             Status: {milestone.status}
                         </p>
 
-
                         {milestone.dueDate && (
-
                             <p>
                                 Due: {
                                     new Date(
@@ -492,547 +321,220 @@ const ContractDetails = (props) => {
                                     ).toLocaleDateString()
                                 }
                             </p>
-
                         )}
-
 
                         <p>
-                            Escrow: {milestone.escrowAmount} {contract.currency}
+                            Escrow: {milestone.escrowAmount}
                         </p>
 
-                        {props.user?.role === "client" &&
-                            contract.status === "active" &&
-                            milestone.status === "pending" && (
+                        {milestone.deliveries.map((delivery) => (
+                            <div key={delivery._id}>
+                                <h4>Delivery</h4>
+                                <p>{delivery.message}</p>
 
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleFundMilestone(
-                                        milestone._id
-                                    )
-                                }
-                            >
-                                Fund Milestone
-                            </button>
-
-                        )}
-
-                        {props.user?.role === "client" &&
-                            contract.status === "active" &&
-                            milestone.status === "pending" && (
-
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    handleEditMilestoneClick(
-                                        milestone
-                                    )
-                                }
-                            >
-                                Edit Milestone
-                            </button>
-
-                        )}
-
-                        {editingMilestoneId === milestone._id && (
-
-                            <form
-                                onSubmit={(event) =>
-                                    handleUpdateMilestone(
-                                        event,
-                                        milestone._id
-                                    )
-                                }
-                            >
-
-                                <h4>
-                                    Edit Milestone
-                                </h4>
-
-
-                                <label>
-                                    Title:
-                                </label>
-
-                                <input
-                                    type="text"
-                                    name="title"
-                                    value={editMilestoneData.title}
-                                    onChange={handleEditMilestoneChange}
-                                    required
-                                />
-
-
-                                <label>
-                                    Description:
-                                </label>
-
-                                <textarea
-                                    name="description"
-                                    value={editMilestoneData.description}
-                                    onChange={handleEditMilestoneChange}
-                                />
-
-
-                                <label>
-                                    Amount:
-                                </label>
-
-                                <input
-                                    type="number"
-                                    name="amount"
-                                    value={editMilestoneData.amount}
-                                    onChange={handleEditMilestoneChange}
-                                    min="1"
-                                    required
-                                />
-
-
-                                <label>
-                                    Due Date:
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="dueDate"
-                                    value={editMilestoneData.dueDate}
-                                    onChange={handleEditMilestoneChange}
-                                />
-
-
-                                <button type="submit">
-                                    Save Changes
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setEditingMilestoneId(null)
-                                    }
-                                >
-                                    Cancel
-                                </button>
-
-                            </form>
-
-                        )}
-
-                        {props.user?.role === "freelancer" &&
-                            contract.status === "active" &&
-                            (
-                                milestone.status === "funded" ||
-                                milestone.status === "in_progress"
-                            ) && (
-
-                            <button
-                                type="button"
-                                onClick={() =>
-                                    setSelectedDeliveryId(
-                                        milestone._id
-                                    )
-                                }
-                            >
-                                Deliver Work
-                            </button>
-
-                        )}
-
-                        {selectedDeliveryId === milestone._id && (
-
-                            <div>
-
-                                <h4>
-                                    Submit Work
-                                </h4>
-
-
-                                <label>
-                                    Delivery Message:
-                                </label>
-
-                                <textarea
-                                    value={deliveryMessage}
-                                    onChange={(event) =>
-                                        setDeliveryMessage(
-                                            event.target.value
-                                        )
-                                    }
-                                    required
-                                />
-
-
-                                <button
-                                    type="button"
-                                    disabled={!deliveryMessage.trim()}
-                                    onClick={() =>
-                                        handleDeliverMilestone(
-                                            milestone._id
-                                        )
-                                    }
-                                >
-                                    Submit Delivery
-                                </button>
-
-
-                                <button
-                                    type="button"
-                                    onClick={() => {
-
-                                        setSelectedDeliveryId(null)
-
-                                        setDeliveryMessage('')
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-
-                            </div>
-
-                        )}
-
-                        {milestone.deliveries?.length > 0 && (
-
-                            <div>
-
-                                <h4>
-                                    Deliveries
-                                </h4>
-
-
-                                {milestone.deliveries.map((delivery) => (
-
-                                    <div
-                                        key={delivery._id}
+                                {delivery.attachments.map((attachment) => (
+                                    <a
+                                        key={attachment._id}
+                                        href={attachment.url}
+                                        target="_blank"
+                                        rel="noreferrer"
                                     >
-
-                                        <p>
-                                            {delivery.message}
-                                        </p>
-
-
-                                        <p>
-                                            Submitted: {
-                                                new Date(
-                                                    delivery.submittedAt
-                                                ).toLocaleString()
-                                            }
-                                        </p>
-
-
-                                        {delivery.response && (
-
-                                            <p>
-                                                Response: {delivery.response}
-                                            </p>
-
-                                        )}
-
-
-                                        {delivery.responseNote && (
-
-                                            <p>
-                                                Client Note: {delivery.responseNote}
-                                            </p>
-
-                                        )}
-
-                                    </div>
-
+                                        {attachment.name}
+                                    </a>
                                 ))}
 
+                                {delivery.responseNote && (
+                                    <p>Revision Note: {delivery.responseNote}</p>
+                                )}
                             </div>
+                        ))}
 
+                        {isClient && milestone.status === 'pending' && (
+                            <>
+                                <button onClick={()=>handleEditMilestone(milestone)}>
+                                    Edit Milestone
+                                </button>
+
+                                <button onClick={()=>handleFundMilestone(milestone._id)}>
+                                    Fund Milestone
+                                </button>
+                            </>
                         )}
 
-                        {props.user?.role === "client" &&
-                            contract.status === "active" &&
-                            milestone.status === "delivered" && (
+                        {isFreelancer && (
+                            milestone.status === 'funded' ||
+                            milestone.status === 'in_progress'
+                        ) && (
+                            deliveryId === milestone._id ? (
+                                <form onSubmit={(event)=>handleDeliverySubmit(event, milestone._id)}>
+                                    <label htmlFor={`delivery-${milestone._id}`}>
+                                        Delivery Notes
+                                    </label>
+                                    <textarea
+                                        id={`delivery-${milestone._id}`}
+                                        value={deliveryMessage}
+                                        onChange={(event)=>setDeliveryMessage(event.target.value)}
+                                        required
+                                    />
 
-                            <div>
+                                    <label htmlFor={`deliveryFiles-${milestone._id}`}>
+                                        Attachments
+                                    </label>
+                                    <input
+                                        id={`deliveryFiles-${milestone._id}`}
+                                        type="file"
+                                        multiple
+                                        accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
+                                        onChange={(event)=>setDeliveryFiles(Array.from(event.target.files))}
+                                    />
 
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        handleApproveMilestone(
-                                            milestone._id
-                                        )
-                                    }
-                                >
-                                    Approve Work
+                                    <button type="submit">Submit Delivery</button>
+                                    <button type="button" onClick={()=>setDeliveryId(null)}>
+                                        Cancel
+                                    </button>
+                                </form>
+                            ) : (
+                                <button onClick={()=>setDeliveryId(milestone._id)}>
+                                    Deliver Work
                                 </button>
-
-
-                                <button
-                                    type="button"
-                                    onClick={() =>
-                                        setSelectedRevisionId(
-                                            milestone._id
-                                        )
-                                    }
-                                >
-                                    Request Revision
-                                </button>
-
-                            </div>
-
+                            )
                         )}
 
-                        {selectedRevisionId === milestone._id && (
-
-                            <div>
-
-                                <h4>
-                                    Request Revision
-                                </h4>
-
-
-                                <label>
-                                    Revision Notes:
-                                </label>
-
-
-                                <textarea
-                                    value={revisionNote}
-                                    onChange={(event) =>
-                                        setRevisionNote(
-                                            event.target.value
-                                        )
-                                    }
-                                    required
-                                />
-
-
-                                <button
-                                    type="button"
-                                    disabled={!revisionNote.trim()}
-                                    onClick={() =>
-                                        handleRequestRevision(
-                                            milestone._id
-                                        )
-                                    }
-                                >
-                                    Send Revision Request
+                        {isClient && milestone.status === 'delivered' && (
+                            <>
+                                <button onClick={()=>handleApproveMilestone(milestone._id)}>
+                                    Approve Delivery
                                 </button>
 
+                                {revisionId === milestone._id ? (
+                                    <form onSubmit={(event)=>handleRevisionSubmit(event, milestone._id)}>
+                                        <label htmlFor={`revision-${milestone._id}`}>
+                                            Revision Comments
+                                        </label>
+                                        <textarea
+                                            id={`revision-${milestone._id}`}
+                                            value={revisionNote}
+                                            onChange={(event)=>setRevisionNote(event.target.value)}
+                                            required
+                                        />
 
-                                <button
-                                    type="button"
-                                    onClick={() => {
-
-                                        setSelectedRevisionId(null)
-
-                                        setRevisionNote('')
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-
-                            </div>
-
+                                        <button type="submit">Request Revision</button>
+                                        <button type="button" onClick={()=>setRevisionId(null)}>
+                                            Cancel
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <button onClick={()=>setRevisionId(milestone._id)}>
+                                        Request Revision
+                                    </button>
+                                )}
+                            </>
                         )}
 
                     </div>
 
                 ))}
 
-            </section>
+                {moneySummary && (
+    <section>
+        <h2>Payment Summary</h2>
 
-            {moneySummary && (
+        <div className="card">
+            <p>
+                Total Amount: {moneySummary.totalAmount} {moneySummary.currency}
+            </p>
 
-                <section>
+            <p>
+                In Escrow: {moneySummary.inEscrow} {moneySummary.currency}
+            </p>
 
-                    <h2>
-                        Payment Summary
-                    </h2>
+            <p>
+                Released: {moneySummary.released} {moneySummary.currency}
+            </p>
 
-                    <div className="card">
+            <p>
+                Platform Fees: {moneySummary.platformFees} {moneySummary.currency}
+            </p>
 
-                        <p>
-                            Total Amount: {moneySummary.totalAmount} {moneySummary.currency}
-                        </p>
+            <p>
+                Freelancer Received: {moneySummary.freelancerReceived} {moneySummary.currency}
+            </p>
 
-                        <p>
-                            In Escrow: {moneySummary.inEscrow} {moneySummary.currency}
-                        </p>
+            <p>
+                Refunded: {moneySummary.refunded} {moneySummary.currency}
+            </p>
 
-                        <p>
-                            Released: {moneySummary.released} {moneySummary.currency}
-                        </p>
+            <p>
+                Remaining Unfunded: {moneySummary.remainingUnfunded} {moneySummary.currency}
+            </p>
+        </div>
+    </section>
+)}
 
-                        <p>
-                            Platform Fees: {moneySummary.platformFees} {moneySummary.currency}
-                        </p>
+<section>
+    <h2>Activity</h2>
 
-                        <p>
-                            Freelancer Received: {moneySummary.freelancerReceived} {moneySummary.currency}
-                        </p>
+    {timeline.length === 0 ? (
+        <p>No activity yet.</p>
+    ) : (
+        timeline.map((activity) => (
+            <div
+                className="card"
+                key={activity._id}
+            >
+                <p>{activity.message}</p>
 
-                        <p>
-                            Refunded: {moneySummary.refunded} {moneySummary.currency}
-                        </p>
-
-                        <p>
-                            Remaining Unfunded: {moneySummary.remainingUnfunded} {moneySummary.currency}
-                        </p>
-
-                    </div>
-
-                </section>
-
-            )}
-
-            <section>
-
-                <h2>
-                    Activity
-                </h2>
-
-
-                {timeline.length === 0 ? (
-
+                {activity.by && (
                     <p>
-                        No activity yet.
+                        By: {activity.by.username}
                     </p>
-
-                ) : (
-
-                    timeline.map((activity) => (
-
-                        <div
-                            className="card"
-                            key={activity._id}
-                        >
-
-                            <p>
-                                {activity.message}
-                            </p>
-
-
-                            {activity.by && (
-
-                                <p>
-                                    By: {activity.by.username}
-                                </p>
-
-                            )}
-
-                        </div>
-
-                    ))
-
                 )}
+            </div>
+        ))
+    )}
+</section>
 
-            </section>
+<section>
+    <h2>Messages</h2>
 
-            <section>
+    {messages.length === 0 ? (
+        <p>No messages yet.</p>
+    ) : (
+        messages.map((contractMessage) => (
+            <div
+                className="card"
+                key={contractMessage._id}
+            >
+                <p>{contractMessage.text}</p>
 
-                <h2>
-                    Contract Messages
-                </h2>
-
-
-                {messages.length === 0 ? (
-
+                {contractMessage.sender && (
                     <p>
-                        No messages yet.
+                        From: {contractMessage.sender.username}
                     </p>
-
-                ) : (
-
-                    messages.map((contractMsg) => (
-
-                        <div
-                            className="card"
-                            key={contractMsg._id}
-                        >
-
-                            <p>
-                                <strong>
-                                    {contractMsg.sender?.username}
-                                </strong>
-                            </p>
-
-                            <p>
-                                {contractMsg.text}
-                            </p>
-
-                        </div>
-
-                    ))
-
                 )}
+            </div>
+        ))
+    )}
 
+    <form onSubmit={handleSendMessage}>
+        <label htmlFor="contractMessage">Message</label>
+        <textarea
+            id="contractMessage"
+            value={contractMessage}
+            onChange={(event)=>setContractMessage(event.target.value)}
+            required
+        />
 
-                <form onSubmit={handleSendMessage}>
+        <button type="submit">Send Message</button>
+    </form>
+</section>
 
-                    <textarea
-                        value={contractMessage}
-                        onChange={(event) =>
-                            setContractMessage(
-                                event.target.value
-                            )
-                        }
-                        placeholder="Write a message..."
-                        required
-                    />
-
-
-                    <button
-                        type="submit"
-                        disabled={!contractMessage.trim()}
-                    >
-                        Send Message
-                    </button>
-
-                </form>
-
-            </section>
-
-            {contract.status === "active" && (
-
-                <button
-                    type="button"
-                    onClick={() =>
-                        setShowCancelConfirm(true)
-                    }
-                >
-                    Cancel Contract
-                </button>
-
-            )}
-
-
-            {showCancelConfirm && (
-
-                <div className="card">
-
-                    <p>
-                        Are you sure you want to cancel this contract?
-                    </p>
-
-
-                    <button
-                        type="button"
-                        onClick={handleCancelContract}
-                    >
-                        Yes, Cancel Contract
-                    </button>
-
-
-                    <button
-                        type="button"
-                        onClick={() =>
-                            setShowCancelConfirm(false)
-                        }
-                    >
-                        No
-                    </button>
-
-                </div>
-
-            )}
-
+{(
+    contract.status === 'completed' ||
+    contract.status === 'cancelled'
+) && (
+    <ReviewForm contractId={contractId} />
+)}
         </section>
     )
 }

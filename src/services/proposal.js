@@ -1,7 +1,6 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`
 
 const create = async (jobId, proposalData)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}/proposals`, {
             method: 'POST',
             headers: { 
@@ -17,13 +16,9 @@ const create = async (jobId, proposalData)=>{
         }
 
         return data
-    } catch (error) {
-        throw new Error(error.message)
-    }
 }
 
 const mine = async ()=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/proposals/mine`,{
             method: 'GET',
             headers: {
@@ -38,13 +33,9 @@ const mine = async ()=>{
         }
 
         return data
-    } catch (error) {
-        throw new Error(error.message)
-    }
 }
 
 const getJobProposals = async(jobId)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}/proposals`,{
             method: 'GET',
             headers: {
@@ -59,13 +50,9 @@ const getJobProposals = async(jobId)=>{
         }
 
         return data
-    } catch (error) {
-        throw new Error(error.message)
-    }
 }
 
 const shortlist = async(proposalId)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/shortlist`,{
             method: 'POST',
             headers: {
@@ -80,14 +67,10 @@ const shortlist = async(proposalId)=>{
         }
 
         return data
-    } catch (error) {
-        
-    }
 }
 
 
 const decline = async (proposalId) => {
-    try {
         const res = await fetch(
             `${BASE_URL}/api/v1/proposals/${proposalId}/decline`,
             {
@@ -106,24 +89,20 @@ const decline = async (proposalId) => {
 
         return data
 
-    } catch (error) {
-        throw new Error(error.message)
-    }
 }
 
-const accept = async (proposalId) => {
-    try {
+const accept = async (proposalId, milestones) => {
         const res = await fetch(
             `${BASE_URL}/api/v1/proposals/${proposalId}/accept`,
             {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
                 body: JSON.stringify({
-                    milestones: milestone
+                    milestones: milestones
                 })
-                }
             }
         )
 
@@ -135,15 +114,11 @@ const accept = async (proposalId) => {
 
         return data
 
-    } catch (error) {
-        throw new Error(error.message)
-    }
 }
 
 const update = async (proposalId, proposalData)=>{
 
-    try {
-        const res = fetch(`${BASE_URL}/api/v1/proposals/${proposalId}`,{
+        const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}`,{
             method: 'PATCH',
             headers: { 
                 'Content-Type': 'application/json', 
@@ -158,14 +133,10 @@ const update = async (proposalId, proposalData)=>{
         }
 
         return data
-    } catch (error) {
-        throw new Error(error.message)
-    }
 }
 
 const withdraw = async(proposalId)=>{
-    try {
-        const res = fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/withdraw`,{
+        const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/withdraw`,{
             method: 'POST',
             headers: { 
                 Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -178,9 +149,6 @@ const withdraw = async(proposalId)=>{
         }
 
         return data
-    } catch (error) {
-        
-    }
 }
 
 export {

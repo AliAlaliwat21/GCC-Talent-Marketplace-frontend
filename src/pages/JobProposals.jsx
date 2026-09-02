@@ -15,6 +15,7 @@ const JobProposals = () => {
 
     const [proposals, setProposals] = useState([])
     const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(true)
 
     const [selectedProposalId, setSelectedProposalId] = useState(null)
 
@@ -26,6 +27,8 @@ const JobProposals = () => {
 
 
     const fetchProposals = async () => {
+        setLoading(true)
+
         try {
 
             const data = await getJobProposals(jobId)
@@ -36,12 +39,27 @@ const JobProposals = () => {
 
             setMessage(error.message)
 
+        } finally {
+
+            setLoading(false)
+
         }
     }
 
 
     useEffect(() => {
-        fetchProposals()
+        const fetchInitialProposals = async () => {
+            try {
+                const data = await getJobProposals(jobId)
+                setProposals(data.proposals)
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchInitialProposals()
     }, [jobId])
 
 
@@ -124,6 +142,10 @@ const JobProposals = () => {
             setMessage(error.message)
 
         }
+    }
+
+    if (loading) {
+        return <p>Loading job proposals...</p>
     }
 
 

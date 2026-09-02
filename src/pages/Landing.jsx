@@ -1,7 +1,30 @@
 import { Link } from "react-router"
+import { useEffect, useState } from "react"
+import { index as getFreelancers } from "../services/freelancerProfiles"
 import "./Landing.css"
 
 const Landing = () => {
+    const [freelancers, setFreelancers] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [message, setMessage] = useState("")
+
+    useEffect(function () {
+        const fetchFreelancers = async function () {
+            try {
+                const data = await getFreelancers({
+                    page: 1,
+                    limit: 3
+                })
+                setFreelancers(data.profiles)
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+        fetchFreelancers()
+    }, [])
+
     return (
     <div className="landing-page">
         <section className="hero">
@@ -25,6 +48,35 @@ const Landing = () => {
                         <article>Writing & Translation</article>
                         </div>
                         </section>
+
+                        <section className="landing-section">
+                            <h2>Featured Freelancers</h2>
+
+                            {loading ? (
+                                <p>Loading freelancers...</p>
+                            ) : message ? (
+                                <p>{message}</p>
+                            ) : freelancers.length === 0 ? (
+                                <p>No freelancers available yet.</p>
+                            ) : (
+                                <div className="category-grid">
+                                    {freelancers.map(function (profile) {
+                                        return (
+                                        <article key={profile._id}>
+                                            <h3>{profile.user.username}</h3>
+                                            <p>{profile.headline}</p>
+                                            <p>{profile.hourlyRate} {profile.currency} per hour</p>
+                                            <Link to={`/freelancers/${profile.user._id}`}>
+                                                View Profile
+                                            </Link>
+                                            </article>
+                                            )
+                                        })}
+                                    </div>
+                                )}
+
+                                <Link to="/freelancers">View All Freelancers</Link>
+                            </section>
                         
                         <section className="landing-section">
                             <h2>How It Works</h2>

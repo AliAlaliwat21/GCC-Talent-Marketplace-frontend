@@ -1,5 +1,24 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}/api/v1/freelancers`
 
+const index = async (filters = {}) => {
+    const params = new URLSearchParams()
+
+    Object.keys(filters).forEach(function (filter) {
+        if (filters[filter] !== "" && filters[filter] !== undefined) {
+            params.append(filter, filters[filter])
+        }
+    })
+
+    const res = await fetch(`${BASE_URL}?${params.toString()}`)
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.message || "Failed to fetch freelancers")
+    }
+    return data
+}
+
 const show = async (userId) => {
     const res = await fetch(`${BASE_URL}/${userId}`)
     
@@ -51,6 +70,7 @@ const createPortfolioItem = async function (profileId, portfolioData) {
 }
 
 export {
+    index,
     show,
     upsertMe,
     createPortfolioItem

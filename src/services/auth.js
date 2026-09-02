@@ -1,7 +1,6 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`
 
 const signUp = async (formData) => {
-    try {
 
         const userData = {
             username: formData.username,
@@ -27,14 +26,9 @@ const signUp = async (formData) => {
             return JSON.parse(atob(data.accessToken.split('.')[1])).payload
         }
 
-    } catch (err) {
-        throw new Error(err.message)
-    }
-
 }
 
 const signIn = async (formData) => {
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -53,13 +47,25 @@ const signIn = async (formData) => {
             return JSON.parse(atob(data.accessToken.split('.')[1])).payload
         }
 
-    } catch (err) {
-        throw new Error(err.message)
+}
+
+const signOut = async () => {
+    const res = await fetch(`${BASE_URL}/api/v1/auth/logout`, {
+        method: 'POST',
+        credentials: 'include'
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.err || data.message)
     }
 
+    return data
 }
 
 export {
     signUp,
     signIn,
+    signOut
 }

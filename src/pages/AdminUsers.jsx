@@ -30,7 +30,19 @@ const AdminUsers = function () {
     }
     
     useEffect(function () {
-        fetchUsers(filters)
+        const fetchInitialUsers = async function () {
+            try {
+                const data = await getUsers({page: 1})
+                setUsers(data.users)
+                setTotalPages(data.totalPages)
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchInitialUsers()
     }, [])
     
     const handleChange = function (event) {

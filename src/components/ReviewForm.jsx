@@ -28,7 +28,7 @@ const ReviewForm = ({
             )
 
             setMessage("Review submitted successfully!")
-            setSubmit(true)
+            setSubmitted(true)
 
             if(onReviewCreated){
                 onReviewCreated(review)
@@ -37,7 +37,7 @@ const ReviewForm = ({
             setMessage(error.message)
             
         } finally{
-            setSubmitted(false)
+            setSubmit(false)
         }
     }
 

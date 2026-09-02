@@ -6,6 +6,7 @@ const MyProposals = ()=>{
 
     const [proposals, setProposals] = useState([])
     const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(true)
 
     const [editingId, setEditingId] = useState(null)
 
@@ -16,6 +17,8 @@ const MyProposals = ()=>{
     })
 
     const fetchProposals = async () => {
+        setLoading(true)
+
         try {
             const data = await mine()
 
@@ -23,11 +26,24 @@ const MyProposals = ()=>{
 
         } catch (error) {
             setMessage(error.message)
+        } finally {
+            setLoading(false)
         }
     }
 
     useEffect(() => {
-        fetchProposals()
+        const fetchInitialProposals = async () => {
+            try {
+                const data = await mine()
+                setProposals(data.proposals)
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchInitialProposals()
     }, [])
 
      const handleEditClick = (proposal) => {
@@ -106,6 +122,10 @@ const MyProposals = ()=>{
             amount: '',
             deliveryDays: ''
         })
+    }
+
+    if (loading) {
+        return <p>Loading proposals...</p>
     }
 
     return (

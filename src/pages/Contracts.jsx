@@ -5,6 +5,7 @@ const Contracts = ()=>{
 
     const [contracts, setContracts] = useState([])
     const [message, setMessage] = useState('')
+    const [loading, setLoading] = useState(true)
 
     useEffect(()=>{
         const fetchContracts = async ()=>{
@@ -15,6 +16,8 @@ const Contracts = ()=>{
 
             } catch (error) {
                 setMessage(error.message)
+            } finally {
+                setLoading(false)
             }
         }
         fetchContracts()
@@ -27,7 +30,9 @@ const Contracts = ()=>{
                 <p>{message}</p>
             </header>
 
-            {contracts.length === 0 && (
+            {loading ? (
+                <p>Loading contracts...</p>
+            ) : message ? null : contracts.length === 0 && (
                 <p>You are yet to have any contracts!</p>
             )}
 

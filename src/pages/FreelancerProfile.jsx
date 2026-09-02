@@ -30,6 +30,7 @@ const FreelancerProfile = function (props) {
     })
     const [portfolioItems, setPortfolioItems] = useState([])
     const [portfolioImage, setPortfolioImage] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     const handleChange = function (event) {
         setFormData({...formData, [event.target.name]: event.target.value})
@@ -72,6 +73,8 @@ const FreelancerProfile = function (props) {
                 if (error.message !== "Freelancer profile not found") {
                     setMessage(error.message)
                 }
+            } finally {
+                setLoading(false)
             }
         }
         
@@ -181,6 +184,10 @@ const FreelancerProfile = function (props) {
             setMessage(error.message)
         }
     }
+
+    if (loading) {
+        return <p>Loading freelancer profile...</p>
+    }
     
     return (
     <section className="card">
@@ -276,13 +283,20 @@ const FreelancerProfile = function (props) {
                     })}
                     
                     <label htmlFor="country">Country</label>
-                    <input
+                    <select
                     id="country"
                     name="country"
-                    type="text"
                     value={formData.country}
                     onChange={handleChange}
-                    required/>
+                    required>
+                        <option value="">Select Country</option>
+                        <option value="Bahrain">Bahrain</option>
+                        <option value="Kuwait">Kuwait</option>
+                        <option value="Oman">Oman</option>
+                        <option value="Qatar">Qatar</option>
+                        <option value="Saudi Arabia">Saudi Arabia</option>
+                        <option value="United Arab Emirates">United Arab Emirates</option>
+                        </select>
                     
                     <label htmlFor="city">City</label>
                     <input
