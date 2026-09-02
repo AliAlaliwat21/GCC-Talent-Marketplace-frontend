@@ -28,6 +28,7 @@ import AdminSkills from "./pages/AdminSkills"
 import AccountSettings from "./pages/AccountSettings"
 import RequireAuth from "./components/RequireAuth"
 import NotFound from "./pages/NotFound"
+import Freelancers from "./pages/Freelancers"
 const getUserFromToken = () => {
   try {
     const token = localStorage.getItem('token')
@@ -100,6 +101,10 @@ const App = () => {
           <Route
             path="/freelancers/:userId"
             element={<PublicFreelancerProfile />}
+          />
+          <Route
+            path="/freelancers"
+            element={<Freelancers />}
           />
           <Route
             path="/clients/:userId"
