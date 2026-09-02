@@ -111,7 +111,7 @@ const decline = async (proposalId) => {
     }
 }
 
-const accept = async (proposalId) => {
+const accept = async (proposalId, milestones) => {
     try {
         const res = await fetch(
             `${BASE_URL}/api/v1/proposals/${proposalId}/accept`,
@@ -119,11 +119,11 @@ const accept = async (proposalId) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    Authorization: `Bearer ${localStorage.getItem('token')}`
+                },
                 body: JSON.stringify({
-                    milestones: milestone
+                    milestones: milestones
                 })
-                }
             }
         )
 
