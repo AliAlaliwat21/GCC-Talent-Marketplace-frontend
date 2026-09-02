@@ -26,6 +26,7 @@ import AdminDashboard from "./pages/AdminDashboard"
 import AdminCategories from "./pages/AdminCategories"
 import AdminSkills from "./pages/AdminSkills"
 import AccountSettings from "./pages/AccountSettings"
+import RequireAuth from "./components/RequireAuth"
 const getUserFromToken = () => {
   try {
     const token = localStorage.getItem('token')
@@ -73,15 +74,27 @@ const App = () => {
           />
           <Route
             path="/client/jobs"
-            element={<MyJobs />}
+            element={
+              <RequireAuth user={user} roles={["client"]}>
+                <MyJobs />
+              </RequireAuth>
+            }
           />
           <Route
             path="/client/jobs/:jobId/proposals"
-            element={<JobProposals />}
+            element={
+              <RequireAuth user={user} roles={["client"]}>
+                <JobProposals />
+              </RequireAuth>
+            }
           />
           <Route
             path="/freelancer/profile"
-            element={<FreelancerProfile user={user} />}
+            element={
+              <RequireAuth user={user} roles={["freelancer"]}>
+                <FreelancerProfile user={user} />
+              </RequireAuth>
+            }
           />
           <Route
             path="/freelancers/:userId"
@@ -93,49 +106,107 @@ const App = () => {
           />
           <Route
             path="/proposals/mine"
-            element={<MyProposals />}
+            element={
+              <RequireAuth user={user} roles={["freelancer"]}>
+                <MyProposals />
+              </RequireAuth>
+            }
           />
           <Route
             path="/client/profile"
-            element={<ClientProfile />}
+            element={
+              <RequireAuth user={user} roles={["client"]}>
+                <ClientProfile />
+              </RequireAuth>
+            }
           />
-          <Route path='/contracts' element={<Contracts/>} />
-          <Route path='/contracts/:contractId' element={<ContractDetails user={user} />} />
+          <Route
+            path='/contracts'
+            element={
+              <RequireAuth user={user} roles={["client", "freelancer"]}>
+                <Contracts/>
+              </RequireAuth>
+            }
+          />
+          <Route
+            path='/contracts/:contractId'
+            element={
+              <RequireAuth user={user} roles={["client", "freelancer"]}>
+                <ContractDetails user={user} />
+              </RequireAuth>
+            }
+          />
           <Route
             path="/client/jobs/new"
-            element={<CreateJob />}
+            element={
+              <RequireAuth user={user} roles={["client"]}>
+                <CreateJob />
+              </RequireAuth>
+            }
           />
           <Route
             path="/client/jobs/:jobId/edit"
-            element={<EditJob />}
+            element={
+              <RequireAuth user={user} roles={["client"]}>
+                <EditJob />
+              </RequireAuth>
+            }
           />
           <Route
             path="/wallet"
-            element={<Wallet user={user} />}
+            element={
+              <RequireAuth user={user} roles={["client", "freelancer"]}>
+                <Wallet user={user} />
+              </RequireAuth>
+            }
           />
           <Route
             path="/settings"
-            element={<AccountSettings user={user} setUser={setUser} />}
+            element={
+              <RequireAuth user={user}>
+                <AccountSettings user={user} setUser={setUser} />
+              </RequireAuth>
+            }
           />
           <Route
             path="/admin"
-            element={<AdminDashboard />}
+            element={
+              <RequireAuth user={user} roles={["admin"]}>
+                <AdminDashboard />
+              </RequireAuth>
+            }
           />
           <Route
             path="/admin/users"
-            element={<AdminUsers />}
+            element={
+              <RequireAuth user={user} roles={["admin"]}>
+                <AdminUsers />
+              </RequireAuth>
+            }
           />
           <Route
             path="/admin/users/:userId"
-            element={<AdminUserDetails />}
+            element={
+              <RequireAuth user={user} roles={["admin"]}>
+                <AdminUserDetails />
+              </RequireAuth>
+            }
           />
           <Route
             path="/admin/categories"
-            element={<AdminCategories />}
+            element={
+              <RequireAuth user={user} roles={["admin"]}>
+                <AdminCategories />
+              </RequireAuth>
+            }
           />
           <Route
             path="/admin/skills"
-            element={<AdminSkills />}
+            element={
+              <RequireAuth user={user} roles={["admin"]}>
+                <AdminSkills />
+              </RequireAuth>
+            }
           />
         </Routes>
       </main>
