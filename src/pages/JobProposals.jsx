@@ -198,7 +198,7 @@ const JobProposals = () => {
                                 </p>
 
                                 <ul>
-                                    {profile.skills?.map((skill) => (
+                                    {profile.skills?.filter((skill) => skill).map((skill) => (
                                         <li key={skill._id}>
                                             {skill.name}
                                         </li>

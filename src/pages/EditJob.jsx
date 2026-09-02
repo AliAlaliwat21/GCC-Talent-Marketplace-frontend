@@ -48,8 +48,10 @@ const EditJob = function () {
                     description: job.description,
                     category: typeof job.category === "string"
                         ? job.category
-                        : job.category._id,
-                    skills: job.skills.map(function (skill) {
+                        : job.category?._id || "",
+                    skills: job.skills.filter(function (skill) {
+                        return skill
+                    }).map(function (skill) {
                         if (typeof skill === "string") {
                             return skill
                         }

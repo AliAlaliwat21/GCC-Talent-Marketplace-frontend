@@ -16,6 +16,13 @@ const index = async (filters = {}) => {
     if (!res.ok) {
         throw new Error(data.message || "Failed to fetch freelancers")
     }
+
+    if (Array.isArray(data.profiles)) {
+        data.profiles = data.profiles.filter(function (profile) {
+            return profile.user
+        })
+    }
+
     return data
 }
 
@@ -27,6 +34,17 @@ const show = async (userId) => {
     if (!res.ok) {
         throw new Error(data.message || "Failed to fetch freelancer profile")
     }
+
+    if (!data.profile || !data.user) {
+        throw new Error("Freelancer profile is unavailable")
+    }
+
+    if (Array.isArray(data.profile.skills)) {
+        data.profile.skills = data.profile.skills.filter(function (skill) {
+            return skill
+        })
+    }
+
     return data
 }
 

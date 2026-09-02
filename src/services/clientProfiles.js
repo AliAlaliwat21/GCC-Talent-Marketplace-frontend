@@ -35,6 +35,10 @@ const show = async (userId) => {
         )
     }
 
+    if (!data.profile || !data.user) {
+        throw new Error("Client profile is unavailable")
+    }
+
     return data
 }
 
