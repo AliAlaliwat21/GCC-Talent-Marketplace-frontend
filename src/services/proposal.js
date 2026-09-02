@@ -143,7 +143,7 @@ const accept = async (proposalId, milestones) => {
 const update = async (proposalId, proposalData)=>{
 
     try {
-        const res = fetch(`${BASE_URL}/api/v1/proposals/${proposalId}`,{
+        const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}`,{
             method: 'PATCH',
             headers: { 
                 'Content-Type': 'application/json', 
