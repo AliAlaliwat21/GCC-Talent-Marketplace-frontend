@@ -51,14 +51,30 @@ const show = async (jobId) => {
 }
 
 
-const myJobs = async () => {
+const myJobs = async (filters = {}) => {
     const token = localStorage.getItem('token')
+    const params = new URLSearchParams()
 
-    const res = await fetch(`${BASE_URL}/mine`, {
-        headers: {
-            Authorization: `Bearer ${token}`
+    for (const key in filters) {
+        if (
+            filters[key] !== "" &&
+            filters[key] !== undefined &&
+            filters[key] !== null
+        ) {
+            params.append(key, filters[key])
         }
-    })
+    }
+
+    const query = params.toString()
+
+    const res = await fetch(
+        query ? `${BASE_URL}/mine?${query}` : `${BASE_URL}/mine`,
+        {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+    )
 
     const data = await res.json()
 
