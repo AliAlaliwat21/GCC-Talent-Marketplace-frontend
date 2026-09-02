@@ -122,6 +122,23 @@ const approveMilestone = async (contractId, milestoneId)=>{
     return data
 }
 
+const requestRevision = async (contractId, milestoneId, note)=>{
+    const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}/milestones/${milestoneId}/request-revision`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({note: note})
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) throw new Error(data.error || data.message)
+
+    return data
+}
+
 export {
     index,
     show,
@@ -129,5 +146,6 @@ export {
     updateMilestone,
     fundMilestone,
     deliverMilestone,
-    approveMilestone
+    approveMilestone,
+    requestRevision
 }
