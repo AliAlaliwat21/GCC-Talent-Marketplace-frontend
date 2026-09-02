@@ -99,6 +99,10 @@ const Freelancers = function () {
         fetchFreelancers(newFilters)
     }
 
+    const availableProfiles = profiles.filter(function (profile) {
+        return profile && profile.user
+    })
+
     return (
     <section>
         <header>
@@ -106,7 +110,7 @@ const Freelancers = function () {
             <p>{message}</p>
             </header>
 
-            <form onSubmit={handleSubmit}>
+            <form className="filter-form" onSubmit={handleSubmit}>
                 <label htmlFor="q">Search</label>
                 <input
                     id="q"
@@ -238,25 +242,28 @@ const Freelancers = function () {
 
             {loading ? (
                 <p>Loading freelancers...</p>
-            ) : profiles.length === 0 ? (
+            ) : availableProfiles.length === 0 ? (
                 <p>No freelancers found</p>
             ) : (
                 <>
-                {profiles.map(function (profile) {
-                    return (
-                    <div className="card" key={profile._id}>
-                        <h2>{profile.user.username}</h2>
-                        <p>{profile.headline}</p>
-                        <p>Rate: {profile.hourlyRate} {profile.currency}</p>
-                        <p>Availability: {profile.availability.replace("_", " ")}</p>
-                        <p>Rating: {profile.user.ratingAvg} / 5</p>
-                        <Link to={`/freelancers/${profile.user._id}`}>
-                            View Profile
-                        </Link>
+                <div className="card-grid">
+                    {availableProfiles.map(function (profile) {
+                        return (
+                        <div className="card listing-card" key={profile._id}>
+                            <h2>{profile.user.username}</h2>
+                            <p>{profile.headline}</p>
+                            <p>Rate: {profile.hourlyRate} {profile.currency}</p>
+                            <p>Availability: {profile.availability.replace("_", " ")}</p>
+                            <p>Rating: {profile.user.ratingAvg} / 5</p>
+                            <Link to={`/freelancers/${profile.user._id}`}>
+                                View Profile
+                            </Link>
                         </div>
                         )
                     })}
+                </div>
 
+                <div className="pagination">
                     <button
                         disabled={filters.page === 1}
                         onClick={function () {
@@ -265,7 +272,9 @@ const Freelancers = function () {
                     >
                         Previous
                     </button>
-                    <span> Page {filters.page} of {totalPages} </span>
+
+                    <span>Page {filters.page} of {totalPages}</span>
+
                     <button
                         disabled={filters.page === totalPages}
                         onClick={function () {
@@ -274,10 +283,11 @@ const Freelancers = function () {
                     >
                         Next
                     </button>
+                </div>
                 </>
-                )}
-                </section>
-                )
-            }
+            )}
+            </section>
+            )
+        }
 
-export default Freelancers
+        export default Freelancers

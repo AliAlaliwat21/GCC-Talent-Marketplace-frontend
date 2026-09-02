@@ -1,17 +1,21 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+@import "tailwindcss";
 
 :root {
   font-family: "Poppins", sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
 
   --color-primary: #224548;
   --color-primary-dark: #1A3638;
-  --color-primary-soft: #EFE4D8;
-  --color-success: #2F7D6D;
-  --color-text: #1F2A2B;
   --color-text-light: #2E5A5E;
+  --color-accent: #C9A77C;
   --color-background: #F7F0E9;
-  --color-surface: #ffffff;
   --color-border: #EFE4D8;
+  --color-text: #1F2A2B;
+  --color-surface: #ffffff;
+  --color-success: #2F7D6D;
+  --color-warning: #B58A4A;
   --color-error: #9B3B3B;
 }
 
@@ -19,11 +23,34 @@
   box-sizing: border-box;
 }
 
+html {
+  min-width: 320px;
+}
+
 body {
   min-height: 100vh;
   margin: 0;
-  background: var(--color-background);
+  background:
+    radial-gradient(
+      circle at top left,
+      rgba(201, 167, 124, 0.12),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at bottom right,
+      rgba(34, 69, 72, 0.08),
+      transparent 34%
+    ),
+    var(--color-background);
+  background-attachment: fixed;
   color: var(--color-text);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
 }
 
 button {
@@ -40,6 +67,25 @@ img {
   max-width: 100%;
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
   margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  color: var(--color-primary-dark);
+  line-height: 1.25;
+}
+
+p {
+  line-height: 1.7;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: white;
 }
