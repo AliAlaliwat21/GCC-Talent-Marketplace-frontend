@@ -32,7 +32,18 @@ const MyProposals = ()=>{
     }
 
     useEffect(() => {
-        fetchProposals()
+        const fetchInitialProposals = async () => {
+            try {
+                const data = await mine()
+                setProposals(data.proposals)
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchInitialProposals()
     }, [])
 
      const handleEditClick = (proposal) => {
