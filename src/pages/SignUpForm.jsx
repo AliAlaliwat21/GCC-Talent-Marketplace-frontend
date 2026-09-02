@@ -18,8 +18,10 @@ const SignUpForm = (props) => {
     const [message, setMessage] = useState('')
 
     const handleChange = (event) => {
+        setMessage('')
         setFormData({...formData, [event.target.name]: event.target.value})
     }
+
     const handleSubmit = async (event) => {
         event.preventDefault()
         try {
@@ -35,10 +37,10 @@ const SignUpForm = (props) => {
     const isFormValid = () => {
         if(
             formData.username &&
-            formData.email && 
+            formData.email &&
             formData.password &&
-            formData.role && 
-            formData.password === 
+            formData.role &&
+            formData.password ===
             formData.confirmPassword
         ) {
             return true
@@ -46,49 +48,89 @@ const SignUpForm = (props) => {
     }
 
     return (
-        <section className="card">
+        <section className="card auth-card sign-up-card">
             <header>
                 <h1>Sign Up</h1>
-                <p>{message}</p>
+                <p>Create your GCC Talent account</p>
+                {message && <p className="error">{message}</p>}
             </header>
-            <form onSubmit={handleSubmit}>
 
-                Username:
-                <input
-                    type='text'
-                    name='username'
-                    onChange={handleChange}
-                    value={formData.username}
-                    required
-                />
-                
-                Email:
-                <input type="email" name="email" onChange={handleChange} value={formData.email} required />
+            <form className="sign-up-form" onSubmit={handleSubmit}>
+                <div className="form-field">
+                    <label htmlFor="username">Username</label>
+                    <input
+                        id="username"
+                        type="text"
+                        name="username"
+                        onChange={handleChange}
+                        value={formData.username}
+                        required
+                    />
+                </div>
 
-                Password:
-                <input type="password" name="password" onChange={handleChange} value={formData.password} required />
+                <div className="form-field">
+                    <label htmlFor="email">Email</label>
+                    <input
+                        id="email"
+                        type="email"
+                        name="email"
+                        onChange={handleChange}
+                        value={formData.email}
+                        required
+                    />
+                </div>
 
-                Confirm Password:
-                <input type="password" name="confirmPassword" onChange={handleChange} value={formData.confirmPassword} required />
-                <div className="actions">
+                <div className="form-field">
+                    <label htmlFor="password">Password</label>
+                    <input
+                        id="password"
+                        type="password"
+                        name="password"
+                        onChange={handleChange}
+                        value={formData.password}
+                        required
+                    />
+                </div>
 
-                    <button type="submit" disabled={!isFormValid()}>Sign Up</button>
-                    <button>Cancel</button>
+                <div className="form-field">
+                    <label htmlFor="confirmPassword">Confirm Password</label>
+                    <input
+                        id="confirmPassword"
+                        type="password"
+                        name="confirmPassword"
+                        onChange={handleChange}
+                        value={formData.confirmPassword}
+                        required
+                    />
+                </div>
 
-                    Role:
+                <div className="form-field role-field">
+                    <label htmlFor="role">Role</label>
                     <select
-                        name='role'
+                        id="role"
+                        name="role"
                         value={formData.role}
                         onChange={handleChange}
                         required
                     >
-                        <option value=''>Select a Role</option>
-
-                        <option value='client'>Client</option>
-
-                        <option value='freelancer'>Freelancer</option>
-
+                        <option value="">Select a Role</option>
+                        <option value="client">Client</option>
+                        <option value="freelancer">Freelancer</option>
                     </select>
+                </div>
+
+                <div className="actions sign-up-actions">
+                    <button type="submit" disabled={!isFormValid()}>
+                        Sign Up
+                    </button>
+
+                    <button
+                        type="button"
+                        className="secondary-button"
+                        onClick={() => navigate('/')}
+                    >
+                        Cancel
+                    </button>
                 </div>
             </form>
         </section>
@@ -96,4 +138,3 @@ const SignUpForm = (props) => {
 }
 
 export default SignUpForm
-

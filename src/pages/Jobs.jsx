@@ -98,14 +98,19 @@ const Jobs = function () {
             }
         )
 
-        setFilters({...filters, skills: selectedSkills
+        setFilters({
+            ...filters,
+            skills: selectedSkills
         })
     }
 
     const handleSubmit = function (event) {
         event.preventDefault()
 
-        const searchFilters = {...filters, page: 1}
+        const searchFilters = {
+            ...filters,
+            page: 1
+        }
 
         setFilters(searchFilters)
         fetchJobs(searchFilters)
@@ -131,7 +136,10 @@ const Jobs = function () {
     }
 
     const handlePageChange = function (page) {
-        const pageFilters = {...filters, page: page}
+        const pageFilters = {
+            ...filters,
+            page: page
+        }
 
         setFilters(pageFilters)
         fetchJobs(pageFilters)
@@ -147,8 +155,7 @@ const Jobs = function () {
                 <p>{message}</p>
             </header>
 
-            <form onSubmit={handleSubmit}>
-
+            <form className="filter-form" onSubmit={handleSubmit}>
                 <label htmlFor="search">Search</label>
                 <input
                     id="search"
@@ -166,15 +173,11 @@ const Jobs = function () {
                     onChange={handleChange}
                 >
                     <option value="">All Categories</option>
-
                     {categories.map(function (category) {
                         return (
-                            <option
-                            value={category._id}
-                            key={category._id}
-                            >
-                                {category.name}
-                                </option>
+                        <option key={category._id} value={category._id}>
+                            {category.name}
+                        </option>
                         )
                     })}
                 </select>
@@ -189,12 +192,9 @@ const Jobs = function () {
                 >
                     {skills.map(function (skill) {
                         return (
-                            <option
-                            value={skill._id}
-                            key={skill._id}
-                            >
-                                {skill.name}
-                                </option>
+                        <option key={skill._id} value={skill._id}>
+                            {skill.name}
+                        </option>
                         )
                     })}
                 </select>
@@ -269,36 +269,35 @@ const Jobs = function () {
                 </select>
 
                 <button type="submit">Search</button>
-
                 <button type="button" onClick={handleReset}>
                     Reset
                 </button>
-
             </form>
+
             {loading ? (
                 <p>Loading...</p>
             ) : jobs.length === 0 ? (
                 <p>No jobs found</p>
             ) : (
-                jobs.map(function (job) {
-                    return (
-                    <div className = 'card' key={job._id}>
-                        <h2>{job.title}</h2>
-                        <p>{job.description}</p>
-                        <p>budget:{job.budgetMin} - {job.budgetMax} </p>
-                        <p> {job.experienceLevel}</p>
-                        <p> Status: {job.status}</p>
-
-                        <Link to={`/jobs/${job._id}`}  >
-                            View Job
-                        </Link>
-
+                <div className="card-grid">
+                    {jobs.map(function (job) {
+                        return (
+                        <div className="card listing-card" key={job._id}>
+                            <h2>{job.title}</h2>
+                            <p>{job.description}</p>
+                            <p>Budget: {job.budgetMin} - {job.budgetMax}</p>
+                            <p>Experience: {job.experienceLevel}</p>
+                            <p>Status: {job.status}</p>
+                            <Link to={`/jobs/${job._id}`}>
+                                View Job
+                            </Link>
                         </div>
-                    )
-                })
+                        )
+                    })}
+                </div>
             )}
 
-            <div>
+            <div className="pagination">
                 <button
                     type="button"
                     disabled={currentPage <= 1}
@@ -321,7 +320,6 @@ const Jobs = function () {
                     Next
                 </button>
             </div>
-
         </section>
     )
 }
