@@ -21,6 +21,23 @@ const index = async () => {
     }
 }
 
+const showMe = async () => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
+        headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.err || data.message)
+    }
+
+    return data
+}
+
 export {
     index,
+    showMe
 }
