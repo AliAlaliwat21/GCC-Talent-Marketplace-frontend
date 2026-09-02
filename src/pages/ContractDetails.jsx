@@ -40,7 +40,19 @@ const ContractDetails = (props)=>{
     }
 
     useEffect(()=>{
-        fetchContract()
+        const fetchInitialContract = async()=>{
+            try {
+                const data = await show(contractId)
+                setContract(data.contract)
+                setMoneySummary(data.moneySummary)
+                setTimeline(data.timeline)
+                setMessages(data.messages)
+            } catch (error) {
+                setMessage(error.message)
+            }
+        }
+
+        fetchInitialContract()
     }, [contractId])
 
     const handleMilestoneChange = (event)=>{
