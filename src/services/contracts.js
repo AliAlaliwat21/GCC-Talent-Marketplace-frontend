@@ -16,7 +16,7 @@ const index = async ()=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
    
 }
@@ -37,7 +37,7 @@ const show = async (contractId)=>{
 
             return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 

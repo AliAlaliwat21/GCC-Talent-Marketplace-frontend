@@ -18,7 +18,7 @@ const create = async (jobId, proposalData)=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -39,7 +39,7 @@ const mine = async ()=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -60,7 +60,7 @@ const getJobProposals = async(jobId)=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -81,7 +81,7 @@ const shortlist = async(proposalId)=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -107,7 +107,7 @@ const decline = async (proposalId) => {
         return data
 
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -136,7 +136,7 @@ const accept = async (proposalId, milestones) => {
         return data
 
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -159,7 +159,7 @@ const update = async (proposalId, proposalData)=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 
@@ -179,7 +179,7 @@ const withdraw = async(proposalId)=>{
 
         return data
     } catch (error) {
-        throw new Error(error.message)
+        throw error
     }
 }
 

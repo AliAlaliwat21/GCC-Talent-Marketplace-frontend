@@ -28,7 +28,7 @@ const signUp = async (formData) => {
         }
 
     } catch (err) {
-        throw new Error(err.message)
+        throw err
     }
 
 }
@@ -54,7 +54,7 @@ const signIn = async (formData) => {
         }
 
     } catch (err) {
-        throw new Error(err.message)
+        throw err
     }
 
 }
