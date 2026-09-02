@@ -41,7 +41,25 @@ const show = async (contractId)=>{
     }
 }
 
+const addMilestone = async (contractId, milestoneData)=>{
+    const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}/milestones`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(milestoneData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) throw new Error(data.error || data.message)
+
+    return data
+}
+
 export {
     index,
-    show
+    show,
+    addMilestone
 }
