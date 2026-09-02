@@ -90,10 +90,28 @@ const fundMilestone = async (contractId, milestoneId)=>{
     return data
 }
 
+const deliverMilestone = async (contractId, milestoneId, deliveryData)=>{
+    const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}/milestones/${milestoneId}/deliver`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(deliveryData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) throw new Error(data.error || data.message)
+
+    return data
+}
+
 export {
     index,
     show,
     addMilestone,
     updateMilestone,
-    fundMilestone
+    fundMilestone,
+    deliverMilestone
 }
