@@ -15,7 +15,9 @@ const Landing = () => {
                     page: 1,
                     limit: 3
                 })
-                setFreelancers(data.profiles)
+                setFreelancers(data.profiles.filter(function (profile) {
+                    return profile.user
+                }))
             } catch (error) {
                 setMessage(error.message)
             } finally {
