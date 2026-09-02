@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { index as skillsIndex } from "../services/skills"
 import { createPortfolioItem, show, upsertMe } from "../services/freelancerProfiles"
@@ -190,182 +191,235 @@ const FreelancerProfile = function (props) {
     }
     
     return (
-    <section className="card">
-        <header>
-            <h1>Freelancer Profile</h1>
-            <p>Tell clients about your skills and experience</p>
+        <section className="card compact-page">
+            <header>
+                <h1>Freelancer Profile</h1>
+                <p>Tell clients about your skills and experience</p>
             </header>
             <p>{message}</p>
-            
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="headline">Headline</label>
-                <input
-                id="headline"
-                name="headline"
-                type="text"
-                value={formData.headline}
-                onChange={handleChange}
-                required/>
-                
-                <label htmlFor="bio">Bio</label>
-                <textarea
-                id="bio"
-                name="bio"
-                value={formData.bio}
-                onChange={handleChange}
-                required/>
-                
-                <label htmlFor="hourlyRate">Hourly Rate</label>
-                <input
-                id="hourlyRate"
-                name="hourlyRate"
-                type="number"
-                min="0"
-                value={formData.hourlyRate}
-                onChange={handleChange}
-                required/>
-                
-                <label htmlFor="availability">Availability</label>
-                <select
-                id="availability"
-                name="availability"
-                value={formData.availability}
-                onChange={handleChange}
-                required>
-                    <option value="">Select availability</option>
-                    <option value="full_time">Full Time</option>
-                    <option value="part_time">Part Time</option>
-                    <option value="unavailable">Unavailable</option>
-                    </select>
-                    
-                    <label htmlFor="skills">Skills</label>
-                    <select
-                    id="skills"
-                    name="skills"
-                    multiple
-                    value={formData.skills}
-                    onChange={handleSkillsChange}
-                    required>
-                        {availableSkills.map(function (skill) {
-                            return <option key={skill._id} value={skill._id}> {skill.name}</option>
-                            })}
+
+            <form className="compact-form compact-split" onSubmit={handleSubmit}>
+                <fieldset className="compact-group">
+                    <legend>Professional profile</legend>
+                    <div className="compact-grid">
+                        <div className="compact-field compact-full">
+                            <label htmlFor="headline">Headline</label>
+                            <input
+                                id="headline"
+                                name="headline"
+                                type="text"
+                                value={formData.headline}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field compact-full">
+                            <label htmlFor="bio">Bio</label>
+                            <textarea
+                                id="bio"
+                                name="bio"
+                                value={formData.bio}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field compact-full">
+                            <label htmlFor="skills">Skills</label>
+                            <select
+                                id="skills"
+                                name="skills"
+                                multiple
+                                value={formData.skills}
+                                onChange={handleSkillsChange}
+                                required
+                            >
+                                {availableSkills.map(function (skill) {
+                                    return (
+                                        <option key={skill._id} value={skill._id}>
+                                            {" "}
+                                            {skill.name}
+                                        </option>
+                                    )
+                                })}
                             </select>
-
-                    <label htmlFor="languageName">Language</label>
-                    <input
-                    id="languageName"
-                    name="name"
-                    type="text"
-                    value={language.name}
-                    onChange={handleLanguageChange}/>
-
-                    <label htmlFor="languageLevel">Language Level</label>
-                    <select
-                    id="languageLevel"
-                    name="level"
-                    value={language.level}
-                    onChange={handleLanguageChange}>
-                        <option value="">Select level</option>
-                        <option value="beginner">Beginner</option>
-                        <option value="intermediate">Intermediate</option>
-                        <option value="advanced">Advanced</option>
-                        <option value="native">Native</option>
-                        </select>
-
-                    <button type="button" onClick={addLanguage}>Add Language</button>
-
-                    {formData.languages.map(function (item, index) {
-                        return (
-                        <p key={`${item.name}-${index}`}>
-                            {item.name} - {item.level}
-                        </p>
-                        )
-                    })}
-                    
-                    <label htmlFor="country">Country</label>
-                    <select
-                    id="country"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    required>
-                        <option value="">Select Country</option>
-                        <option value="Bahrain">Bahrain</option>
-                        <option value="Kuwait">Kuwait</option>
-                        <option value="Oman">Oman</option>
-                        <option value="Qatar">Qatar</option>
-                        <option value="Saudi Arabia">Saudi Arabia</option>
-                        <option value="United Arab Emirates">United Arab Emirates</option>
-                        </select>
-                    
-                    <label htmlFor="city">City</label>
-                    <input
-                    id="city"
-                    name="city"
-                    type="text"
-                    value={formData.city}
-                    onChange={handleChange}
-                    required/>
-
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset className="compact-group">
+                    <legend>Availability & location</legend>
+                    <div className="compact-grid">
+                        <div className="compact-field">
+                            <label htmlFor="hourlyRate">Hourly Rate</label>
+                            <input
+                                id="hourlyRate"
+                                name="hourlyRate"
+                                type="number"
+                                min="0"
+                                value={formData.hourlyRate}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="availability">Availability</label>
+                            <select
+                                id="availability"
+                                name="availability"
+                                value={formData.availability}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select availability</option>
+                                <option value="full_time">Full Time</option>
+                                <option value="part_time">Part Time</option>
+                                <option value="unavailable">Unavailable</option>
+                            </select>
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="country">Country</label>
+                            <select
+                                id="country"
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Country</option>
+                                <option value="Bahrain">Bahrain</option>
+                                <option value="Kuwait">Kuwait</option>
+                                <option value="Oman">Oman</option>
+                                <option value="Qatar">Qatar</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                            </select>
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="city">City</label>
+                            <input
+                                id="city"
+                                name="city"
+                                type="text"
+                                value={formData.city}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-full language-editor">
+                            <div className="compact-grid">
+                                <div className="compact-field">
+                                    <label htmlFor="languageName">Language</label>
+                                    <input
+                                        id="languageName"
+                                        name="name"
+                                        type="text"
+                                        value={language.name}
+                                        onChange={handleLanguageChange}
+                                    />
+                                </div>
+                                <div className="compact-field">
+                                    <label htmlFor="languageLevel">Language Level</label>
+                                    <select
+                                        id="languageLevel"
+                                        name="level"
+                                        value={language.level}
+                                        onChange={handleLanguageChange}
+                                    >
+                                        <option value="">Select level</option>
+                                        <option value="beginner">Beginner</option>
+                                        <option value="intermediate">Intermediate</option>
+                                        <option value="advanced">Advanced</option>
+                                        <option value="native">Native</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="button" onClick={addLanguage}>
+                                Add Language
+                            </button>
+                            <ul className="compact-tags">
+                                {formData.languages.map((item, index) => (
+                                    <li key={`${item.name}-${index}`}>
+                                        {item.name} - {item.level}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
+                </fieldset>
+                <div className="compact-actions">
                     <button type="submit">Save Profile</button>
+                </div>
+            </form>
+
+            <details className="compact-disclosure">
+                <summary>Portfolio ({portfolioItems.length})</summary>
+                <div className="disclosure-content">
+                    <form className="compact-form" onSubmit={handlePortfolioSubmit}>
+                        <div className="compact-grid">
+                            <div className="compact-field">
+                                <label htmlFor="portfolioTitle">Portfolio Title</label>
+                                <input
+                                    id="portfolioTitle"
+                                    name="title"
+                                    type="text"
+                                    value={portfolioData.title}
+                                    onChange={handlePortfolioChange}
+                                    required
+                                />
+                            </div>
+                            <div className="compact-field">
+                                <label htmlFor="portfolioLink">Project Link</label>
+                                <input
+                                    id="portfolioLink"
+                                    name="link"
+                                    type="url"
+                                    value={portfolioData.link}
+                                    onChange={handlePortfolioChange}
+                                />
+                            </div>
+                            <div className="compact-field compact-full">
+                                <label htmlFor="portfolioDescription">Description</label>
+                                <textarea
+                                    id="portfolioDescription"
+                                    name="description"
+                                    value={portfolioData.description}
+                                    onChange={handlePortfolioChange}
+                                />
+                            </div>
+                            <div className="compact-field">
+                                <label htmlFor="portfolioImage">Portfolio Image</label>
+                                <input
+                                    id="portfolioImage"
+                                    type="file"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    onChange={handlePortfolioImageChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="compact-actions">
+                            <button type="submit">Add Portfolio Item</button>
+                        </div>
                     </form>
+                    <PagedList label="Portfolio" className="compact-card-grid" pageSize={6}>
+                        {portfolioItems.map(function (item) {
+                            return (
+                                <article key={item._id}>
+                                    <h3>{item.title}</h3>
+                                    <p>{item.description}</p>
 
-                    <h2>Portfolio</h2>
+                                    {item.imageUrl && <img src={item.imageUrl} alt={item.title} />}
 
-                    {portfolioItems.map(function (item) {
-                        return (
-                        <article key={item._id}>
-                            <h3>{item.title}</h3>
-                            <p>{item.description}</p>
-
-                            {item.imageUrl && (
-                                <img src={item.imageUrl} alt={item.title}/>
-                            )}
-
-                            {item.link && (
-                                <a href={item.link} target="_blank" rel="noreferrer">
-                                    View Project
-                                </a>
-                            )}
-                        </article>
-                        )
-                    })}
-
-                    <form onSubmit={handlePortfolioSubmit}>
-                        <label htmlFor="portfolioTitle">Portfolio Title</label>
-                        <input
-                        id="portfolioTitle"
-                        name="title"
-                        type="text"
-                        value={portfolioData.title}
-                        onChange={handlePortfolioChange}
-                        required/>
-
-                        <label htmlFor="portfolioDescription">Description</label>
-                        <textarea
-                        id="portfolioDescription"
-                        name="description"
-                        value={portfolioData.description}
-                        onChange={handlePortfolioChange}/>
-
-                        <label htmlFor="portfolioImage">Portfolio Image</label>
-                        <input
-                        id="portfolioImage"
-                        type="file"
-                        accept="image/jpeg,image/png,image/webp"
-                        onChange={handlePortfolioImageChange}/>
-
-                        <label htmlFor="portfolioLink">Project Link</label>
-                        <input
-                        id="portfolioLink"
-                        name="link"
-                        type="url"
-                        value={portfolioData.link}
-                        onChange={handlePortfolioChange}/>
-
-                        <button type="submit">Add Portfolio Item</button>
-                        </form>
-                    </section>
-                    )
+                                    {item.link && (
+                                        <a href={item.link} target="_blank" rel="noreferrer">
+                                            View Project
+                                        </a>
+                                    )}
+                                </article>
+                            )
+                        })}
+                    </PagedList>
+                </div>
+            </details>
+        </section>
+    )
                 }
                 export default FreelancerProfile

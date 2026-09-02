@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { index, create, update, deleteCategory } from "../services/categories"
 
@@ -93,91 +94,113 @@ const AdminCategories = function () {
     }
     
     return (
-    <section>
-        <header>
-            <h1>Manage Categories</h1>
-            <p>{message}</p>
+        <section>
+            <header>
+                <h1>Manage Categories</h1>
+                <p>{message}</p>
             </header>
-            
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="name">Name</label>
-                <input
-                    id="name"
-                    name="name"
-                    value={categoryData.name}
-                    onChange={handleChange}
-                    required
-                />
-                <label htmlFor="slug">Slug</label>
-                <input
-                    id="slug"
-                    name="slug"
-                    value={categoryData.slug}
-                    onChange={handleChange}
-                    required
-                />
-                <label htmlFor="icon">Icon</label>
-                <input
-                    id="icon"
-                    name="icon"
-                    value={categoryData.icon}
-                    onChange={handleChange}
-                />
-                <label htmlFor="isFeatured">Featured</label>
-                <input
-                    id="isFeatured"
-                    name="isFeatured"
-                    type="checkbox"
-                    checked={categoryData.isFeatured}
-                    onChange={handleChange}
-                />
-                <button type="submit">
-                    {editingId ? "Update Category" : "Create Category"}
-                </button>
+
+            <form className="compact-form" onSubmit={handleSubmit}>
+                <div className="compact-grid">
+                    <div className="compact-field">
+                        <label htmlFor="name">Name</label>
+                        <input
+                            id="name"
+                            name="name"
+                            value={categoryData.name}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="slug">Slug</label>
+                        <input
+                            id="slug"
+                            name="slug"
+                            value={categoryData.slug}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="icon">Icon</label>
+                        <input
+                            id="icon"
+                            name="icon"
+                            value={categoryData.icon}
+                            onChange={handleChange}
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="isFeatured">Featured</label>
+                        <input
+                            id="isFeatured"
+                            name="isFeatured"
+                            type="checkbox"
+                            checked={categoryData.isFeatured}
+                            onChange={handleChange}
+                        />
+                    </div>
+                </div>
+                <div className="compact-actions">
+                    <button type="submit">
+                        {editingId ? "Update Category" : "Create Category"}
+                    </button>
+                </div>
             </form>
-            
+
             {loading ? (
                 <p>Loading...</p>
             ) : categories.length === 0 ? (
                 <p>No categories found</p>
             ) : (
-                categories.map(function (category) {
-                    return (
-                    <div className="card" key={category._id}>
-                        <h2>{category.name}</h2>
-                        <p>Slug: {category.slug}</p>
-                        <p>Icon: {category.icon}</p>
-                        <p>Featured: {category.isFeatured ? "Yes" : "No"}</p>
-                        <button onClick={function () {
-                            handleEdit(category)
-                        }}>
-                            Edit
-                        </button>
-                        <button onClick={function () {
-                            setDeleteId(category._id)
-                        }}>
-                            Delete
-                        </button>
-                        {deleteId === category._id && (
-                            <div>
-                                <p>Are you sure you want to delete this category?</p>
-                                <button onClick={function () {
-                                    handleDelete(category._id)
-                                }}>
-                                    Yes, Delete
+                <PagedList label="Categories" pageSize={6} className="compact-card-grid">
+                    {categories.map(function (category) {
+                        return (
+                            <div className="card" key={category._id}>
+                                <h2>{category.name}</h2>
+                                <p>Slug: {category.slug}</p>
+                                <p>Icon: {category.icon}</p>
+                                <p>Featured: {category.isFeatured ? "Yes" : "No"}</p>
+                                <button
+                                    onClick={function () {
+                                        handleEdit(category)
+                                    }}
+                                >
+                                    Edit
                                 </button>
-                                <button onClick={function () {
-                                    setDeleteId(null)
-                                }}>
-                                    Cancel
+                                <button
+                                    onClick={function () {
+                                        setDeleteId(category._id)
+                                    }}
+                                >
+                                    Delete
                                 </button>
+                                {deleteId === category._id && (
+                                    <div>
+                                        <p>Are you sure you want to delete this category?</p>
+                                        <button
+                                            onClick={function () {
+                                                handleDelete(category._id)
+                                            }}
+                                        >
+                                            Yes, Delete
+                                        </button>
+                                        <button
+                                            onClick={function () {
+                                                setDeleteId(null)
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                        </div>
                         )
-                    })
-                )}
-                </section>
-                )
+                    })}
+                </PagedList>
+            )}
+        </section>
+    )
             }
             export default AdminCategories

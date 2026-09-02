@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 
@@ -151,186 +152,128 @@ const JobProposals = () => {
 
     return (
         <section>
-
             <header>
                 <h1>Job Proposals</h1>
 
                 <p>{message}</p>
             </header>
 
+            {proposals.length === 0 && <p>No proposals have been submitted yet.</p>}
 
-            {proposals.length === 0 && (
-                <p>No proposals have been submitted yet.</p>
-            )}
+            <PagedList
+                label="Proposals"
+                pageSize={4}
+                className="compact-card-grid"
+                disabled={selectedProposalId !== null}
+            >
+                {proposals.map((item) => {
+                    const proposal = item.proposal
 
+                    const profile = item.freelancerProfile
 
-            {proposals.map((item) => {
+                    return (
+                        <div className="card" key={proposal._id}>
+                            <h2>{proposal.freelancer?.username}</h2>
 
-                const proposal = item.proposal
+                            <p>Rating: {proposal.freelancer?.ratingAvg}</p>
 
-                const profile = item.freelancerProfile
+                            {profile && (
+                                <>
+                                    <p>{profile.headline}</p>
 
-                return (
+                                    <p>Skills:</p>
 
-                    <div
-                        className="card"
-                        key={proposal._id}
-                    >
+                                    <ul>
+                                        {profile.skills
+                                            ?.filter((skill) => skill)
+                                            .map((skill) => (
+                                                <li key={skill._id}>{skill.name}</li>
+                                            ))}
+                                    </ul>
+                                </>
+                            )}
 
-                        <h2>
-                            {proposal.freelancer?.username}
-                        </h2>
+                            <h3>Proposal</h3>
 
+                            <details className="compact-disclosure">
+                                <summary>Cover letter</summary>
+                                <div className="disclosure-content">{proposal.coverLetter}</div>
+                            </details>
 
-                        <p>
-                            Rating: {proposal.freelancer?.ratingAvg}
-                        </p>
+                            <p>Amount: {proposal.amount}</p>
 
+                            <p>Delivery Days: {proposal.deliveryDays}</p>
 
-                        {profile && (
-                            <>
-                                <p>
-                                    {profile.headline}
-                                </p>
+                            <p>Status: {proposal.status}</p>
 
-                                <p>
-                                    Skills:
-                                </p>
-
-                                <ul>
-                                    {profile.skills?.filter((skill) => skill).map((skill) => (
-                                        <li key={skill._id}>
-                                            {skill.name}
-                                        </li>
-                                    ))}
-                                </ul>
-                            </>
-                        )}
-
-
-                        <h3>Proposal</h3>
-
-                        <p>
-                            {proposal.coverLetter}
-                        </p>
-
-                        <p>
-                            Amount: {proposal.amount}
-                        </p>
-
-                        <p>
-                            Delivery Days: {proposal.deliveryDays}
-                        </p>
-
-                        <p>
-                            Status: {proposal.status}
-                        </p>
-
-
-                        {proposal.status === "pending" && (
-                            <button
-                                onClick={() => handleShortlist(proposal._id)}
-                            >
-                                Shortlist
-                            </button>
-                        )}
-
-
-                        {(proposal.status === "pending" ||
-                            proposal.status === "shortlisted") && (
-                            <>
-
-                                <button
-                                    onClick={() => handleDecline(proposal._id)}
-                                >
-                                    Decline
+                            {proposal.status === "pending" && (
+                                <button onClick={() => handleShortlist(proposal._id)}>
+                                    Shortlist
                                 </button>
+                            )}
 
-                                <button
-                                    onClick={() =>
-                                        setSelectedProposalId(proposal._id)
-                                    }
-                                >
-                                    Accept
-                                </button>
+                            {(proposal.status === "pending" ||
+                                proposal.status === "shortlisted") && (
+                                <>
+                                    <button onClick={() => handleDecline(proposal._id)}>
+                                        Decline
+                                    </button>
 
-                            </>
-                        )}
+                                    <button onClick={() => setSelectedProposalId(proposal._id)}>
+                                        Accept
+                                    </button>
+                                </>
+                            )}
 
+                            {selectedProposalId === proposal._id && (
+                                <div>
+                                    <h3>Create Contract Milestone</h3>
 
-                        {selectedProposalId === proposal._id && (
+                                    <label>Milestone Title:</label>
 
-                            <div>
+                                    <input
+                                        type="text"
+                                        name="title"
+                                        value={milestoneData.title}
+                                        onChange={handleMilestoneChange}
+                                        required
+                                    />
 
-                                <h3>Create Contract Milestone</h3>
+                                    <label>Description:</label>
 
-                                <label>
-                                    Milestone Title:
-                                </label>
+                                    <textarea
+                                        name="description"
+                                        value={milestoneData.description}
+                                        onChange={handleMilestoneChange}
+                                    />
 
-                                <input
-                                    type="text"
-                                    name="title"
-                                    value={milestoneData.title}
-                                    onChange={handleMilestoneChange}
-                                    required
-                                />
+                                    <label>Due Date:</label>
 
+                                    <input
+                                        type="date"
+                                        name="dueDate"
+                                        value={milestoneData.dueDate}
+                                        onChange={handleMilestoneChange}
+                                    />
 
-                                <label>
-                                    Description:
-                                </label>
+                                    <p>Milestone Amount: {proposal.amount}</p>
 
-                                <textarea
-                                    name="description"
-                                    value={milestoneData.description}
-                                    onChange={handleMilestoneChange}
-                                />
+                                    <button
+                                        disabled={!milestoneData.title}
+                                        onClick={() => handleAccept(proposal)}
+                                    >
+                                        Confirm Acceptance
+                                    </button>
 
-
-                                <label>
-                                    Due Date:
-                                </label>
-
-                                <input
-                                    type="date"
-                                    name="dueDate"
-                                    value={milestoneData.dueDate}
-                                    onChange={handleMilestoneChange}
-                                />
-
-
-                                <p>
-                                    Milestone Amount: {proposal.amount}
-                                </p>
-
-
-                                <button
-                                    disabled={!milestoneData.title}
-                                    onClick={() => handleAccept(proposal)}
-                                >
-                                    Confirm Acceptance
-                                </button>
-
-
-                                <button
-                                    onClick={() =>
-                                        setSelectedProposalId(null)
-                                    }
-                                >
-                                    Cancel
-                                </button>
-
-                            </div>
-
-                        )}
-
-                    </div>
-
-                )
-
-            })}
-
+                                    <button onClick={() => setSelectedProposalId(null)}>
+                                        Cancel
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )
+                })}
+            </PagedList>
         </section>
     )
 }

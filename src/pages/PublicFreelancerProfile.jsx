@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { show } from "../services/freelancerProfiles"
@@ -34,7 +35,7 @@ const PublicFreelancerProfile = function () {
     if (!profileData) {
 
         return (
-            <section className="card">
+            <section className="card compact-page">
                 <p>
                     {message || "Loading profile..."}
                 </p>
@@ -46,115 +47,86 @@ const PublicFreelancerProfile = function () {
     const user = profileData.user
 
     return (
-
-        <section className="card">
-
+        <section className="card compact-page">
             <header>
-
                 {user.avatarUrl && (
-                    <img
-                        src={user.avatarUrl}
-                        alt={user.username}
-                    />
+                    <img className="compact-avatar" src={user.avatarUrl} alt={user.username} />
                 )}
 
                 <h1>{user.username}</h1>
 
                 <h2>{profile.headline}</h2>
 
-                {user.isVerified && (
-                    <p>Verified Freelancer</p>
-                )}
+                {user.isVerified && <p>Verified Freelancer</p>}
 
                 <p>
                     {user.country} - {user.city}
                 </p>
 
                 <p>
-                    Rating: {
-                        user.ratingCount > 0
-                            ? `${user.ratingAvg} / 5 (${user.ratingCount} reviews)`
-                            : "No reviews yet"
-                    }
+                    Rating:{" "}
+                    {user.ratingCount > 0
+                        ? `${user.ratingAvg} / 5 (${user.ratingCount} reviews)`
+                        : "No reviews yet"}
                 </p>
-
             </header>
 
-            <h2>About</h2>
+            <div className="compact-columns">
+                <div>
+                    <h2>About</h2>
 
-            <p>{profile.bio}</p>
+                    <p>{profile.bio}</p>
 
-            <p>
-                Hourly Rate: {profile.hourlyRate} {profile.currency}
-            </p>
-
-            <p>
-                Availability: {
-                    profile.availability.replace("_", " ")
-                }
-            </p>
-
-            <p>
-                Completed Contracts: {profile.completedContracts || 0}
-            </p>
-
-            <h2>Skills</h2>
-
-            {profile.skills.map(function (skill) {
-
-                return (
-                    <p key={skill._id}>
-                        {skill.name}
+                    <p>
+                        Hourly Rate: {profile.hourlyRate} {profile.currency}
                     </p>
-                )
-            })}
 
-            <h2>Languages</h2>
+                    <p>Availability: {profile.availability.replace("_", " ")}</p>
 
-            {profile.languages.map(function (language) {
-
-                return (
-                    <p key={language._id}>
-                        {language.name} - {language.level}
-                    </p>
-                )
-            })}
-
+                    <p>Completed Contracts: {profile.completedContracts || 0}</p>
+                </div>
+                <div>
+                    <h2>Skills</h2>
+                    <div className="compact-tags">
+                        {profile.skills.map(function (skill) {
+                            return <p key={skill._id}>{skill.name}</p>
+                        })}
+                    </div>
+                    <h2>Languages</h2>
+                    <div className="compact-tags">
+                        {profile.languages.map(function (language) {
+                            return (
+                                <p key={language._id}>
+                                    {language.name} - {language.level}
+                                </p>
+                            )
+                        })}
+                    </div>
+                </div>
+            </div>
             <h2>Portfolio</h2>
 
-            {profile.portfolio.map(function (item) {
+            <PagedList label="Portfolio" pageSize={4} className="compact-card-grid">
+                {profile.portfolio.map(function (item) {
+                    return (
+                        <div key={item._id}>
+                            <h3>{item.title}</h3>
 
-                return (
+                            <p>{item.description}</p>
 
-                    <div key={item._id}>
+                            {item.imageUrl && <img src={item.imageUrl} alt={item.title} />}
 
-                        <h3>{item.title}</h3>
-
-                        <p>{item.description}</p>
-
-                        {item.imageUrl && (
-                            <img
-                                src={item.imageUrl}
-                                alt={item.title}
-                            />
-                        )}
-
-                        {item.link && (
-                            <a
-                                href={item.link}
-                                target="_blank"
-                                rel="noreferrer"
-                            >
-                                View Project
-                            </a>
-                        )}
-
-                    </div>
-                )
-            })}
+                            {item.link && (
+                                <a href={item.link} target="_blank" rel="noreferrer">
+                                    View Project
+                                </a>
+                            )}
+                        </div>
+                    )
+                })}
+            </PagedList>
 
             <ReviewsList userId={userId} />
-
         </section>
     )
 }

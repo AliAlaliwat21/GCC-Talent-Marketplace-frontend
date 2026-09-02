@@ -105,142 +105,159 @@ const AdminUsers = function () {
 }
     
     return (
-    <section>
-        <header>
-            <h1>Manage Users</h1>
-            <p>{message}</p>
+        <section>
+            <header>
+                <h1>Manage Users</h1>
+                <p>{message}</p>
             </header>
-            
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="username">Username</label>
-                <input
-                    id="username"
-                    name="username"
-                    value={filters.username}
-                    onChange={handleChange}
-                />
 
-                <label htmlFor="email">Email</label>
-                <input
-                    id="email"
-                    name="email"
-                    value={filters.email}
-                    onChange={handleChange}
-                />
+            <form className="compact-form" onSubmit={handleSubmit}>
+                <div className="compact-grid">
+                    <div className="compact-field">
+                        <label htmlFor="username">Username</label>
+                        <input
+                            id="username"
+                            name="username"
+                            value={filters.username}
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <label htmlFor="role">Role</label>
-                <select
-                    id="role"
-                    name="role"
-                    value={filters.role}
-                    onChange={handleChange}
-                >
-                    <option value="">All Roles</option>
-                    <option value="client">Client</option>
-                    <option value="freelancer">Freelancer</option>
-                    <option value="admin">Admin</option>
-                </select>
+                    <div className="compact-field">
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            name="email"
+                            value={filters.email}
+                            onChange={handleChange}
+                        />
+                    </div>
 
-                <label htmlFor="status">Status</label>
-                <select
-                    id="status"
-                    name="status"
-                    value={filters.status}
-                    onChange={handleChange}
-                >
-                    <option value="">All Statuses</option>
-                    <option value="active">Active</option>
-                    <option value="suspended">Suspended</option>
-                </select>
+                    <div className="compact-field">
+                        <label htmlFor="role">Role</label>
+                        <select id="role" name="role" value={filters.role} onChange={handleChange}>
+                            <option value="">All Roles</option>
+                            <option value="client">Client</option>
+                            <option value="freelancer">Freelancer</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </div>
 
-                <button type="submit">Search</button>
+                    <div className="compact-field">
+                        <label htmlFor="status">Status</label>
+                        <select
+                            id="status"
+                            name="status"
+                            value={filters.status}
+                            onChange={handleChange}
+                        >
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                </div>
+                <div className="compact-actions">
+                    <button type="submit">Search</button>
+                </div>
             </form>
-            
+
             {loading ? (
                 <p>Loading...</p>
             ) : users.length === 0 ? (
-            <p>No users found</p>
-        ) : (
-            <>
-            {users.map(function (user) {
-                return (
-                <div className="card" key={user._id}>
-                    <h2>{user.username}</h2>
-                    <p>Email: {user.email}</p>
-                    <p>Role: {user.role}</p>
-                    <p>Status: {user.status}</p>
-                    <p>Verified: {user.isVerified ? "Yes" : "No"}</p>
+                <p>No users found</p>
+            ) : (
+                <>
+                    <div className="compact-card-grid">
+                        {users.map(function (user) {
+                            return (
+                                <div className="card" key={user._id}>
+                                    <h2>{user.username}</h2>
+                                    <p>Email: {user.email}</p>
+                                    <p>Role: {user.role}</p>
+                                    <p>Status: {user.status}</p>
+                                    <p>Verified: {user.isVerified ? "Yes" : "No"}</p>
 
-                    <Link to={`/admin/users/${user._id}`}>
-                        View Details
-                    </Link>
+                                    <Link to={`/admin/users/${user._id}`}>View Details</Link>
 
-                    {!user.isVerified && (
-                        <button onClick={function () {
-                            handleVerify(user._id)
-                        }}>
-                            Verify
-                        </button>
-                    )}
+                                    {!user.isVerified && (
+                                        <button
+                                            onClick={function () {
+                                                handleVerify(user._id)
+                                            }}
+                                        >
+                                            Verify
+                                        </button>
+                                    )}
 
-                    <button onClick={function () {
-                        handleStatusChange(user._id, user.status)
-                    }}>
-                        {user.status === "active" ? "Suspend" : "Unsuspend"}
-                    </button>
+                                    <button
+                                        onClick={function () {
+                                            handleStatusChange(user._id, user.status)
+                                        }}
+                                    >
+                                        {user.status === "active" ? "Suspend" : "Unsuspend"}
+                                    </button>
 
-                    <button onClick={function () {
-                        setDeleteId(user._id)
-                    }}>
-                        Delete
-                    </button>
+                                    <button
+                                        onClick={function () {
+                                            setDeleteId(user._id)
+                                        }}
+                                    >
+                                        Delete
+                                    </button>
 
-                    {deleteId === user._id && (
-                        <div>
-                            <p>Are you sure you want to delete this user?</p>
+                                    {deleteId === user._id && (
+                                        <div>
+                                            <p>Are you sure you want to delete this user?</p>
 
-                            <button onClick={function () {
-                                handleDelete(user._id)
-                            }}>
-                                Yes, Delete
-                            </button>
+                                            <button
+                                                onClick={function () {
+                                                    handleDelete(user._id)
+                                                }}
+                                            >
+                                                Yes, Delete
+                                            </button>
 
-                            <button onClick={function () {
-                                setDeleteId(null)
-                            }}>
-                                Cancel
-                            </button>
-                        </div>
-                    )}
+                                            <button
+                                                onClick={function () {
+                                                    setDeleteId(null)
+                                                }}
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
+                                    )}
+                                </div>
+                            )
+                        })}
                     </div>
-                    )
-                })}
+                    <div className="pagination">
+                        <button
+                            disabled={filters.page === 1}
+                            onClick={function () {
+                                handlePageChange(filters.page - 1)
+                            }}
+                        >
+                            Previous
+                        </button>
 
-                <div className="pagination">
-                    <button
-                        disabled={filters.page === 1}
-                        onClick={function () {
-                            handlePageChange(filters.page - 1)
-                        }}
-                    >
-                        Previous
-                    </button>
+                        <span>
+                            Page {filters.page} of {totalPages}
+                        </span>
 
-                    <span>Page {filters.page} of {totalPages}</span>
-
-                    <button
-                        disabled={filters.page === totalPages}
-                        onClick={function () {
-                            handlePageChange(filters.page + 1)
-                        }}
-                    >
-                        Next
-                    </button>
-                </div>
+                        <button
+                            disabled={filters.page === totalPages}
+                            onClick={function () {
+                                handlePageChange(filters.page + 1)
+                            }}
+                        >
+                            Next
+                        </button>
+                    </div>
                 </>
-                )}
-                </section>
-                )
+            )}
+        </section>
+    )
             }
 
             export default AdminUsers

@@ -107,122 +107,106 @@ const ClientProfile = () => {
 
 
     return (
-        <section className="card">
-
+        <section className="card compact-page">
             <header>
-
                 <h1>Client Profile</h1>
 
-                <p>
-                    Tell freelancers about yourself or your company
-                </p>
-
+                <p>Tell freelancers about yourself or your company</p>
             </header>
-
 
             <p>{message}</p>
 
+            <form className="compact-form compact-split" onSubmit={handleSubmit}>
+                <fieldset className="compact-group">
+                    <legend>About you</legend>
+                    <div className="compact-grid">
+                        <div className="compact-field compact-full">
+                            <label htmlFor="isCompany">Company Account</label>
 
-            <form onSubmit={handleSubmit}>
+                            <input
+                                id="isCompany"
+                                name="isCompany"
+                                type="checkbox"
+                                checked={formData.isCompany}
+                                onChange={handleChange}
+                            />
+                        </div>
+                        {formData.isCompany && (
+                            <div className="compact-field compact-full">
+                                <label htmlFor="companyName">Company Name</label>
 
+                                <input
+                                    id="companyName"
+                                    name="companyName"
+                                    type="text"
+                                    value={formData.companyName}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        )}
+                        <div className="compact-field compact-full">
+                            <label htmlFor="description">Description</label>
 
-                <label htmlFor="isCompany">
-                    Company Account
-                </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset className="compact-group">
+                    <legend>Website & location</legend>
+                    <div className="compact-grid">
+                        <div className="compact-field compact-full">
+                            <label htmlFor="website">Website</label>
 
-                <input
-                    id="isCompany"
-                    name="isCompany"
-                    type="checkbox"
-                    checked={formData.isCompany}
-                    onChange={handleChange}
-                />
+                            <input
+                                id="website"
+                                name="website"
+                                type="url"
+                                value={formData.website}
+                                onChange={handleChange}
+                                placeholder="https://example.com"
+                            />
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="country">Country</label>
 
+                            <select
+                                id="country"
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select Country</option>
+                                <option value="Bahrain">Bahrain</option>
+                                <option value="Kuwait">Kuwait</option>
+                                <option value="Oman">Oman</option>
+                                <option value="Qatar">Qatar</option>
+                                <option value="Saudi Arabia">Saudi Arabia</option>
+                                <option value="United Arab Emirates">United Arab Emirates</option>
+                            </select>
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="city">City</label>
 
-                {formData.isCompany && (
-                    <>
-                        <label htmlFor="companyName">
-                            Company Name
-                        </label>
-
-                        <input
-                            id="companyName"
-                            name="companyName"
-                            type="text"
-                            value={formData.companyName}
-                            onChange={handleChange}
-                        />
-                    </>
-                )}
-
-
-                <label htmlFor="description">
-                    Description
-                </label>
-
-                <textarea
-                    id="description"
-                    name="description"
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
-                />
-
-
-                <label htmlFor="website">
-                    Website
-                </label>
-
-                <input
-                    id="website"
-                    name="website"
-                    type="url"
-                    value={formData.website}
-                    onChange={handleChange}
-                    placeholder="https://example.com"
-                />
-
-
-                <label htmlFor="country">
-                    Country
-                </label>
-
-                <select
-                    id="country"
-                    name="country"
-                    value={formData.country}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select Country</option>
-                    <option value="Bahrain">Bahrain</option>
-                    <option value="Kuwait">Kuwait</option>
-                    <option value="Oman">Oman</option>
-                    <option value="Qatar">Qatar</option>
-                    <option value="Saudi Arabia">Saudi Arabia</option>
-                    <option value="United Arab Emirates">United Arab Emirates</option>
-                </select>
-
-
-                <label htmlFor="city">
-                    City
-                </label>
-
-                <input
-                    id="city"
-                    name="city"
-                    value={formData.city}
-                    onChange={handleChange}
-                />
-
-
-                <button type="submit">
-                    Save Profile
-                </button>
-
-
+                            <input
+                                id="city"
+                                name="city"
+                                value={formData.city}
+                                onChange={handleChange}
+                            />
+                        </div>
+                    </div>
+                </fieldset>
+                <div className="compact-actions">
+                    <button type="submit">Save Profile</button>
+                </div>
             </form>
-
         </section>
     )
 }

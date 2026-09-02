@@ -1,0 +1,233 @@
+/* Compact work pages reuse the existing font, colours and control styling. */
+section.card.compact-page {
+  max-width: 1180px;
+}
+
+.compact-page > header {
+  margin-bottom: 22px;
+}
+
+.compact-page > p:empty,
+.compact-page > header > p:empty {
+  display: none;
+}
+
+form.compact-form {
+  max-width: none;
+  gap: 20px;
+  margin-bottom: 0;
+}
+
+.card > .compact-form,
+.disclosure-content > .compact-form {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+form.compact-split,
+.compact-columns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-items: start;
+  gap: 24px;
+}
+
+.compact-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.compact-group > legend {
+  padding: 0 0 14px;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+}
+
+.compact-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+  align-items: start;
+}
+
+.compact-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.compact-field > label {
+  margin: 0;
+}
+
+.compact-full,
+.compact-actions {
+  grid-column: 1 / -1;
+}
+
+.compact-field:has(> input[type='checkbox']) {
+  flex-direction: row;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+}
+
+.compact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 4px;
+}
+
+.compact-actions > button,
+.language-editor > button {
+  margin: 0;
+}
+
+.compact-split > .compact-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  padding: 12px 0;
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.language-editor > button {
+  margin-top: 12px;
+}
+
+.compact-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding: 0;
+  margin: 12px 0 0;
+  list-style: none;
+}
+
+.compact-tags > p {
+  margin: 0;
+}
+
+.compact-disclosure {
+  margin: 20px 0;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+}
+
+.compact-disclosure > summary {
+  padding: 14px 18px;
+  color: var(--color-primary-dark);
+  font-weight: 600;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+.disclosure-content {
+  padding: 0 18px 18px;
+}
+
+.disclosure-content > .compact-form {
+  margin: 12px 0 24px;
+}
+
+.paged-list {
+  min-width: 0;
+  scroll-margin-top: 100px;
+}
+
+.paged-list-count {
+  margin: 12px 0;
+  color: var(--color-text-light);
+}
+
+.compact-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+  align-items: start;
+}
+
+.compact-card-grid > .card {
+  min-width: 0;
+  margin: 0;
+}
+
+.compact-card-grid img {
+  width: 100%;
+  max-height: 220px;
+  object-fit: contain;
+  margin: 12px 0;
+}
+
+.compact-columns > *,
+.compact-card-grid > * {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.compact-avatar {
+  width: 88px;
+  height: 88px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.workspace-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 20px 0;
+}
+
+.workspace-sections button[aria-pressed='false'] {
+  background: transparent;
+  color: var(--color-primary);
+  border-color: var(--color-border);
+}
+
+.workspace-panel[hidden] {
+  display: none;
+}
+
+.workspace-panel > h2 {
+  margin-bottom: 16px;
+}
+
+.payment-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 24px;
+}
+
+@media (max-width: 900px) {
+  form.compact-split,
+  .compact-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .compact-grid,
+  .compact-card-grid,
+  .payment-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .compact-split > .compact-actions {
+    position: static;
+  }
+
+  .compact-actions > button {
+    flex: 1 1 auto;
+  }
+}

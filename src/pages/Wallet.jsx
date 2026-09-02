@@ -70,74 +70,84 @@ const Wallet = function (props) {
     }
     
     return (
-    <section>
-        <header>
-            <h1>My Wallet</h1>
-            <p>{message}</p>
+        <section>
+            <header>
+                <h1>My Wallet</h1>
+                <p>{message}</p>
             </header>
-            
-            <div className="card">
-                <h2>Wallet Balance</h2>
-                <p>Available Balance: ${wallet.available}</p>
-                <p>Pending Balance: ${wallet.pending}</p>
+
+            <div className="compact-columns">
+                <div className="card">
+                    <h2>Wallet Balance</h2>
+                    <p>Available Balance: ${wallet.available}</p>
+                    <p>Pending Balance: ${wallet.pending}</p>
                 </div>
-                
+
                 {props.user?.role === "client" && (
                     <div className="card">
                         <h2>Add Funds</h2>
-                        
-                        <form onSubmit={handleSubmit}>
-                            <label htmlFor="amount">Amount</label>
-                            <input
-                            id="amount"
-                            name="amount"
-                            type="number"
-                            min="1"
-                            value={formData.amount}
-                            onChange={handleChange}
-                            required
-                            />
-                            
-                            <label htmlFor="number">Card Number</label>
-                            <input
-                            id="number"
-                            name="number"
-                            type="text"
-                            value={formData.number}
-                            onChange={handleChange}
-                            placeholder="4242424242424242"
-                            required
-                            />
-                            
-                            <label htmlFor="exp">Expiry Date</label>
-                            <input
-                            id="exp"
-                            name="exp"
-                            type="text"
-                            value={formData.exp}
-                            onChange={handleChange}
-                            placeholder="12/30"
-                            required
-                            />
-                            
-                            <label htmlFor="cvc">CVC</label>
-                            <input
-                            id="cvc"
-                            name="cvc"
-                            type="text"
-                            value={formData.cvc}
-                            onChange={handleChange}
-                            placeholder="123"
-                            required
-                            />
-                            
-                            <button type="submit" disabled={submitting}>
-                                {submitting ? "Adding..." : "Add Funds"}
-                                </button>
-                                </form>
+
+                        <form className="compact-form" onSubmit={handleSubmit}>
+                            <div className="compact-grid">
+                                <div className="compact-field compact-full">
+                                    <label htmlFor="amount">Amount</label>
+                                    <input
+                                        id="amount"
+                                        name="amount"
+                                        type="number"
+                                        min="1"
+                                        value={formData.amount}
+                                        onChange={handleChange}
+                                        required
+                                    />
                                 </div>
-                            )}
-                            </section>
-                            )
+                                <div className="compact-field compact-full">
+                                    <label htmlFor="number">Card Number</label>
+                                    <input
+                                        id="number"
+                                        name="number"
+                                        type="text"
+                                        value={formData.number}
+                                        onChange={handleChange}
+                                        placeholder="4242424242424242"
+                                        required
+                                    />
+                                </div>
+                                <div className="compact-field">
+                                    <label htmlFor="exp">Expiry Date</label>
+                                    <input
+                                        id="exp"
+                                        name="exp"
+                                        type="text"
+                                        value={formData.exp}
+                                        onChange={handleChange}
+                                        placeholder="12/30"
+                                        required
+                                    />
+                                </div>
+                                <div className="compact-field">
+                                    <label htmlFor="cvc">CVC</label>
+                                    <input
+                                        id="cvc"
+                                        name="cvc"
+                                        type="text"
+                                        value={formData.cvc}
+                                        onChange={handleChange}
+                                        placeholder="123"
+                                        required
+                                    />
+                                </div>
+                            </div>
+                            <div className="compact-actions">
+                                <button type="submit" disabled={submitting}>
+                                    {submitting ? "Adding..." : "Add Funds"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                )}
+            </div>
+        </section>
+    )
                         }
                         export default Wallet

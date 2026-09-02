@@ -145,153 +145,189 @@ const EditJob = function () {
     }
 
     return (
-    <section className="card">
-        <header>
-            <h1>Edit Job</h1>
-            <p>{message}</p>
+        <section className="card compact-page">
+            <header>
+                <h1>Edit Job</h1>
+                <p>{message}</p>
             </header>
 
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="title">Title</label>
-                <input
-                id="title"
-                name="title"
-                type="text"
-                value={formData.title}
-                onChange={handleChange}
-                required/>
+            <form className="compact-form compact-split" onSubmit={handleSubmit}>
+                <fieldset className="compact-group">
+                    <legend>Job details</legend>
+                    <div className="compact-grid">
+                        <div className="compact-field compact-full">
+                            <label htmlFor="title">Title</label>
+                            <input
+                                id="title"
+                                name="title"
+                                type="text"
+                                value={formData.title}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field compact-full">
+                            <label htmlFor="description">Description</label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={formData.description}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field compact-full">
+                            <label htmlFor="category">Category</label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select category</option>
 
-                <label htmlFor="description">Description</label>
-                <textarea
-                id="description"
-                name="description"
-                value={formData.description}
-                onChange={handleChange}
-                required/>
-
-                <label htmlFor="category">Category</label>
-                <select
-                id="category"
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                required>
-                    <option value="">Select category</option>
-
-                    {categories.map(function (category) {
-                        return (
-                        <option key={category._id} value={category._id}>
-                            {category.name}
-                            </option>
-                            )
-                        })}
-                    </select>
-
-                <label htmlFor="skills">Skills</label>
-                <select
-                id="skills"
-                name="skills"
-                multiple
-                value={formData.skills}
-                onChange={handleSkillsChange}
-                required>
-                    {availableSkills.map(function (skill) {
-                        return (
-                        <option key={skill._id} value={skill._id}>
-                            {skill.name}
-                            </option>
-                            )
-                        })}
-                    </select>
-
-                <label htmlFor="budgetType">Budget Type</label>
-                <select
-                id="budgetType"
-                name="budgetType"
-                value={formData.budgetType}
-                onChange={handleChange}
-                required>
-                    <option value="">Select budget type</option>
-                    <option value="fixed">Fixed</option>
-                    <option value="hourly">Hourly</option>
-                    </select>
-
-                <label htmlFor="budgetMin">Minimum Budget</label>
-                <input
-                id="budgetMin"
-                name="budgetMin"
-                type="number"
-                min="0"
-                value={formData.budgetMin}
-                onChange={handleChange}
-                required/>
-
-                <label htmlFor="budgetMax">Maximum Budget</label>
-                <input
-                id="budgetMax"
-                name="budgetMax"
-                type="number"
-                min="0"
-                value={formData.budgetMax}
-                onChange={handleChange}
-                required/>
-
-                <label htmlFor="experienceLevel">Experience Level</label>
-                <select
-                id="experienceLevel"
-                name="experienceLevel"
-                value={formData.experienceLevel}
-                onChange={handleChange}
-                required>
-                    <option value="">Select experience level</option>
-                    <option value="entry">Entry</option>
-                    <option value="intermediate">Intermediate</option>
-                    <option value="expert">Expert</option>
-                    </select>
-
-                <label htmlFor="duration">Expected Duration</label>
-                <input
-                id="duration"
-                name="duration"
-                type="text"
-                value={formData.duration}
-                onChange={handleChange}
-                required/>
-
-                <label htmlFor="deadline">Deadline</label>
-                <input
-                id="deadline"
-                name="deadline"
-                type="date"
-                value={formData.deadline}
-                onChange={handleChange}
-                required/>
-
-                <label htmlFor="status">Status</label>
-                <select
-                id="status"
-                name="status"
-                value={formData.status}
-                onChange={handleChange}
-                required>
-                    <option value="draft">Save as Draft</option>
-                    <option value="open">Publish Job</option>
-                    </select>
-
-                <label htmlFor="attachments">Add Attachments</label>
-                <input
-                id="attachments"
-                type="file"
-                multiple
-                accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
-                onChange={handleAttachmentsChange}/>
-
-                <button type="submit" disabled={submitting}>
-                    {submitting ? "Updating..." : "Update Job"}
+                                {categories.map(function (category) {
+                                    return (
+                                        <option key={category._id} value={category._id}>
+                                            {category.name}
+                                        </option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                        <div className="compact-field compact-full">
+                            <label htmlFor="skills">Skills</label>
+                            <select
+                                id="skills"
+                                name="skills"
+                                multiple
+                                value={formData.skills}
+                                onChange={handleSkillsChange}
+                                required
+                            >
+                                {availableSkills.map(function (skill) {
+                                    return (
+                                        <option key={skill._id} value={skill._id}>
+                                            {skill.name}
+                                        </option>
+                                    )
+                                })}
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset className="compact-group">
+                    <legend>Budget & timeline</legend>
+                    <div className="compact-grid">
+                        <div className="compact-field compact-full">
+                            <label htmlFor="budgetType">Budget Type</label>
+                            <select
+                                id="budgetType"
+                                name="budgetType"
+                                value={formData.budgetType}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select budget type</option>
+                                <option value="fixed">Fixed</option>
+                                <option value="hourly">Hourly</option>
+                            </select>
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="budgetMin">Minimum Budget</label>
+                            <input
+                                id="budgetMin"
+                                name="budgetMin"
+                                type="number"
+                                min="0"
+                                value={formData.budgetMin}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="budgetMax">Maximum Budget</label>
+                            <input
+                                id="budgetMax"
+                                name="budgetMax"
+                                type="number"
+                                min="0"
+                                value={formData.budgetMax}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="experienceLevel">Experience Level</label>
+                            <select
+                                id="experienceLevel"
+                                name="experienceLevel"
+                                value={formData.experienceLevel}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Select experience level</option>
+                                <option value="entry">Entry</option>
+                                <option value="intermediate">Intermediate</option>
+                                <option value="expert">Expert</option>
+                            </select>
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="duration">Expected Duration</label>
+                            <input
+                                id="duration"
+                                name="duration"
+                                type="text"
+                                value={formData.duration}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="deadline">Deadline</label>
+                            <input
+                                id="deadline"
+                                name="deadline"
+                                type="date"
+                                value={formData.deadline}
+                                onChange={handleChange}
+                                required
+                            />
+                        </div>
+                        <div className="compact-field">
+                            <label htmlFor="status">Status</label>
+                            <select
+                                id="status"
+                                name="status"
+                                value={formData.status}
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="draft">Save as Draft</option>
+                                <option value="open">Publish Job</option>
+                            </select>
+                        </div>
+                        <div className="compact-field compact-full">
+                            <label htmlFor="attachments">Add Attachments</label>
+                            <input
+                                id="attachments"
+                                type="file"
+                                multiple
+                                accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
+                                onChange={handleAttachmentsChange}
+                            />
+                        </div>
+                    </div>
+                </fieldset>
+                <div className="compact-actions">
+                    <button type="submit" disabled={submitting}>
+                        {submitting ? "Updating..." : "Update Job"}
                     </button>
-                </form>
-                </section>
-                )
+                </div>
+            </form>
+        </section>
+    )
             }
 
             export default EditJob

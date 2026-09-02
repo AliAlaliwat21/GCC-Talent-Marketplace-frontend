@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { index } from "../services/contracts"
 import { Link } from "react-router"
@@ -23,7 +24,7 @@ const Contracts = ()=>{
         fetchContracts()
     }, [])
 
-    return(
+    return (
         <section>
             <header>
                 <h1>My Contracts</h1>
@@ -32,39 +33,27 @@ const Contracts = ()=>{
 
             {loading ? (
                 <p>Loading contracts...</p>
-            ) : message ? null : contracts.length === 0 && (
-                <p>You are yet to have any contracts!</p>
+            ) : message ? null : (
+                contracts.length === 0 && <p>You are yet to have any contracts!</p>
             )}
 
-            {contracts.map((contract) => (
+            <PagedList label="Contracts" pageSize={6} className="compact-card-grid">
+                {contracts.map((contract) => (
+                    <div className="card" key={contract._id}>
+                        <h2>{contract.title}</h2>
 
-                <div
-                    className="card"
-                    key={contract._id}
-                >
+                        <p>Status: {contract.status}</p>
 
-                    <h2>{contract.title}</h2>
+                        <p>
+                            Total Amount: {contract.totalAmount} {contract.currency}
+                        </p>
 
-                    <p>
-                        Status: {contract.status}
-                    </p>
+                        <p>Milestones: {contract.milestones.length}</p>
 
-                    <p>
-                        Total Amount: {contract.totalAmount} {contract.currency}
-                    </p>
-
-                    <p>
-                        Milestones: {contract.milestones.length}
-                    </p>
-
-                    <Link to={`/contracts/${contract._id}`}>
-                        View Contract
-                    </Link>
-
-                </div>
-
-            ))}
-
+                        <Link to={`/contracts/${contract._id}`}>View Contract</Link>
+                    </div>
+                ))}
+            </PagedList>
         </section>
     )
 }

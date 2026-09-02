@@ -1,6 +1,7 @@
 import Nav from "./components/Nav"
 import SignUpForm from "./pages/SignUpForm"
 import "./App.css"
+import "./styles/compact-pages.css"
 import { Routes, Route } from "react-router"
 import { useState } from "react"
 import SignInForm from "./pages/SignInForm"

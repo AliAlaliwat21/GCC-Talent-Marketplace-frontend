@@ -29,9 +29,6 @@ const MyJobs = () => {
   useEffect(() => {
     let active = true
 
-    setLoading(true)
-    setLoadError(false)
-
     myJobs({
       page,
       limit: 9,
@@ -50,12 +47,13 @@ const MyJobs = () => {
         setJobs(data.jobs || [])
         setTotal(Number(data.total) || 0)
         setTotalPages(pages)
+        setLoading(false)
       })
       .catch(() => {
-        if (active) setLoadError(true)
-      })
-      .finally(() => {
-        if (active) setLoading(false)
+        if (active) {
+          setLoadError(true)
+          setLoading(false)
+        }
       })
 
     return () => {
@@ -75,6 +73,7 @@ const MyJobs = () => {
       }
 
       setLoading(true)
+      setLoadError(false)
       setAttempt((value) => value + 1)
     } catch (error) {
       setMessage(error.message)
@@ -84,6 +83,9 @@ const MyJobs = () => {
   }
 
   const changePage = (next) => {
+    if (next === page) return
+    setLoading(true)
+    setLoadError(false)
     setPage(next)
     heading.current?.focus({ preventScroll: true })
     heading.current?.scrollIntoView({
@@ -123,6 +125,9 @@ const MyJobs = () => {
             key={value}
             aria-pressed={selectedStatus === value}
             onClick={() => {
+              if (value === selectedStatus && page === 1) return
+              setLoading(true)
+              setLoadError(false)
               setSelectedStatus(value)
               setPage(1)
             }}

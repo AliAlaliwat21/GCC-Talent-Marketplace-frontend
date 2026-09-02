@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { Link } from "react-router"
 import { mine, withdraw, update } from "../services/proposal"
@@ -130,149 +131,97 @@ const MyProposals = ()=>{
 
     return (
         <section>
-
             <header>
                 <h1>My Proposals</h1>
                 <p>{message}</p>
             </header>
 
+            {proposals.length === 0 && <p>You have not submitted any proposals yet.</p>}
 
-            {proposals.length === 0 && (
-                <p>You have not submitted any proposals yet.</p>
-            )}
+            <PagedList
+                label="Proposals"
+                pageSize={4}
+                className="compact-card-grid"
+                disabled={editingId !== null}
+            >
+                {proposals.map((proposal) => (
+                    <div className="card" key={proposal._id}>
+                        <h2>{proposal.job?.title}</h2>
 
+                        {editingId === proposal._id ? (
+                            <form onSubmit={(event) => handleUpdate(event, proposal._id)}>
+                                <h3>Edit Proposal</h3>
 
-            {proposals.map((proposal) => (
+                                <label>Cover Letter:</label>
 
-                <div
-                    className="card"
-                    key={proposal._id}
-                >
+                                <textarea
+                                    name="coverLetter"
+                                    value={editData.coverLetter}
+                                    onChange={handleChange}
+                                    required
+                                />
 
-                    <h2>
-                        {proposal.job?.title}
-                    </h2>
+                                <label>Amount:</label>
 
+                                <input
+                                    type="number"
+                                    name="amount"
+                                    value={editData.amount}
+                                    onChange={handleChange}
+                                    min="1"
+                                    required
+                                />
 
-                    {editingId === proposal._id ? (
+                                <label>Delivery Days:</label>
 
-                        <form
-                            onSubmit={(event) =>
-                                handleUpdate(event, proposal._id)
-                            }
-                        >
+                                <input
+                                    type="number"
+                                    name="deliveryDays"
+                                    value={editData.deliveryDays}
+                                    onChange={handleChange}
+                                    min="1"
+                                    required
+                                />
 
-                            <h3>Edit Proposal</h3>
+                                <button type="submit">Save Changes</button>
 
+                                <button type="button" onClick={handleCancelEdit}>
+                                    Cancel
+                                </button>
+                            </form>
+                        ) : (
+                            <>
+                                <p>Amount: {proposal.amount}</p>
 
-                            <label>
-                                Cover Letter:
-                            </label>
+                                <p>Delivery Days: {proposal.deliveryDays}</p>
 
-                            <textarea
-                                name="coverLetter"
-                                value={editData.coverLetter}
-                                onChange={handleChange}
-                                required
-                            />
+                                <p>Status: {proposal.status}</p>
 
+                                <details className="compact-disclosure">
+                                    <summary>Cover letter</summary>
+                                    <div className="disclosure-content">{proposal.coverLetter}</div>
+                                </details>
 
-                            <label>
-                                Amount:
-                            </label>
+                                {proposal.job && (
+                                    <Link to={`/jobs/${proposal.job._id}`}>View Job</Link>
+                                )}
 
-                            <input
-                                type="number"
-                                name="amount"
-                                value={editData.amount}
-                                onChange={handleChange}
-                                min="1"
-                                required
-                            />
+                                {proposal.status === "pending" && (
+                                    <>
+                                        <button onClick={() => handleEditClick(proposal)}>
+                                            Edit
+                                        </button>
 
-
-                            <label>
-                                Delivery Days:
-                            </label>
-
-                            <input
-                                type="number"
-                                name="deliveryDays"
-                                value={editData.deliveryDays}
-                                onChange={handleChange}
-                                min="1"
-                                required
-                            />
-
-
-                            <button type="submit">
-                                Save Changes
-                            </button>
-
-                            <button
-                                type="button"
-                                onClick={handleCancelEdit}
-                            >
-                                Cancel
-                            </button>
-
-                        </form>
-
-                    ) : (
-
-                        <>
-                            <p>
-                                Amount: {proposal.amount}
-                            </p>
-
-                            <p>
-                                Delivery Days: {proposal.deliveryDays}
-                            </p>
-
-                            <p>
-                                Status: {proposal.status}
-                            </p>
-
-                            <p>
-                                Cover Letter: {proposal.coverLetter}
-                            </p>
-
-
-                            {proposal.job && (
-                                <Link to={`/jobs/${proposal.job._id}`}>
-                                    View Job
-                                </Link>
-                            )}
-
-
-                            {proposal.status === "pending" && (
-                                <>
-                                    <button
-                                        onClick={() =>
-                                            handleEditClick(proposal)
-                                        }
-                                    >
-                                        Edit
-                                    </button>
-
-                                    <button
-                                        onClick={() =>
-                                            handleWithdraw(proposal._id)
-                                        }
-                                    >
-                                        Withdraw
-                                    </button>
-                                </>
-                            )}
-
-                        </>
-
-                    )}
-
-                </div>
-
-            ))}
-
+                                        <button onClick={() => handleWithdraw(proposal._id)}>
+                                            Withdraw
+                                        </button>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
+                ))}
+            </PagedList>
         </section>
     )
 }

@@ -1,3 +1,4 @@
+import PagedList from "../components/PagedList"
 import { useEffect, useState } from "react"
 import { index as getSkills, create, update, deleteSkill } from "../services/skills"
 import { index as getCategories } from "../services/categories"
@@ -92,95 +93,113 @@ const AdminSkills = function () {
     }
     
     return (
-    <section>
-        <header>
-            <h1>Manage Skills</h1>
-            <p>{message}</p>
+        <section>
+            <header>
+                <h1>Manage Skills</h1>
+                <p>{message}</p>
             </header>
-            
-            <form onSubmit={handleSubmit}>
-                <label htmlFor="name">Name</label>
-                <input
-                    id="name"
-                    name="name"
-                    value={skillData.name}
-                    onChange={handleChange}
-                    required
-                />
-                <label htmlFor="slug">Slug</label>
-                <input
-                    id="slug"
-                    name="slug"
-                    value={skillData.slug}
-                    onChange={handleChange}
-                    required
-                />
-                <label htmlFor="category">Category</label>
-                <select
-                    id="category"
-                    name="category"
-                    value={skillData.category}
-                    onChange={handleChange}
-                    required
-                >
-                    <option value="">Select Category</option>
-                    {categories.map(function (category) {
-                        return (
-                        <option key={category._id} value={category._id}>
-                            {category.name}
-                        </option>
-                        )
-                    })}
-                </select>
-                <button type="submit">
-                    {editingId ? "Update Skill" : "Create Skill"}
-                </button>
+
+            <form className="compact-form" onSubmit={handleSubmit}>
+                <div className="compact-grid">
+                    <div className="compact-field">
+                        <label htmlFor="name">Name</label>
+                        <input
+                            id="name"
+                            name="name"
+                            value={skillData.name}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="slug">Slug</label>
+                        <input
+                            id="slug"
+                            name="slug"
+                            value={skillData.slug}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="category">Category</label>
+                        <select
+                            id="category"
+                            name="category"
+                            value={skillData.category}
+                            onChange={handleChange}
+                            required
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map(function (category) {
+                                return (
+                                    <option key={category._id} value={category._id}>
+                                        {category.name}
+                                    </option>
+                                )
+                            })}
+                        </select>
+                    </div>
+                </div>
+                <div className="compact-actions">
+                    <button type="submit">{editingId ? "Update Skill" : "Create Skill"}</button>
+                </div>
             </form>
-            
+
             {loading ? (
                 <p>Loading...</p>
             ) : skills.length === 0 ? (
                 <p>No skills found</p>
             ) : (
-                skills.map(function (skill) {
-                    const category = categories.find(function (category) {
-                        return category._id === skill.category
-                    })
-                    return (
-                    <div className="card" key={skill._id}>
-                        <h2>{skill.name}</h2>
-                        <p>Slug: {skill.slug}</p>
-                        <p>Category: {category ? category.name : "Unknown"}</p>
-                        <button onClick={function () {
-                            handleEdit(skill)
-                        }}>
-                            Edit
-                        </button>
-                        <button onClick={function () {
-                            setDeleteId(skill._id)
-                        }}>
-                            Delete
-                        </button>
-                        {deleteId === skill._id && (
-                            <div>
-                                <p>Are you sure you want to delete this skill?</p>
-                                <button onClick={function () {
-                                    handleDelete(skill._id)
-                                }}>
-                                    Yes, Delete
+                <PagedList label="Skills" pageSize={6} className="compact-card-grid">
+                    {skills.map(function (skill) {
+                        const category = categories.find(function (category) {
+                            return category._id === skill.category
+                        })
+                        return (
+                            <div className="card" key={skill._id}>
+                                <h2>{skill.name}</h2>
+                                <p>Slug: {skill.slug}</p>
+                                <p>Category: {category ? category.name : "Unknown"}</p>
+                                <button
+                                    onClick={function () {
+                                        handleEdit(skill)
+                                    }}
+                                >
+                                    Edit
                                 </button>
-                                <button onClick={function () {
-                                    setDeleteId(null)
-                                }}>
-                                    Cancel
+                                <button
+                                    onClick={function () {
+                                        setDeleteId(skill._id)
+                                    }}
+                                >
+                                    Delete
                                 </button>
+                                {deleteId === skill._id && (
+                                    <div>
+                                        <p>Are you sure you want to delete this skill?</p>
+                                        <button
+                                            onClick={function () {
+                                                handleDelete(skill._id)
+                                            }}
+                                        >
+                                            Yes, Delete
+                                        </button>
+                                        <button
+                                            onClick={function () {
+                                                setDeleteId(null)
+                                            }}
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                )}
                             </div>
-                        )}
-                        </div>
                         )
-                    })
-                )}
-                </section>
-                )
+                    })}
+                </PagedList>
+            )}
+        </section>
+    )
             }
             export default AdminSkills

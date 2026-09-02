@@ -72,41 +72,64 @@ const ProposalForm = (props)=>{
     }
 
     return (
-        <section className="card">
+        <section className="card compact-page">
             <header>
                 <h1>Submit a Proposal</h1>
                 <p>{message}</p>
             </header>
-            <form onSubmit={handleSubmit}>
-
-                Cover Letter:
-                <textarea
-                    name='coverLetter'
-                    onChange={handleChange}
-                    value={proposalData.coverLetter}
-                    required
-                />
-                
-                Amount:
-                <input type="number" name="amount" onChange={handleChange} value={proposalData.amount} required />
-
-                Delivery Days:
-                <input type="number" name="deliveryDays" onChange={handleChange} value={proposalData.deliveryDays} required />
-
-                Attachments:
-                <input
-                    type="file"
-                    multiple
-                    accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
-                    onChange={handleAttachmentsChange}
-                />
-
+            <form className="compact-form" onSubmit={handleSubmit}>
+                <div className="compact-grid">
+                    <div className="compact-field compact-full">
+                        <label htmlFor="proposal-cover-letter">Cover Letter</label>
+                        <textarea
+                            id="proposal-cover-letter"
+                            name="coverLetter"
+                            onChange={handleChange}
+                            value={proposalData.coverLetter}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="proposal-amount">Amount</label>
+                        <input
+                            type="number"
+                            id="proposal-amount"
+                            name="amount"
+                            onChange={handleChange}
+                            value={proposalData.amount}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field">
+                        <label htmlFor="proposal-delivery-days">Delivery Days</label>
+                        <input
+                            type="number"
+                            id="proposal-delivery-days"
+                            name="deliveryDays"
+                            onChange={handleChange}
+                            value={proposalData.deliveryDays}
+                            required
+                        />
+                    </div>
+                    <div className="compact-field compact-full">
+                        <label htmlFor="proposal-attachments">Attachments</label>
+                        <input
+                            id="proposal-attachments"
+                            type="file"
+                            multiple
+                            accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
+                            onChange={handleAttachmentsChange}
+                        />
+                    </div>
+                </div>
+                <div className="compact-actions">
                     <button type="submit" disabled={!isFormValid() || submitting}>
                         {submitting ? "Submitting..." : "Submit Proposal"}
                     </button>
-
-                    <button type='button' onClick={handleCancel} >Cancel</button>
-
+                    <button type="button" onClick={handleCancel}>
+                        Cancel
+                    </button>
+                </div>
             </form>
         </section>
     )
