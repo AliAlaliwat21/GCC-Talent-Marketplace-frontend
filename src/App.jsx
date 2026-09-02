@@ -27,10 +27,14 @@ import AdminCategories from "./pages/AdminCategories"
 import AdminSkills from "./pages/AdminSkills"
 import AccountSettings from "./pages/AccountSettings"
 const getUserFromToken = () => {
-  
-  const token = localStorage.getItem('token')
-  if (!token) return null
-  return JSON.parse(atob(token.split('.')[1])).payload
+  try {
+    const token = localStorage.getItem('token')
+    if (!token) return null
+    return JSON.parse(atob(token.split('.')[1])).payload
+  } catch {
+    localStorage.removeItem('token')
+    return null
+  }
 }
 
 const App = () => {
