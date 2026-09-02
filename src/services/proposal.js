@@ -81,7 +81,7 @@ const shortlist = async(proposalId)=>{
 
         return data
     } catch (error) {
-        
+        throw new Error(error.message)
     }
 }
 
