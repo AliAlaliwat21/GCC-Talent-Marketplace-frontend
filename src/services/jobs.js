@@ -110,6 +110,26 @@ const reopenJob = async (jobId) => {
 }
 
 
+const publishJob = async function (jobId) {
+    const token = localStorage.getItem('token')
+
+    const res = await fetch(`${BASE_URL}/${jobId}/publish`, {
+        method: 'PATCH',
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.message || 'Failed to publish job')
+    }
+
+    return data
+}
+
+
 const deleteDraft = async function (jobId) {
     const token = localStorage.getItem('token')
 
@@ -172,6 +192,10 @@ const update = async function (jobId, formData) {
         throw new Error(data.message || 'Failed to update job')
     }
 
+    if (formData.status === 'open' && data.status === 'draft') {
+        return publishJob(jobId)
+    }
+
     return data
 }
 
@@ -181,6 +205,7 @@ export {
     myJobs,
     closeJob,
     reopenJob,
+    publishJob,
     deleteDraft,
     create,
     update

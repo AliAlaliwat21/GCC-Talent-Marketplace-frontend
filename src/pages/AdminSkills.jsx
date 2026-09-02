@@ -8,6 +8,7 @@ const AdminSkills = function () {
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
     const [editingId, setEditingId] = useState(null)
+    const [deleteId, setDeleteId] = useState(null)
     const [skillData, setSkillData] = useState({
         name: "",
         slug: "",
@@ -78,13 +79,12 @@ const AdminSkills = function () {
     }
     
     const handleDelete = async function (skillId) {
-        const confirmed = window.confirm("Are you sure you want to delete this skill?")
-        if (!confirmed) return
         try {
             const data = await deleteSkill(skillId)
             setSkills(skills.filter(function (skill) {
                 return skill._id !== skillId
             }))
+            setDeleteId(null)
             setMessage(data.message)
         } catch (error) {
             setMessage(error.message)
@@ -157,10 +157,25 @@ const AdminSkills = function () {
                             Edit
                         </button>
                         <button onClick={function () {
-                            handleDelete(skill._id)
+                            setDeleteId(skill._id)
                         }}>
                             Delete
                         </button>
+                        {deleteId === skill._id && (
+                            <div>
+                                <p>Are you sure you want to delete this skill?</p>
+                                <button onClick={function () {
+                                    handleDelete(skill._id)
+                                }}>
+                                    Yes, Delete
+                                </button>
+                                <button onClick={function () {
+                                    setDeleteId(null)
+                                }}>
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
                         </div>
                         )
                     })

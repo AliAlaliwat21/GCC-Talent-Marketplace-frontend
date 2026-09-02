@@ -6,6 +6,7 @@ const AdminCategories = function () {
     const [loading, setLoading] = useState(true)
     const [message, setMessage] = useState("")
     const [editingId, setEditingId] = useState(null)
+    const [deleteId, setDeleteId] = useState(null)
     const [categoryData, setCategoryData] = useState({
         name: "",
         slug: "",
@@ -79,13 +80,12 @@ const AdminCategories = function () {
     }
     
     const handleDelete = async function (categoryId) {
-        const confirmed = window.confirm("Are you sure you want to delete this category?")
-        if (!confirmed) return
         try {
             const data = await deleteCategory(categoryId)
             setCategories(categories.filter(function (category) {
                 return category._id !== categoryId
             }))
+            setDeleteId(null)
             setMessage(data.message)
         } catch (error) {
             setMessage(error.message)
@@ -154,10 +154,25 @@ const AdminCategories = function () {
                             Edit
                         </button>
                         <button onClick={function () {
-                            handleDelete(category._id)
+                            setDeleteId(category._id)
                         }}>
                             Delete
                         </button>
+                        {deleteId === category._id && (
+                            <div>
+                                <p>Are you sure you want to delete this category?</p>
+                                <button onClick={function () {
+                                    handleDelete(category._id)
+                                }}>
+                                    Yes, Delete
+                                </button>
+                                <button onClick={function () {
+                                    setDeleteId(null)
+                                }}>
+                                    Cancel
+                                </button>
+                            </div>
+                        )}
                         </div>
                         )
                     })

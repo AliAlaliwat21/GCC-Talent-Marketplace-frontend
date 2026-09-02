@@ -20,7 +20,8 @@ const EditJob = function () {
         experienceLevel: "",
         duration: "",
         deadline: "",
-        attachments: []
+        attachments: [],
+        status: ""
     }
 
     const [formData, setFormData] = useState(initialState)
@@ -66,7 +67,8 @@ const EditJob = function () {
                     deadline: job.deadline
                         ? job.deadline.slice(0, 10)
                         : "",
-                    attachments: job.attachments || []
+                    attachments: job.attachments || [],
+                    status: job.status
                 })
             } catch (error) {
                 setMessage(error.message)
@@ -264,6 +266,17 @@ const EditJob = function () {
                 value={formData.deadline}
                 onChange={handleChange}
                 required/>
+
+                <label htmlFor="status">Status</label>
+                <select
+                id="status"
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                required>
+                    <option value="draft">Save as Draft</option>
+                    <option value="open">Publish Job</option>
+                    </select>
 
                 <label htmlFor="attachments">Add Attachments</label>
                 <input
