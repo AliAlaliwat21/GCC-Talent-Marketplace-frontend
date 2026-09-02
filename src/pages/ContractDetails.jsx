@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { show } from "../services/contracts"
+import { addMilestone, show, updateMilestone } from "../services/contracts"
 
 const ContractDetails = (props)=>{
 
@@ -12,6 +12,13 @@ const ContractDetails = (props)=>{
     const [messages, setMessages] = useState([])
 
     const [message, setMessage] = useState('')
+    const [editingId, setEditingId] = useState(null)
+    const [milestoneData, setMilestoneData] = useState({
+        title: '',
+        description: '',
+        amount: '',
+        dueDate: ''
+    })
 
     const fetchContract = async()=>{
         try {
@@ -29,17 +36,68 @@ const ContractDetails = (props)=>{
         fetchContract()
     }, [contractId])
 
-    if (message)
-        return <p>{message}</p>
+    const handleMilestoneChange = (event)=>{
+        setMilestoneData({
+            ...milestoneData,
+            [event.target.name]: event.target.value
+        })
+    }
+
+    const handleMilestoneSubmit = async(event)=>{
+        event.preventDefault()
+        setMessage('')
+
+        try {
+            const dataToSend = {
+                ...milestoneData,
+                amount: Number(milestoneData.amount)
+            }
+
+            if (editingId) {
+                await updateMilestone(contractId, editingId, dataToSend)
+                setMessage('Milestone updated successfully')
+            } else {
+                await addMilestone(contractId, dataToSend)
+                setMessage('Milestone added successfully')
+            }
+
+            setEditingId(null)
+            setMilestoneData({
+                title: '',
+                description: '',
+                amount: '',
+                dueDate: ''
+            })
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleEditMilestone = (milestone)=>{
+        setEditingId(milestone._id)
+        setMilestoneData({
+            title: milestone.title,
+            description: milestone.description || '',
+            amount: milestone.amount,
+            dueDate: milestone.dueDate
+                ? milestone.dueDate.slice(0, 10)
+                : ''
+        })
+    }
 
     if (!contract){
-        return <p>Loading...</p>
+        return <p>{message || 'Loading...'}</p>
     }
+
+    const isClient = props.user?._id === contract.client?._id
 
     return(
         <section>
             <header>
                 <h1>{contract.title}</h1>
+
+                <p>{message}</p>
 
                 <p>
                     Status: {contract.status}
@@ -51,6 +109,63 @@ const ContractDetails = (props)=>{
             </header>
 
             <h2>Milestones</h2>
+
+            {isClient && contract.status === 'active' && (
+                <form onSubmit={handleMilestoneSubmit}>
+                    <h3>{editingId ? 'Edit Milestone' : 'Add Milestone'}</h3>
+
+                    <label htmlFor="milestoneTitle">Title</label>
+                    <input
+                        id="milestoneTitle"
+                        name="title"
+                        value={milestoneData.title}
+                        onChange={handleMilestoneChange}
+                        required
+                    />
+
+                    <label htmlFor="milestoneDescription">Description</label>
+                    <textarea
+                        id="milestoneDescription"
+                        name="description"
+                        value={milestoneData.description}
+                        onChange={handleMilestoneChange}
+                    />
+
+                    <label htmlFor="milestoneAmount">Amount</label>
+                    <input
+                        id="milestoneAmount"
+                        name="amount"
+                        type="number"
+                        min="1"
+                        value={milestoneData.amount}
+                        onChange={handleMilestoneChange}
+                        required
+                    />
+
+                    <label htmlFor="milestoneDueDate">Due Date</label>
+                    <input
+                        id="milestoneDueDate"
+                        name="dueDate"
+                        type="date"
+                        value={milestoneData.dueDate}
+                        onChange={handleMilestoneChange}
+                    />
+
+                    <button type="submit">
+                        {editingId ? 'Update Milestone' : 'Add Milestone'}
+                    </button>
+
+                    {editingId && (
+                        <button
+                            type="button"
+                            onClick={()=>setEditingId(null)}
+                        >
+                            Cancel
+                        </button>
+                    )}
+                </form>
+            )}
+
             {contract.milestones.map((milestone) => (
 
                     <div
@@ -85,6 +200,12 @@ const ContractDetails = (props)=>{
                         <p>
                             Escrow: {milestone.escrowAmount}
                         </p>
+
+                        {isClient && milestone.status === 'pending' && (
+                            <button onClick={()=>handleEditMilestone(milestone)}>
+                                Edit Milestone
+                            </button>
+                        )}
 
                     </div>
 
