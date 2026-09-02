@@ -588,10 +588,9 @@ This repository represents the **frontend React application**.
 Add the project team members here.
 
 ```text
-Team Member 1
-Team Member 2
-Team Member 3
-Team Member 4
+Ali Alaliwat
+Husain Aljamry
+Jassim Alawainati
 ```
 
 ---
