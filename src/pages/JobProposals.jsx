@@ -200,6 +200,32 @@ const JobProposals = () => {
                                 <div className="disclosure-content">{proposal.coverLetter}</div>
                             </details>
 
+                            {proposal.attachments?.length > 0 && (
+                                <div>
+                                    <h4>Attachments</h4>
+                                    {proposal.attachments.map((attachment) => (
+                                        <div key={attachment._id || attachment.url}>
+                                            {/\.(jpg|jpeg|png|webp)$/i.test(attachment.name || "") && (
+                                                <img
+                                                src={attachment.url}
+                                                alt={attachment.name || "Proposal attachment"}
+                                                width="220"
+                                                />
+                                                )}
+                                                <p>
+                                                    <a
+                                                    href={attachment.url}
+                                                    target="_blank"
+                                                    rel="noreferrer"
+                                                    >
+                                                        {attachment.name || "View attachment"}
+                                                        </a>
+                                                        </p>
+                                                        </div>
+                                                    ))}
+                                                    </div>
+                                                )}
+
                             <p>Amount: {proposal.amount}</p>
 
                             <p>Delivery Days: {proposal.deliveryDays}</p>

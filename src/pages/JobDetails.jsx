@@ -59,6 +59,33 @@ const JobDetails = function (props) {
                     <p>Status: {job.status}</p>
 
                     <p>Proposals: {job.proposalsCount}</p>
+
+                    {job.attachments?.length > 0 && (
+                        <div>
+                            <h3>Attachments</h3>
+                            
+                            {job.attachments.map((attachment) => (
+                                <div key={attachment._id || attachment.url}>
+                                    {/\.(jpg|jpeg|png|webp)$/i.test(attachment.name || "") && (
+                                        <img
+                                        src={attachment.url}
+                                        alt={attachment.name || "Job attachment"}
+                                        width="220"
+                    />
+                )}
+                <p>
+                    <a
+                        href={attachment.url}
+                        target="_blank"
+                        rel="noreferrer"
+                    >
+                        {attachment.name || "View attachment"}
+                    </a>
+                </p>
+            </div>
+        ))}
+    </div>
+)}
                 </div>
 
                 <div className="card">
