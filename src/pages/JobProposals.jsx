@@ -48,7 +48,18 @@ const JobProposals = () => {
 
 
     useEffect(() => {
-        fetchProposals()
+        const fetchInitialProposals = async () => {
+            try {
+                const data = await getJobProposals(jobId)
+                setProposals(data.proposals)
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchInitialProposals()
     }, [jobId])
 
 
