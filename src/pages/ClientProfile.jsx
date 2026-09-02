@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { showMe, upsertMe } from "../services/clientProfiles"
+import { showMe as showAccount } from "../services/user"
 
 
 const ClientProfile = () => {
@@ -8,7 +9,9 @@ const ClientProfile = () => {
         isCompany: false,
         companyName: "",
         description: "",
-        website: ""
+        website: "",
+        country: "",
+        city: ""
     }
 
 
@@ -22,27 +25,30 @@ const ClientProfile = () => {
 
             try {
 
-                const data = await showMe()
+                const account = await showAccount()
+                let profile = initialState
 
-                const profile = data.profile || data
+                try {
+                    const data = await showMe()
+                    profile = data.profile || data
+                } catch (error) {
+                    if (error.message !== "Client profile not found") {
+                        throw error
+                    }
+                }
 
                 setFormData({
                     isCompany: profile.isCompany || false,
                     companyName: profile.companyName || "",
                     description: profile.description || "",
-                    website: profile.website || ""
+                    website: profile.website || "",
+                    country: account.country || "",
+                    city: account.city || ""
                 })
 
             } catch (error) {
 
-                // If they haven't created a profile yet,
-                // we just leave the form empty.
-
-                if (
-                    error.message !== "Client profile not found"
-                ) {
-                    setMessage(error.message)
-                }
+                setMessage(error.message)
 
             }
 
@@ -77,7 +83,15 @@ const ClientProfile = () => {
 
         try {
 
-            await upsertMe(formData)
+            const dataToSend = {
+                ...formData
+            }
+
+            if (!dataToSend.website) {
+                delete dataToSend.website
+            }
+
+            await upsertMe(dataToSend)
 
             setMessage(
                 "Client profile saved successfully"
@@ -166,6 +180,39 @@ const ClientProfile = () => {
                     value={formData.website}
                     onChange={handleChange}
                     placeholder="https://example.com"
+                />
+
+
+                <label htmlFor="country">
+                    Country
+                </label>
+
+                <select
+                    id="country"
+                    name="country"
+                    value={formData.country}
+                    onChange={handleChange}
+                    required
+                >
+                    <option value="">Select Country</option>
+                    <option value="Bahrain">Bahrain</option>
+                    <option value="Kuwait">Kuwait</option>
+                    <option value="Oman">Oman</option>
+                    <option value="Qatar">Qatar</option>
+                    <option value="Saudi Arabia">Saudi Arabia</option>
+                    <option value="United Arab Emirates">United Arab Emirates</option>
+                </select>
+
+
+                <label htmlFor="city">
+                    City
+                </label>
+
+                <input
+                    id="city"
+                    name="city"
+                    value={formData.city}
+                    onChange={handleChange}
                 />
 
 
