@@ -94,6 +94,10 @@ const PublicFreelancerProfile = function () {
                 }
             </p>
 
+            <p>
+                Completed Contracts: {profile.completedContracts || 0}
+            </p>
+
             <h2>Skills</h2>
 
             {profile.skills.map(function (skill) {
