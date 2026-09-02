@@ -74,7 +74,7 @@ const ProposalForm = (props)=>{
     return (
         <section className="card">
             <header>
-                <h1>Submit a Propose</h1>
+                <h1>Submit a Proposal</h1>
                 <p>{message}</p>
             </header>
             <form onSubmit={handleSubmit}>
