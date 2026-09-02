@@ -26,7 +26,7 @@ const ClientProfile = () => {
             try {
 
                 const account = await showAccount()
-                let profile = initialState
+                let profile = {}
 
                 try {
                     const data = await showMe()
