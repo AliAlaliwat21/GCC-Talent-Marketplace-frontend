@@ -37,7 +37,27 @@ const showMe = async () => {
     return data
 }
 
+const updateMe = async (userData) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(userData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.err || data.message)
+    }
+
+    return data
+}
+
 export {
     index,
-    showMe
+    showMe,
+    updateMe
 }
