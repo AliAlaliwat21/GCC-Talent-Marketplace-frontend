@@ -2,7 +2,6 @@ const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`
 
 const index = async ()=>{
 
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/contracts`, {
         method: 'GET',
         headers: {
@@ -15,14 +14,9 @@ const index = async ()=>{
     if (!res.ok) throw new Error (data.error || data.message)
 
         return data
-    } catch (error) {
-        throw error
-    }
-   
 }
 
 const show = async (contractId)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}`,
             {
                 method: 'GET',
@@ -36,9 +30,6 @@ const show = async (contractId)=>{
         if (!res.ok) throw new Error (data.error || data.message)
 
             return data
-    } catch (error) {
-        throw error
-    }
 }
 
 const addMilestone = async (contractId, milestoneData)=>{
