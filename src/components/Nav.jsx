@@ -1,9 +1,16 @@
 import { Link } from "react-router"
+import { signOut } from "../services/auth"
 
 
 const Nav = (props) => {
 
-    const handleSignOut = () => {
+    const handleSignOut = async () => {
+        try {
+            await signOut()
+        } catch (error) {
+            console.log(error.message)
+        }
+
         localStorage.removeItem('token')
         props.setUser(null)
     }
