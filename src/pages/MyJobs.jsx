@@ -12,21 +12,44 @@ const STATUSES = [
   ['completed', 'Completed'],
   ['closed', 'Closed'],
 ]
+
 const MyJobs = () => {
   const [jobs, setJobs] = useState([])
   const [selectedStatus, setSelectedStatus] = useState('all')
   const [page, setPage] = useState(1)
+  const [total, setTotal] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [message, setMessage] = useState('')
   const [loadError, setLoadError] = useState(false)
   const [attempt, setAttempt] = useState(0)
   const [pending, setPending] = useState(null)
   const heading = useRef(null)
+
   useEffect(() => {
     let active = true
-    myJobs()
+
+    setLoading(true)
+    setLoadError(false)
+
+    myJobs({
+      page,
+      limit: 9,
+      status: selectedStatus === 'all' ? undefined : selectedStatus,
+    })
       .then((data) => {
-        if (active) setJobs(data.jobs || [])
+        if (!active) return
+
+        const pages = Math.max(1, Number(data.totalPages) || 1)
+
+        if (page > pages) {
+          setPage(pages)
+          return
+        }
+
+        setJobs(data.jobs || [])
+        setTotal(Number(data.total) || 0)
+        setTotalPages(pages)
       })
       .catch(() => {
         if (active) setLoadError(true)
@@ -34,40 +57,32 @@ const MyJobs = () => {
       .finally(() => {
         if (active) setLoading(false)
       })
+
     return () => {
       active = false
     }
-  }, [attempt])
+  }, [attempt, page, selectedStatus])
+
   const handleAction = async (jobId, action) => {
     setMessage('')
     setPending(jobId)
+
     try {
       if (action === 'delete') {
         await deleteDraft(jobId)
-        setJobs((current) => current.filter((job) => job._id !== jobId))
       } else {
         await (action === 'close' ? closeJob(jobId) : reopenJob(jobId))
-        setJobs((current) =>
-          current.map((job) =>
-            job._id === jobId
-              ? { ...job, status: action === 'close' ? 'closed' : 'open' }
-              : job,
-          ),
-        )
       }
+
+      setLoading(true)
+      setAttempt((value) => value + 1)
     } catch (error) {
       setMessage(error.message)
     } finally {
       setPending(null)
     }
   }
-  const filtered =
-    selectedStatus === 'all'
-      ? jobs
-      : jobs.filter((job) => job.status === selectedStatus)
-  const totalPages = Math.max(1, Math.ceil(filtered.length / 9))
-  const currentPage = Math.min(page, totalPages)
-  const visibleJobs = filtered.slice((currentPage - 1) * 9, currentPage * 9)
+
   const changePage = (next) => {
     setPage(next)
     heading.current?.focus({ preventScroll: true })
@@ -77,6 +92,7 @@ const MyJobs = () => {
         : 'smooth',
     })
   }
+
   return (
     <section className="my-jobs-page">
       <header className="my-jobs-header">
@@ -89,11 +105,13 @@ const MyJobs = () => {
           Post a job <span aria-hidden="true">+</span>
         </Link>
       </header>
+
       {message && (
         <p className="error" role="alert">
           {message}
         </p>
       )}
+
       <div
         className="status-filters"
         role="group"
@@ -113,9 +131,15 @@ const MyJobs = () => {
           </button>
         ))}
       </div>
+
       <div className="results-heading" ref={heading} tabIndex={-1}>
-        <h2>{loading ? 'Loading your jobs…' : `${filtered.length} jobs`}</h2>
+        <h2>
+          {loading
+            ? 'Loading your jobs…'
+            : `${total} ${total === 1 ? 'job' : 'jobs'}`}
+        </h2>
       </div>
+
       {loading ? (
         <ListingSkeletons />
       ) : loadError ? (
@@ -129,22 +153,22 @@ const MyJobs = () => {
             setAttempt((value) => value + 1)
           }}
         />
-      ) : visibleJobs.length === 0 ? (
+      ) : jobs.length === 0 ? (
         <EmptyState
           title={
-            jobs.length === 0
+            selectedStatus === 'all'
               ? 'Your next hire starts here'
               : 'No jobs with this status'
           }
           description={
-            jobs.length === 0
+            selectedStatus === 'all'
               ? 'Post your first job to connect with GCC talent.'
               : 'Choose another status to see your jobs.'
           }
         />
       ) : (
         <div className="marketplace-grid">
-          {visibleJobs.map((job) => (
+          {jobs.map((job) => (
             <article
               className="marketplace-card managed-job-card"
               key={job._id}
@@ -162,14 +186,17 @@ const MyJobs = () => {
               <p className="muted">{job.proposalsCount || 0} proposals</p>
               <div className="managed-job-actions">
                 <Link to={`/jobs/${job._id}`}>View job ↗</Link>
+
                 {['draft', 'open'].includes(job.status) && (
                   <Link to={`/client/jobs/${job._id}/edit`}>Edit</Link>
                 )}
+
                 {job.status === 'open' && (
                   <Link to={`/client/jobs/${job._id}/proposals`}>
                     View proposals
                   </Link>
                 )}
+
                 {['draft', 'open', 'closed'].includes(job.status) && (
                   <button
                     className="outline-button"
@@ -200,9 +227,10 @@ const MyJobs = () => {
           ))}
         </div>
       )}
+
       {!loading && !loadError && (
         <Pagination
-          page={currentPage}
+          page={page}
           totalPages={totalPages}
           onPageChange={changePage}
         />
@@ -210,4 +238,5 @@ const MyJobs = () => {
     </section>
   )
 }
+
 export default MyJobs
