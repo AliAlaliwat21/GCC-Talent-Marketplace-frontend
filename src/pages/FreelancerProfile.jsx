@@ -30,6 +30,7 @@ const FreelancerProfile = function (props) {
     })
     const [portfolioItems, setPortfolioItems] = useState([])
     const [portfolioImage, setPortfolioImage] = useState(null)
+    const [loading, setLoading] = useState(true)
 
     const handleChange = function (event) {
         setFormData({...formData, [event.target.name]: event.target.value})
@@ -72,6 +73,8 @@ const FreelancerProfile = function (props) {
                 if (error.message !== "Freelancer profile not found") {
                     setMessage(error.message)
                 }
+            } finally {
+                setLoading(false)
             }
         }
         
@@ -180,6 +183,10 @@ const FreelancerProfile = function (props) {
         } catch (error) {
             setMessage(error.message)
         }
+    }
+
+    if (loading) {
+        return <p>Loading freelancer profile...</p>
     }
     
     return (
