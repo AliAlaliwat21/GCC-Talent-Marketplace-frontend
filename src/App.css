@@ -1236,6 +1236,7 @@ summary:focus-visible,
 }
 .marketplace-card .card-summary {
   display: -webkit-box;
+  line-clamp: 3;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -1246,6 +1247,8 @@ summary:focus-visible,
 }
 .job-card h2 {
   display: -webkit-box;
+  line-clamp: 2;
+  -webkit-line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -1343,6 +1346,7 @@ summary:focus-visible,
   object-fit: cover;
 }
 .talent-card .card-summary {
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   margin-top: 5px;
 }
@@ -1654,6 +1658,7 @@ summary:focus-visible,
 }
 .managed-job-card h2 {
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
@@ -1815,4 +1820,11 @@ summary:focus-visible,
     transition: none !important;
     scroll-behavior: auto !important;
   }
+}
+
+section > header::after,
+.auth-card > header::after,
+.dashboard-card-header::before {
+  display: none;
+  content: none;
 }
