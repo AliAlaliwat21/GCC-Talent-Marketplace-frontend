@@ -58,8 +58,26 @@ const addMilestone = async (contractId, milestoneData)=>{
     return data
 }
 
+const updateMilestone = async (contractId, milestoneId, milestoneData)=>{
+    const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}/milestones/${milestoneId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(milestoneData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) throw new Error(data.error || data.message)
+
+    return data
+}
+
 export {
     index,
     show,
-    addMilestone
+    addMilestone,
+    updateMilestone
 }
