@@ -43,21 +43,44 @@ const Jobs = function () {
         }
     }
 
-    const fetchCategoriesAndSkills = async function () {
-        try {
-            const categoriesData = await categoriesIndex()
-            const skillsData = await skillsIndex()
-            
-            setCategories(categoriesData)
-            setSkills(skillsData)
-        } catch (err) {
-            setMessage(err.message)
-        }
-    }
-
     useEffect(function () {
-        fetchJobs(filters)
-        fetchCategoriesAndSkills()
+        const fetchInitialJobs = async function () {
+            try {
+                const data = await index({
+                    search: "",
+                    category: "",
+                    skills: [],
+                    budgetMin: "",
+                    budgetMax: "",
+                    budgetType: "",
+                    experienceLevel: "",
+                    daysAgo: "",
+                    sort: "newest",
+                    page: 1,
+                    limit: 10
+                })
+                setJobs(data.jobs)
+                setPagination(data.pagination || {})
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        const fetchInitialOptions = async function () {
+            try {
+                const categoriesData = await categoriesIndex()
+                const skillsData = await skillsIndex()
+                setCategories(categoriesData)
+                setSkills(skillsData)
+            } catch (error) {
+                setMessage(error.message)
+            }
+        }
+
+        fetchInitialJobs()
+        fetchInitialOptions()
     }, [])
 
     const handleChange = function (event) {
