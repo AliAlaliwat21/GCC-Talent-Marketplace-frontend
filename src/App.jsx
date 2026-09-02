@@ -25,6 +25,7 @@ import AdminUserDetails from "./pages/AdminUserDetails"
 import AdminDashboard from "./pages/AdminDashboard"
 import AdminCategories from "./pages/AdminCategories"
 import AdminSkills from "./pages/AdminSkills"
+import AccountSettings from "./pages/AccountSettings"
 const getUserFromToken = () => {
   
   const token = localStorage.getItem('token')
@@ -107,6 +108,10 @@ const App = () => {
           <Route
             path="/wallet"
             element={<Wallet user={user} />}
+          />
+          <Route
+            path="/settings"
+            element={<AccountSettings user={user} setUser={setUser} />}
           />
           <Route
             path="/admin"
