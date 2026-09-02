@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { addMilestone, approveMilestone, deliverMilestone, fundMilestone, requestRevision, show, updateMilestone } from "../services/contracts"
+import { addMilestone, approveMilestone, cancelContract, deliverMilestone, fundMilestone, requestRevision, show, updateMilestone } from "../services/contracts"
 import { uploadFile } from "../services/uploads"
 
 const ContractDetails = (props)=>{
@@ -162,6 +162,22 @@ const ContractDetails = (props)=>{
         }
     }
 
+    const handleCancelContract = async()=>{
+        const confirmed = window.confirm('Are you sure you want to cancel this contract?')
+
+        if (!confirmed) return
+
+        setMessage('')
+
+        try {
+            await cancelContract(contractId)
+            setMessage('Contract cancelled successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
     if (!contract){
         return <p>{message || 'Loading...'}</p>
     }
@@ -184,6 +200,12 @@ const ContractDetails = (props)=>{
                     Total: {contract.totalAmount} {contract.currency}
                 </p>
             </header>
+
+            {contract.status === 'active' && (
+                <button onClick={handleCancelContract}>
+                    Cancel Contract
+                </button>
+            )}
 
             <h2>Milestones</h2>
 
