@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { addMilestone, approveMilestone, cancelContract, deliverMilestone, fundMilestone, requestRevision, show, updateMilestone } from "../services/contracts"
+import { addMilestone, approveMilestone, cancelContract, deliverMilestone, fundMilestone, requestRevision, sendMessage, show, updateMilestone } from "../services/contracts"
 import { uploadFile } from "../services/uploads"
 import ReviewForm from "../components/ReviewForm"
 
@@ -26,6 +26,7 @@ const ContractDetails = (props)=>{
     const [deliveryFiles, setDeliveryFiles] = useState([])
     const [revisionId, setRevisionId] = useState(null)
     const [revisionNote, setRevisionNote] = useState('')
+    const [contractMessage, setContractMessage] = useState('')
 
     const fetchContract = async()=>{
         try {
@@ -185,6 +186,19 @@ const ContractDetails = (props)=>{
         try {
             await cancelContract(contractId)
             setMessage('Contract cancelled successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleSendMessage = async(event)=>{
+        event.preventDefault()
+        setMessage('')
+
+        try {
+            await sendMessage(contractId, contractMessage)
+            setContractMessage('')
             fetchContract()
         } catch (error) {
             setMessage(error.message)
@@ -501,6 +515,18 @@ const ContractDetails = (props)=>{
             </div>
         ))
     )}
+
+    <form onSubmit={handleSendMessage}>
+        <label htmlFor="contractMessage">Message</label>
+        <textarea
+            id="contractMessage"
+            value={contractMessage}
+            onChange={(event)=>setContractMessage(event.target.value)}
+            required
+        />
+
+        <button type="submit">Send Message</button>
+    </form>
 </section>
 
 {(

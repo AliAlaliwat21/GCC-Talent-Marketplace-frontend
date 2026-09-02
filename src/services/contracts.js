@@ -145,6 +145,23 @@ const cancelContract = async (contractId)=>{
     return data
 }
 
+const sendMessage = async (contractId, text)=>{
+    const res = await fetch(`${BASE_URL}/api/v1/contracts/${contractId}/messages`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify({text: text})
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) throw new Error(data.error || data.message)
+
+    return data
+}
+
 export {
     index,
     show,
@@ -154,5 +171,6 @@ export {
     deliverMilestone,
     approveMilestone,
     requestRevision,
-    cancelContract
+    cancelContract,
+    sendMessage
 }
