@@ -53,8 +53,24 @@ const Freelancers = function () {
             }
         }
 
+        const fetchInitialFreelancers = async function () {
+            try {
+                const data = await getFreelancers({
+                    sort: "newest",
+                    page: 1,
+                    limit: 10
+                })
+                setProfiles(data.profiles)
+                setTotalPages(Math.max(1, Math.ceil(data.totalProfiles / data.limit)))
+            } catch (error) {
+                setMessage(error.message)
+            } finally {
+                setLoading(false)
+            }
+        }
+
         fetchOptions()
-        fetchFreelancers(filters)
+        fetchInitialFreelancers()
     }, [])
 
     const handleChange = function (event) {
