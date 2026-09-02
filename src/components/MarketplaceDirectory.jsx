@@ -142,14 +142,9 @@ const MarketplaceDirectory = ({ type }) => {
         const records = isJobs
           ? data.jobs || []
           : (data.profiles || []).filter((profile) => profile?.user)
-        const count = isJobs
-          ? (data.pagination?.total ??
-            data.pagination?.totalJobs ??
-            data.totalJobs)
-          : data.totalProfiles
+        const count = isJobs ? data.total : data.totalProfiles
         const pages = isJobs
-          ? (data.pagination?.totalPages ??
-            data.pagination?.pages ??
+          ? (data.totalPages ??
             Math.ceil((count ?? records.length) / applied.limit))
           : Math.ceil(
               (count ?? records.length) / (Number(data.limit) || applied.limit),
