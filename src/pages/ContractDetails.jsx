@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { addMilestone, deliverMilestone, fundMilestone, show, updateMilestone } from "../services/contracts"
+import { addMilestone, approveMilestone, deliverMilestone, fundMilestone, requestRevision, show, updateMilestone } from "../services/contracts"
 import { uploadFile } from "../services/uploads"
 
 const ContractDetails = (props)=>{
@@ -23,6 +23,8 @@ const ContractDetails = (props)=>{
     const [deliveryId, setDeliveryId] = useState(null)
     const [deliveryMessage, setDeliveryMessage] = useState('')
     const [deliveryFiles, setDeliveryFiles] = useState([])
+    const [revisionId, setRevisionId] = useState(null)
+    const [revisionNote, setRevisionNote] = useState('')
 
     const fetchContract = async()=>{
         try {
@@ -127,6 +129,33 @@ const ContractDetails = (props)=>{
             setDeliveryMessage('')
             setDeliveryFiles([])
             setMessage('Work delivered successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleApproveMilestone = async(milestoneId)=>{
+        setMessage('')
+
+        try {
+            await approveMilestone(contractId, milestoneId)
+            setMessage('Delivery approved successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
+    const handleRevisionSubmit = async(event, milestoneId)=>{
+        event.preventDefault()
+        setMessage('')
+
+        try {
+            await requestRevision(contractId, milestoneId, revisionNote)
+            setRevisionId(null)
+            setRevisionNote('')
+            setMessage('Revision requested successfully')
             fetchContract()
         } catch (error) {
             setMessage(error.message)
@@ -249,6 +278,28 @@ const ContractDetails = (props)=>{
                             Escrow: {milestone.escrowAmount}
                         </p>
 
+                        {milestone.deliveries.map((delivery) => (
+                            <div key={delivery._id}>
+                                <h4>Delivery</h4>
+                                <p>{delivery.message}</p>
+
+                                {delivery.attachments.map((attachment) => (
+                                    <a
+                                        key={attachment._id}
+                                        href={attachment.url}
+                                        target="_blank"
+                                        rel="noreferrer"
+                                    >
+                                        {attachment.name}
+                                    </a>
+                                ))}
+
+                                {delivery.responseNote && (
+                                    <p>Revision Note: {delivery.responseNote}</p>
+                                )}
+                            </div>
+                        ))}
+
                         {isClient && milestone.status === 'pending' && (
                             <>
                                 <button onClick={()=>handleEditMilestone(milestone)}>
@@ -298,6 +349,37 @@ const ContractDetails = (props)=>{
                                     Deliver Work
                                 </button>
                             )
+                        )}
+
+                        {isClient && milestone.status === 'delivered' && (
+                            <>
+                                <button onClick={()=>handleApproveMilestone(milestone._id)}>
+                                    Approve Delivery
+                                </button>
+
+                                {revisionId === milestone._id ? (
+                                    <form onSubmit={(event)=>handleRevisionSubmit(event, milestone._id)}>
+                                        <label htmlFor={`revision-${milestone._id}`}>
+                                            Revision Comments
+                                        </label>
+                                        <textarea
+                                            id={`revision-${milestone._id}`}
+                                            value={revisionNote}
+                                            onChange={(event)=>setRevisionNote(event.target.value)}
+                                            required
+                                        />
+
+                                        <button type="submit">Request Revision</button>
+                                        <button type="button" onClick={()=>setRevisionId(null)}>
+                                            Cancel
+                                        </button>
+                                    </form>
+                                ) : (
+                                    <button onClick={()=>setRevisionId(milestone._id)}>
+                                        Request Revision
+                                    </button>
+                                )}
+                            </>
                         )}
 
                     </div>
