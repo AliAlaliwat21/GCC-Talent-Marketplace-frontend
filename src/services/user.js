@@ -56,8 +56,28 @@ const updateMe = async (userData) => {
     return data
 }
 
+const changePassword = async (passwordData) => {
+    const res = await fetch(`${BASE_URL}/api/v1/users/me/password`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem('token')}`
+        },
+        body: JSON.stringify(passwordData)
+    })
+
+    const data = await res.json()
+
+    if (!res.ok) {
+        throw new Error(data.err || data.message)
+    }
+
+    return data
+}
+
 export {
     index,
     showMe,
-    updateMe
+    updateMe,
+    changePassword
 }
