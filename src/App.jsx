@@ -27,6 +27,7 @@ import AdminCategories from "./pages/AdminCategories"
 import AdminSkills from "./pages/AdminSkills"
 import AccountSettings from "./pages/AccountSettings"
 import RequireAuth from "./components/RequireAuth"
+import NotFound from "./pages/NotFound"
 const getUserFromToken = () => {
   try {
     const token = localStorage.getItem('token')
@@ -207,6 +208,10 @@ const App = () => {
                 <AdminSkills />
               </RequireAuth>
             }
+          />
+          <Route
+            path="*"
+            element={<NotFound />}
           />
         </Routes>
       </main>
