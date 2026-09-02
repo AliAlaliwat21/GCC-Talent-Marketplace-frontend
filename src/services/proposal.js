@@ -165,7 +165,7 @@ const update = async (proposalId, proposalData)=>{
 
 const withdraw = async(proposalId)=>{
     try {
-        const res = fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/withdraw`,{
+        const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/withdraw`,{
             method: 'POST',
             headers: { 
                 Authorization: `Bearer ${localStorage.getItem('token')}` },
@@ -179,7 +179,7 @@ const withdraw = async(proposalId)=>{
 
         return data
     } catch (error) {
-        
+        throw new Error(error.message)
     }
 }
 
