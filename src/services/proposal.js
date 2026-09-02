@@ -1,7 +1,6 @@
 const BASE_URL = `${import.meta.env.VITE_BACK_END_SERVER_URL}`
 
 const create = async (jobId, proposalData)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}/proposals`, {
             method: 'POST',
             headers: { 
@@ -17,13 +16,9 @@ const create = async (jobId, proposalData)=>{
         }
 
         return data
-    } catch (error) {
-        throw error
-    }
 }
 
 const mine = async ()=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/proposals/mine`,{
             method: 'GET',
             headers: {
@@ -38,13 +33,9 @@ const mine = async ()=>{
         }
 
         return data
-    } catch (error) {
-        throw error
-    }
 }
 
 const getJobProposals = async(jobId)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/jobs/${jobId}/proposals`,{
             method: 'GET',
             headers: {
@@ -59,13 +50,9 @@ const getJobProposals = async(jobId)=>{
         }
 
         return data
-    } catch (error) {
-        throw error
-    }
 }
 
 const shortlist = async(proposalId)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/shortlist`,{
             method: 'POST',
             headers: {
@@ -80,14 +67,10 @@ const shortlist = async(proposalId)=>{
         }
 
         return data
-    } catch (error) {
-        throw error
-    }
 }
 
 
 const decline = async (proposalId) => {
-    try {
         const res = await fetch(
             `${BASE_URL}/api/v1/proposals/${proposalId}/decline`,
             {
@@ -106,13 +89,9 @@ const decline = async (proposalId) => {
 
         return data
 
-    } catch (error) {
-        throw error
-    }
 }
 
 const accept = async (proposalId, milestones) => {
-    try {
         const res = await fetch(
             `${BASE_URL}/api/v1/proposals/${proposalId}/accept`,
             {
@@ -135,14 +114,10 @@ const accept = async (proposalId, milestones) => {
 
         return data
 
-    } catch (error) {
-        throw error
-    }
 }
 
 const update = async (proposalId, proposalData)=>{
 
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}`,{
             method: 'PATCH',
             headers: { 
@@ -158,13 +133,9 @@ const update = async (proposalId, proposalData)=>{
         }
 
         return data
-    } catch (error) {
-        throw error
-    }
 }
 
 const withdraw = async(proposalId)=>{
-    try {
         const res = await fetch(`${BASE_URL}/api/v1/proposals/${proposalId}/withdraw`,{
             method: 'POST',
             headers: { 
@@ -178,9 +149,6 @@ const withdraw = async(proposalId)=>{
         }
 
         return data
-    } catch (error) {
-        throw error
-    }
 }
 
 export {
