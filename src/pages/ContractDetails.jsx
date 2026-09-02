@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { addMilestone, show, updateMilestone } from "../services/contracts"
+import { addMilestone, fundMilestone, show, updateMilestone } from "../services/contracts"
 
 const ContractDetails = (props)=>{
 
@@ -84,6 +84,18 @@ const ContractDetails = (props)=>{
                 ? milestone.dueDate.slice(0, 10)
                 : ''
         })
+    }
+
+    const handleFundMilestone = async(milestoneId)=>{
+        setMessage('')
+
+        try {
+            await fundMilestone(contractId, milestoneId)
+            setMessage('Milestone funded successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
     }
 
     if (!contract){
@@ -202,9 +214,15 @@ const ContractDetails = (props)=>{
                         </p>
 
                         {isClient && milestone.status === 'pending' && (
-                            <button onClick={()=>handleEditMilestone(milestone)}>
-                                Edit Milestone
-                            </button>
+                            <>
+                                <button onClick={()=>handleEditMilestone(milestone)}>
+                                    Edit Milestone
+                                </button>
+
+                                <button onClick={()=>handleFundMilestone(milestone._id)}>
+                                    Fund Milestone
+                                </button>
+                            </>
                         )}
 
                     </div>
