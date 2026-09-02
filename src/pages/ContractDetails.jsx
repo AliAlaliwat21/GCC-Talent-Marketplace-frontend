@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { addMilestone, fundMilestone, show, updateMilestone } from "../services/contracts"
+import { addMilestone, deliverMilestone, fundMilestone, show, updateMilestone } from "../services/contracts"
+import { uploadFile } from "../services/uploads"
 
 const ContractDetails = (props)=>{
 
@@ -19,6 +20,9 @@ const ContractDetails = (props)=>{
         amount: '',
         dueDate: ''
     })
+    const [deliveryId, setDeliveryId] = useState(null)
+    const [deliveryMessage, setDeliveryMessage] = useState('')
+    const [deliveryFiles, setDeliveryFiles] = useState([])
 
     const fetchContract = async()=>{
         try {
@@ -98,11 +102,43 @@ const ContractDetails = (props)=>{
         }
     }
 
+    const handleDeliverySubmit = async(event, milestoneId)=>{
+        event.preventDefault()
+        setMessage('')
+
+        try {
+            const attachments = []
+
+            for (let i = 0; i < deliveryFiles.length; i++) {
+                const uploadedFile = await uploadFile(deliveryFiles[i])
+
+                attachments.push({
+                    url: uploadedFile.url,
+                    name: uploadedFile.name
+                })
+            }
+
+            await deliverMilestone(contractId, milestoneId, {
+                message: deliveryMessage,
+                attachments: attachments
+            })
+
+            setDeliveryId(null)
+            setDeliveryMessage('')
+            setDeliveryFiles([])
+            setMessage('Work delivered successfully')
+            fetchContract()
+        } catch (error) {
+            setMessage(error.message)
+        }
+    }
+
     if (!contract){
         return <p>{message || 'Loading...'}</p>
     }
 
     const isClient = props.user?._id === contract.client?._id
+    const isFreelancer = props.user?._id === contract.freelancer?._id
 
     return(
         <section>
@@ -223,6 +259,45 @@ const ContractDetails = (props)=>{
                                     Fund Milestone
                                 </button>
                             </>
+                        )}
+
+                        {isFreelancer && (
+                            milestone.status === 'funded' ||
+                            milestone.status === 'in_progress'
+                        ) && (
+                            deliveryId === milestone._id ? (
+                                <form onSubmit={(event)=>handleDeliverySubmit(event, milestone._id)}>
+                                    <label htmlFor={`delivery-${milestone._id}`}>
+                                        Delivery Notes
+                                    </label>
+                                    <textarea
+                                        id={`delivery-${milestone._id}`}
+                                        value={deliveryMessage}
+                                        onChange={(event)=>setDeliveryMessage(event.target.value)}
+                                        required
+                                    />
+
+                                    <label htmlFor={`deliveryFiles-${milestone._id}`}>
+                                        Attachments
+                                    </label>
+                                    <input
+                                        id={`deliveryFiles-${milestone._id}`}
+                                        type="file"
+                                        multiple
+                                        accept="image/jpeg,image/png,image/webp,application/pdf,application/zip"
+                                        onChange={(event)=>setDeliveryFiles(Array.from(event.target.files))}
+                                    />
+
+                                    <button type="submit">Submit Delivery</button>
+                                    <button type="button" onClick={()=>setDeliveryId(null)}>
+                                        Cancel
+                                    </button>
+                                </form>
+                            ) : (
+                                <button onClick={()=>setDeliveryId(milestone._id)}>
+                                    Deliver Work
+                                </button>
+                            )
                         )}
 
                     </div>
