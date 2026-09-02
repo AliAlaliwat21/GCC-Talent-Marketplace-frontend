@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useParams } from "react-router"
 import { addMilestone, approveMilestone, cancelContract, deliverMilestone, fundMilestone, requestRevision, show, updateMilestone } from "../services/contracts"
 import { uploadFile } from "../services/uploads"
+import ReviewForm from "../components/ReviewForm"
 
 const ContractDetails = (props)=>{
 
@@ -489,6 +490,13 @@ const ContractDetails = (props)=>{
         ))
     )}
 </section>
+
+{(
+    contract.status === 'completed' ||
+    contract.status === 'cancelled'
+) && (
+    <ReviewForm contractId={contractId} />
+)}
         </section>
     )
 }
